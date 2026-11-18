@@ -1,0 +1,21 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O0925-05,Main Street Law Breakfast,1601 Main St,,sausage-jalapeno klobasnek,24,3.00,2026-09-24 19:24,extra napkins
+O0925-03,Uptown Commons Cowork,2401 McKinney Ave,7:30,ham-cheese klobasnek,12,2.60,2026-09-24 15:23,
+O0925-11,Arlington Daily Grind,"301 E Abram St, Arlington",6:45,apricot kolache,12,2.75,2026-09-24 14:41,
+O0925-01,Ellum Grind,2715 Elm St,6:30,cream cheese kolache,24,2.75,2026-09-24 16:14,
+O0925-04,Greenville Grounds,1920 Greenville Ave,6:30,apricot kolache,12,2.75,2026-09-24 17:06,call on arrival
+O0925-06,Cedar Springs Cafe,3902 Cedar Springs Rd,6:30,cream cheese kolache,24,2.70,2026-09-24 14:04,extra napkins
+O0925-07,Groves Coffee,3011 Gulden Ln,7:00,peach kolache,12,2.75,2026-09-24 14:27,gate code 4411
+O0925-08,M Street Morning,5610 Lewis St,6:00,peach kolache,18 pcs,2.80,2026-09-24 19:19,back door please
+O0925-10,Main Street Law Breakfast,1601 Main St,8:30,ham-cheese klobasnek,30,3.00,2026-09-24 20:47,
+O0925-09,White Rock Brew,7324 Gaston Ave,7:30,sausage-jalapeno klobasnek,12,2.75,2026-09-24 15:44,
+O0925-07,Groves Coffee,3011 Gulden Ln,7:00,cream cheese kolache,18,2.75,2026-09-24 14:27,gate code 4411
+O0925-03,Uptown Commons Cowork,2401 McKinney Ave,7:30,sausage-jalapeno klobasnek,12,2.60,2026-09-24 15:23,
+O0925-10,Main Street Law Breakfast,1601 Main St,8:30,sausage-jalapeno klobasnek,30,3.00,2026-09-24 20:47,
+O0925-02,Bishop Bean,408 N Bishop Ave,7:30,cream cheese kolache,12,2.85,2026-09-24 14:46,call on arrival
+O0925-11,Arlington Daily Grind,"301 E Abram St, Arlington",6:45,cream cheese kolache,12,2.75,2026-09-24 14:41,
+O0925-04,Greenville Grounds,1920 Greenville Ave,6:30,cream cheese kolache,12,2.75,2026-09-24 17:06,call on arrival
+O0925-05,Main Street Law Breakfast,1601 Main St,8:30,cream cheese kolache,24,3.00,2026-09-24 19:24,extra napkins
+O0925-09,White Rock Brew,7324 Gaston Ave,7:30,cream cheese kolache,18,2.75,2026-09-24 15:44,
+O0925-02,Bishop Bean,408 N Bishop Ave,7:30,sausage-jalapeno klobasnek,18,2.85,2026-09-24 14:46,call on arrival
+O0925-08,M Street Morning,5610 Lewis St,6:00,cream cheese kolache,18,2.80,2026-09-24 19:19,back door please

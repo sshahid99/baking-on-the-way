@@ -1,0 +1,14 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O0918-03,Greenville Grounds,1920 Greenville Ave,7:00,apricot kolache,18,2.75,2026-09-17 19:47,no peach this week
+O0918-01,Ellum Grind,2715 Elm St,7:00,apricot kolache,30,2.75,2026-09-17 18:33,
+O0918-06,M Street Morning,5610 Lewis St,6:15,cream cheese kolache,12,2.80,2026-09-17 19:27,back door please
+O0918-08,White Rock Brew,7324 Gaston Ave,7:30,peach kolache,12,2.75,2026-09-17 17:31,no peach this week
+O0918-04,Main Street Law Breakfast,1601 Main St,8:30,cream cheese kolache,60,3.00,2026-09-17 16:13,
+O0918-05,Groves Coffee,3011 Gulden Ln,7:30,cream cheese kolache,18,2.75,2026-09-17 17:27,no peach this week
+O0918-02,Bishop Bean,408 N Bishop Ave,7:30,peach kolache,12,2.85,2026-09-17 18:00,no peach this week
+O0918-05,Groves Coffee,3011 Gulden Ln,7:30,apricot kolache,18,2.75,2026-09-17 17:27,no peach this week
+O0918-07,Harwood Clinic Staff Room,5323 Harry Hines Blvd,7:30,cream cheese kolache,60,3.10,2026-09-17 19:31,extra napkins
+O0918-08,White Rock Brew,7324 Gaston Ave,7:30,cream cheese kolache,18 pcs,2.75,2026-09-17 17:31,no peach this week
+O0918-06,M Street Morning,5610 Lewis St,,apricot kolache,12,2.80,2026-09-17 19:27,back door please
+O0918-03,Greenville Grounds,1920 Greenville Ave,7:00,peach kolache,18,2.75,2026-09-17 19:47,no peach this week
+O0918-02,Bishop Bean,408 N Bishop Ave,7:30,cream cheese kolache,18,2.85,2026-09-17 18:00,no peach this week

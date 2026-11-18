@@ -1,0 +1,17 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O1016-04,Greenville Grounds,1920 Greenville Ave,6:30,sausage-jalapeno klobasnek,18,2.75,2026-10-15 18:33,call on arrival
+O1016-01,Ellum Grind,2715 Elm St,7:00,peach kolache,18,2.75,2026-10-15 20:35,back door please
+O1016-04,Greenville Grounds,1920 Greenville Ave,6:30,apricot kolache,18,2.75,2026-10-15 18:33,call on arrival
+O1016-03,Uptown Commons Cowork,2401 McKinney Ave,7:45,cream cheese kolache,12,2.60,2026-10-15 18:34,leave with barista
+O1016-02,Bishop Bean,408 N Bishop Ave,7:30,apricot kolache,24,2.85,2026-10-15 19:15,
+O1016-05,Lakewood Perk,6334 La Vista Dr,6:15,cream cheese kolache,18,2.90,2026-10-15 14:08,back door please
+O1016-08,M Street Morning,5610 Lewis St,6:00,apricot kolache,1.5 dozen,2.80,2026-10-15 16:21,no peach this week
+O1016-07,Cedar Springs Cafe,3902 Cedar Springs Rd,6:30,sausage-jalapeno klobasnek,30,2.70,2026-10-15 20:30,call on arrival
+O1016-10,White Rock Brew,7324 Gaston Ave,7:00,apricot kolache,30,2.75,2026-10-15 14:52,extra napkins
+O1016-06,Main Street Law Breakfast,1601 Main St,8:00,sausage-jalapeno klobasnek,30,3.00,2026-10-15 17:04,
+O1016-03,Uptown Commons Cowork,2401 McKinney Ave,7:45,ham-cheese klobasnek,12,2.60,2026-10-15 18:34,leave with barista
+O1016-09,Harwood Clinic Staff Room,5323 Harry Hines Blvd,7:30,apricot kolache,60,3.10,2026-10-15 19:33,
+O1016-06,Main Street Law Breakfast,1601 Main St,8:00,cream cheese kolache,30,3.00,2026-10-15 17:04,
+O1016-05,Lakewood Perk,6334 La Vista Dr,6:15,sausage-jalapeno klobasnek,18,2.90,2026-10-15 14:08,back door please
+O1016-01,Ellum Grind,2715 Elm St,7:00,cream cheese kolache,12,2.75,2026-10-15 20:35,back door please
+O1016-08,M Street Morning,5610 Lewis St,6:00,cream cheese kolache,1 dozen,2.80,2026-10-15 16:21,no peach this week

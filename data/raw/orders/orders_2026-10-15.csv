@@ -1,0 +1,13 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O1015-03,Lakewood Perk,6334 La Vista Dr,6:30,sausage-jalapeno klobasnek,36,2.90,2026-10-14 19:02,gate code 4411
+O1015-06,Victory Desk Cowork,2500 Victory Ave,8:00,cream cheese kolache,12,2.60,2026-10-14 16:11,no peach this week
+O1015-05,Knox Kettle,4514 Travis St,6:45,cream cheese kolache,30,2.75,2026-10-14 19:29,back door please
+O1015-02,Bishop Bean,408 N Bishop Ave,7:30,sausage-jalapeno klobasnek,12,2.85,2026-10-14 14:48,
+O1015-07,Groves Coffee,3011 Gulden Ln,,cream cheese kolache,12,2.75,2026-10-14 18:13,leave with barista
+O1015-02,Bishop Bean,408 N Bishop Ave,7:30,cream cheese kolache,18,2.85,2026-10-14 14:48,
+O1015-07,Groves Coffee,3011 Gulden Ln,7:30,peach kolache,18,2.75,2026-10-14 18:13,leave with barista
+O1015-01,Ellum Grind,2715 Elm St,7:00,apricot kolache,12,2.75,2026-10-14 14:05,
+O1015-01,Ellum Grind,2715 Elm St,7:00,peach kolache,12,2.75,2026-10-14 14:05,
+O1015-04,Main Street Law Breakfast,1601 Main St,8:30,sausage-jalapeno klobasnek,42,3.00,2026-10-14 18:07,extra napkins
+O1015-06,Victory Desk Cowork,2500 Victory Ave,8:00,sausage-jalapeno klobasnek,12,2.60,2026-10-14 16:11,no peach this week
+O1015-08,White Rock Brew,7324 Gaston Ave,7:00,sausage-jalapeno klobasnek,24,2.75,2026-10-14 18:46,leave with barista

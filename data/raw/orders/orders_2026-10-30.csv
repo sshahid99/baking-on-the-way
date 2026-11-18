@@ -1,0 +1,20 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O1030-04,Greenville Grounds,1920 Greenville Ave,7:00,sausage-jalapeno klobasnek,24,2.75,2026-10-29 20:04,extra napkins
+O1030-11,White Rock Brew,7324 Gaston Ave,7:30,peach kolache,12,2.75,2026-10-29 18:32,
+O1030-10,Harwood Clinic Staff Room,5323 Harry Hines Blvd,7:30,cream cheese kolache,48,3.10,2026-10-29 16:10,
+O1030-01,Ellum Grind,2715 Elm St,6:45,apricot kolache,30,2.75,2026-10-29 18:08,call on arrival
+O1030-05,Lakewood Perk,6334 La Vista Dr,6:30,sausage-jalapeno klobasnek,12,2.90,2026-10-29 20:44,back door please
+O1030-07,Cedar Springs Cafe,3902 Cedar Springs Rd,6:00,cream cheese kolache,12,2.70,2026-10-29 19:57,
+O1030-06,Main Street Law Breakfast,1601 Main St,8:30,ham-cheese klobasnek,54,3.00,2026-10-29 16:03,extra napkins
+O1030-08,Cedars Roastery,1110 S Lamar St,6:30,sausage-jalapeno klobasnek,18,2.65,2026-10-29 20:31,gate code 4411
+O1030-12,Main Street Law Breakfast,1601 Main St,8:30,cream cheese kolache,30,3.00,2026-10-29 16:05,gate code 4411
+O1030-02,Bishop Bean,408 N Bishop Ave,7:30,sausage-jalapeno klobasnek,30,2.85,2026-10-29 16:10,leave with barista
+O1030-09,M Street Morning,5610 Lewis St,6:30,peach kolache,18,2.80,2026-10-29 15:07,leave with barista
+O1030-03,Uptown Commons Cowork,2401 McKinney Ave,7:30,ham-cheese klobasnek,18,2.60,2026-10-29 18:15,no peach this week
+O1030-07,Cedar Springs Cafe,3902 Cedar Springs Rd,6:00,sausage-jalapeno klobasnek,18,2.70,2026-10-29 19:57,
+O1030-03,Uptown Commons Cowork,2401 McKinney Ave,7:30,sausage-jalapeno klobasnek,12,2.60,2026-10-29 18:15,no peach this week
+O1030-05,Lakewood Perk,6334 La Vista Dr,6:30,peach kolache,12,2.90,2026-10-29 20:44,back door please
+O1030-09,M Street Morning,5610 Lewis St,6:30,cream cheese kolache,18,2.80,2026-10-29 15:07,leave with barista
+O1030-11,White Rock Brew,7324 Gaston Ave,7:30,cream cheese kolache,12,2.75,2026-10-29 18:32,
+O1030-08,Cedars Roastery,1110 S Lamar St,6:30,cream cheese kolache,18,2.65,2026-10-29 20:31,gate code 4411
+O1030-12,Main Street Law Breakfast,1601 Main St,8:30,sausage-jalapeno klobasnek,24,3.00,2026-10-29 16:05,gate code 4411

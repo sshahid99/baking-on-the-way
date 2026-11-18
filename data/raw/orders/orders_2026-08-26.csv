@@ -1,0 +1,19 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O0826-11,White Rock Brew,7324 Gaston Ave,7:30,cream cheese kolache,30,2.75,2026-08-25 20:05,extra napkins
+O0826-04,Greenville Grounds,1920 Greenville Ave,7:00,apricot kolache,18 pcs,2.75,2026-08-25 20:26,gate code 4411
+O0826-04,Greenville Grounds,1920 Greenville Ave,7:00,peach kolache,12,2.75,2026-08-25 20:26,gate code 4411
+O0826-07,Knox Kettle,4514 Travis St,7:00,cream cheese kolache,30,2.75,2026-08-25 17:52,
+O0826-01,Ellum Grind,2715 Elm St,6:30,apricot kolache,1 dozen,2.75,2026-08-25 15:38,
+O0826-03,Uptown Commons Cowork,2401 McKinney Ave,8:00,sausage-jalapeno klobasnek,12,2.60,2026-08-25 20:49,leave with barista
+O0826-06,Main Street Law Breakfast,1601 Main St,8:00,apricot kolache,18,3.00,2026-08-25 19:49,
+O0826-09,Cedars Roastery,1110 S Lamar St,7:00,sausage-jalapeno klobasnek,12,2.65,2026-08-25 18:31,no peach this week
+O0826-06,Main Street Law Breakfast,1601 Main St,8:00,cream cheese kolache,18,3.00,2026-08-25 19:49,
+O0826-12,Arlington Daily Grind,"301 E Abram St, Arlington",6:45,cream cheese kolache,24,2.75,2026-08-25 17:14,
+O0826-02,Bishop Bean,408 N Bishop Ave,,peach kolache,18,2.85,2026-08-25 16:48,
+O0826-05,Lakewood Perk,6334 La Vista Dr,6:00,cream cheese kolache,30,2.90,2026-08-25 17:20,back door please
+O0826-01,Ellum Grind,2715 Elm St,6:30,cream cheese kolache,12,2.75,2026-08-25 15:38,
+O0826-09,Cedars Roastery,1110 S Lamar St,7:00,apricot kolache,18,2.65,2026-08-25 18:31,no peach this week
+O0826-08,Cedar Springs Cafe,3902 Cedar Springs Rd,6:15,peach kolache,30,2.70,2026-08-25 16:20,
+O0826-10,Harwood Clinic Staff Room,5323 Harry Hines Blvd,7:30,apricot kolache,42,3.10,2026-08-25 16:14,
+O0826-02,Bishop Bean,408 N Bishop Ave,7:30,cream cheese kolache,12,2.85,2026-08-25 16:48,
+O0826-03,Uptown Commons Cowork,2401 McKinney Ave,8:00,ham-cheese klobasnek,12,2.60,2026-08-25 20:49,leave with barista

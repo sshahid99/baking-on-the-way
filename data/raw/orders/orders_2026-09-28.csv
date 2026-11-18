@@ -1,0 +1,9 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O0928-05,Cedars Roastery,1110 S Lamar St,6:30,sausage-jalapeno klobasnek,12,2.65,2026-09-27 19:59,
+O0928-01,Uptown Commons Cowork,2401 McKinney Ave,8:00,sausage-jalapeno klobasnek,1.5 dozen,2.60,2026-09-27 16:11,call on arrival
+O0928-06,M Street Morning,5610 Lewis St,6:00,apricot kolache,24,2.80,2026-09-27 14:14,back door please
+O0928-05,Cedars Roastery,1110 S Lamar St,6:30,peach kolache,12,2.65,2026-09-27 19:59,
+O0928-07,White Rock Brew,7324 Gaston Ave,7:30,sausage-jalapeno klobasnek,1.5 dozen,2.75,2026-09-27 16:51,extra napkins
+O0928-03,Lakewood Perk,6334 La Vista Dr,6:30,sausage-jalapeno klobasnek,24,2.90,2026-09-27 17:41,
+O0928-04,Cedar Springs Cafe,3902 Cedar Springs Rd,6:00,cream cheese kolache,24,2.70,2026-09-27 16:18,extra napkins
+O0928-02,Greenville Grounds,1920 Greenville Ave,7:00,peach kolache,24,2.75,2026-09-27 18:34,extra napkins

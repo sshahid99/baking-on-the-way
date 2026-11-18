@@ -1,0 +1,15 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O0904-02,Bishop Bean,408 N Bishop Ave,7:00,sausage-jalapeno klobasnek,12,2.85,2026-09-03 19:22,
+O0904-02,Bishop Bean,408 N Bishop Ave,7:00,peach kolache,12,2.85,2026-09-03 19:22,
+O0904-03,Uptown Commons Cowork,2401 McKinney Ave,8:00,ham-cheese klobasnek,30,2.60,2026-09-03 16:39,call on arrival
+O0904-09,Harwood Clinic Staff Room,5323 Harry Hines Blvd,8:00,sausage-jalapeno klobasnek,30,3.10,2026-09-03 14:08,call on arrival
+O0904-04,Greenville Grounds,1920 Greenville Ave,6:45,peach kolache,18,2.75,2026-09-03 16:14,
+O0904-07,Harwood Clinic Staff Room,5323 Harry Hines Blvd,7:30,apricot kolache,30,3.10,2026-09-03 20:55,call on arrival
+O0904-05,Groves Coffee,3011 Gulden Ln,,cream cheese kolache,18,2.75,2026-09-03 15:18,no peach this week
+O0904-01,Ellum Grind,2715 Elm St,7:00,cream cheese kolache,36,2.75,2026-09-03 17:41,back door please
+O0904-06,M Street Morning,5610 Lewis St,6:15,apricot kolache,30,2.80,2026-09-03 14:06,no peach this week
+O0904-04,Greenville Grounds,1920 Greenville Ave,6:45,apricot kolache,18,2.75,2026-09-03 16:14,
+O0904-05,Groves Coffee,3011 Gulden Ln,7:30,peach kolache,18,2.75,2026-09-03 15:18,no peach this week
+O0904-08,White Rock Brew,7324 Gaston Ave,7:15,apricot kolache,24,2.75,2026-09-03 14:54,leave with barista
+O0904-09,Harwood Clinic Staff Room,5323 Harry Hines Blvd,8:00,cream cheese kolache,30,3.10,2026-09-03 14:08,call on arrival
+O0904-07,Harwood Clinic Staff Room,5323 Harry Hines Blvd,7:30,sausage-jalapeno klobasnek,30,3.10,2026-09-03 20:55,call on arrival

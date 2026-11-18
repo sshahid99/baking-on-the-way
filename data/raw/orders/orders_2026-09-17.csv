@@ -1,0 +1,19 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O0917-07,Groves Coffee,3011 Gulden Ln,7:30,cream cheese kolache,18,2.75,2026-09-16 18:32,call on arrival
+O0917-01,Ellum Grind,2715 Elm St,6:30,peach kolache,1.5 dozen,2.75,2026-09-16 15:29,
+O0917-03,Lakewood Perk,6334 La Vista Dr,6:30,peach kolache,18,2.90,2026-09-16 16:47,back door please
+O0917-04,Main Street Law Breakfast,1601 Main St,8:00,ham-cheese klobasnek,30,3.00,2026-09-16 17:42,call on arrival
+O0917-05,Knox Kettle,4514 Travis St,7:00,sausage-jalapeno klobasnek,12,2.75,2026-09-16 20:01,
+O0917-09,White Rock Brew,7324 Gaston Ave,7:30,apricot kolache,18,2.75,2026-09-16 14:01,no peach this week
+O0917-10,Ellum Grind,2715 Elm St,6:30,cream cheese kolache,18,2.75,2026-09-16 20:34,updated qty
+O0917-02,Bishop Bean,408 N Bishop Ave,7:00,apricot kolache,30,2.85,2026-09-16 17:20,extra napkins
+O0917-10,Ellum Grind,2715 Elm St,6:30,peach kolache,24,2.75,2026-09-16 20:25,updated qty
+O0917-03,Lakewood Perk,6334 La Vista Dr,,cream cheese kolache,12,2.90,2026-09-16 16:47,back door please
+O0917-01,Ellum Grind,2715 Elm St,6:30,cream cheese kolache,12,2.75,2026-09-16 15:29,
+O0917-05,Knox Kettle,4514 Travis St,7:00,cream cheese kolache,12,2.75,2026-09-16 20:01,
+O0917-09,White Rock Brew,7324 Gaston Ave,7:30,peach kolache,18,2.75,2026-09-16 14:01,no peach this week
+O0917-08,M Street Morning,5610 Lewis St,6:30,cream cheese kolache,12,2.80,2026-09-16 18:38,no peach this week
+O0917-08,M Street Morning,5610 Lewis St,6:30,peach kolache,18,2.80,2026-09-16 18:38,no peach this week
+O0917-06,Victory Desk Cowork,2500 Victory Ave,8:30,ham-cheese klobasnek,12,2.60,2026-09-16 15:00,no peach this week
+O0917-06,Victory Desk Cowork,2500 Victory Ave,8:30,sausage-jalapeno klobasnek,a dozen,2.60,2026-09-16 15:00,no peach this week
+O0917-07,Groves Coffee,3011 Gulden Ln,7:30,sausage-jalapeno klobasnek,18,2.75,2026-09-16 18:32,call on arrival

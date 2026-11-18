@@ -1,0 +1,21 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O1009-09,Cedar Springs Cafe,3902 Cedar Springs Rd,,cream cheese kolache,12,2.70,2026-10-08 16:02,leave with barista
+O1009-07,Knox Kettle,4514 Travis St,7:00,peach kolache,36,2.75,2026-10-08 14:27,
+O1009-05,Lakewood Perk,6334 La Vista Dr,6:30,apricot kolache,18,2.90,2026-10-08 15:42,leave with barista
+O1009-01,Ellum Grind,2715 Elm St,7:00,peach kolache,36,2.75,2026-10-08 16:36,call on arrival
+O1009-05,Lakewood Perk,6334 La Vista Dr,6:30,sausage-jalapeno klobasnek,18,2.90,2026-10-08 15:42,leave with barista
+O1009-12,M Street Morning,5610 Lewis St,6:00,peach kolache,18,2.80,2026-10-08 15:36,call on arrival
+O1009-13,White Rock Brew,7324 Gaston Ave,7:00,sausage-jalapeno klobasnek,12,2.75,2026-10-08 14:12,leave with barista
+O1009-06,Main Street Law Breakfast,1601 Main St,8:00,cream cheese kolache,60,3.00,2026-10-08 17:02,extra napkins
+O1009-04,Greenville Grounds,1920 Greenville Ave,7:00,apricot kolache,12,2.75,2026-10-08 20:22,extra napkins
+O1009-10,Groves Coffee,3011 Gulden Ln,7:00,cream cheese kolache,30,2.75,2026-10-08 15:19,call on arrival
+O1009-09,Cedar Springs Cafe,3902 Cedar Springs Rd,6:30,apricot kolache,12,2.70,2026-10-08 16:02,leave with barista
+O1009-02,Bishop Bean,408 N Bishop Ave,7:30,apricot kolache,12,2.85,2026-10-08 15:56,back door please
+O1009-08,Victory Desk Cowork,2500 Victory Ave,8:15,sausage-jalapeno klobasnek,18,2.60,2026-10-08 15:43,call on arrival
+O1009-12,M Street Morning,5610 Lewis St,6:00,cream cheese kolache,18,2.80,2026-10-08 15:36,call on arrival
+O1009-13,White Rock Brew,7324 Gaston Ave,7:00,cream cheese kolache,12 pcs,2.75,2026-10-08 14:12,leave with barista
+O1009-04,Greenville Grounds,1920 Greenville Ave,,peach kolache,18,2.75,2026-10-08 20:22,extra napkins
+O1009-11,Cedars Roastery,1110 S Lamar St,7:00,cream cheese kolache,36,2.65,2026-10-08 20:04,gate code 4411
+O1009-03,Uptown Commons Cowork,2401 McKinney Ave,7:30,ham-cheese klobasnek,12,2.60,2026-10-08 15:42,gate code 4411
+O1009-03,Uptown Commons Cowork,2401 McKinney Ave,7:30,sausage-jalapeno klobasnek,18,2.60,2026-10-08 15:42,gate code 4411
+O1009-02,Bishop Bean,408 N Bishop Ave,7:30,peach kolache,18,2.85,2026-10-08 15:56,back door please

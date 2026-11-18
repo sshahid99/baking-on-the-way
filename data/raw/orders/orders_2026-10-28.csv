@@ -1,0 +1,19 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O1028-10,White Rock Brew,7324 Gaston Ave,7:15,cream cheese kolache,12,2.75,2026-10-27 20:04,no peach this week
+O1028-09,Harwood Clinic Staff Room,5323 Harry Hines Blvd,7:30,cream cheese kolache,18,3.10,2026-10-27 17:41,leave with barista
+O1028-07,Victory Desk Cowork,2500 Victory Ave,8:30,ham-cheese klobasnek,1 dozen,2.60,2026-10-27 14:23,
+O1028-06,Knox Kettle,4514 Travis St,7:00,peach kolache,12,2.75,2026-10-27 20:12,gate code 4411
+O1028-06,Knox Kettle,4514 Travis St,7:00,sausage-jalapeno klobasnek,12,2.75,2026-10-27 20:12,gate code 4411
+O1028-01,Ellum Grind,2715 Elm St,6:45,peach kolache,30,2.75,2026-10-27 17:36,gate code 4411
+O1028-03,Greenville Grounds,1920 Greenville Ave,7:00,sausage-jalapeno klobasnek,12,2.75,2026-10-27 16:17,call on arrival
+O1028-08,Cedar Springs Cafe,3902 Cedar Springs Rd,6:30,peach kolache,36,2.70,2026-10-27 18:35,
+O1028-03,Greenville Grounds,1920 Greenville Ave,7:00,peach kolache,18,2.75,2026-10-27 16:17,call on arrival
+O1028-10,White Rock Brew,7324 Gaston Ave,7:15,sausage-jalapeno klobasnek,18,2.75,2026-10-27 20:04,no peach this week
+O1028-05,Main Street Law Breakfast,1601 Main St,8:00,cream cheese kolache,12,3.00,2026-10-27 15:22,back door please
+O1028-05,Main Street Law Breakfast,1601 Main St,8:00,sausage-jalapeno klobasnek,18,3.00,2026-10-27 15:22,back door please
+O1028-04,Lakewood Perk,6334 La Vista Dr,6:15,peach kolache,12,2.90,2026-10-27 18:09,extra napkins
+O1028-02,Uptown Commons Cowork,2401 McKinney Ave,8:00,cream cheese kolache,12,2.60,2026-10-27 19:55,
+O1028-09,Harwood Clinic Staff Room,5323 Harry Hines Blvd,7:30,apricot kolache,24,3.10,2026-10-27 17:41,leave with barista
+O1028-07,Victory Desk Cowork,2500 Victory Ave,8:30,cream cheese kolache,12,2.60,2026-10-27 14:23,
+O1028-02,Uptown Commons Cowork,2401 McKinney Ave,8:00,ham-cheese klobasnek,12,2.60,2026-10-27 19:55,
+O1028-04,Lakewood Perk,6334 La Vista Dr,6:15,apricot kolache,18,2.90,2026-10-27 18:09,extra napkins

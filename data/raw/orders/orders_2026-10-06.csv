@@ -1,0 +1,16 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O1006-06,Victory Desk Cowork,2500 Victory Ave,8:15,sausage-jalapeno klobasnek,12,2.60,2026-10-05 14:27,extra napkins
+O1006-09,Main Street Law Breakfast,1601 Main St,8:00,sausage-jalapeno klobasnek,18,0.00,2026-10-05 23:02,leave with barista
+O1006-01,Ellum Grind,2715 Elm St,6:30,cream cheese kolache,12,2.75,2026-10-05 14:50,leave with barista
+O1006-08,Cedars Roastery,1110 S Lamar St,7:00,peach kolache,12,2.65,2026-10-05 18:39,gate code 4411
+O1006-04,Main Street Law Breakfast,1601 Main St,8:00,ham-cheese klobasnek,12,3.00,2026-10-05 20:54,
+O1006-02,Bishop Bean,408 N Bishop Ave,7:30,sausage-jalapeno klobasnek,36,2.85,2026-10-05 14:25,call on arrival
+O1006-05,Knox Kettle,4514 Travis St,6:30,sausage-jalapeno klobasnek,1.5 dozen,2.75,2026-10-05 19:47,call on arrival
+O1006-05,Knox Kettle,4514 Travis St,6:30,peach kolache,18,2.75,2026-10-05 19:47,call on arrival
+O1006-06,Victory Desk Cowork,2500 Victory Ave,8:15,ham-cheese klobasnek,12,2.60,2026-10-05 14:27,extra napkins
+O1006-01,Ellum Grind,2715 Elm St,6:30,apricot kolache,18,2.75,2026-10-05 14:50,leave with barista
+O1006-07,Cedar Springs Cafe,3902 Cedar Springs Rd,6:30,peach kolache,30 pcs,2.70,2026-10-05 14:48,gate code 4411
+O1006-03,Lakewood Perk,6334 La Vista Dr,6:00,cream cheese kolache,36,2.90,2026-10-05 16:39,leave with barista
+O1006-08,Cedars Roastery,1110 S Lamar St,7:00,cream cheese kolache,12,2.65,2026-10-05 18:39,gate code 4411
+O1006-04,Main Street Law Breakfast,1601 Main St,8:00,cream cheese kolache,18,3.00,2026-10-05 20:54,
+O1006-09,Main Street Law Breakfast,1601 Main St,8:00,ham-cheese klobasnek,12,3.00,2026-10-05 21:07,leave with barista

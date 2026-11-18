@@ -1,0 +1,18 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O1007-02,Uptown Commons Cowork,2401 McKinney Ave,7:45,cream cheese kolache,24,2.60,2026-10-06 18:04,
+O1007-03,Greenville Grounds,1920 Greenville Ave,7:00,cream cheese kolache,18,2.75,2026-10-06 14:15,
+O1007-10,Ellum Grind,2715 Elm St,7:00,sausage-jalapeno klobasnek,36,2.75,2026-10-06 20:10,updated qty
+O1007-09,White Rock Brew,7324 Gaston Ave,7:30,apricot kolache,18,2.75,2026-10-06 17:06,leave with barista
+O1007-04,Lakewood Perk,6334 La Vista Dr,6:00,apricot kolache,12,2.90,2026-10-06 19:22,extra napkins
+O1007-09,White Rock Brew,7324 Gaston Ave,7:30,sausage-jalapeno klobasnek,12,2.75,2026-10-06 17:06,leave with barista
+O1007-05,Knox Kettle,4514 Travis St,6:30,apricot kolache,12,2.75,2026-10-06 18:30,no peach this week
+O1007-06,Cedar Springs Cafe,3902 Cedar Springs Rd,6:00,peach kolache,12,2.70,2026-10-06 18:23,call on arrival
+O1007-04,Lakewood Perk,6334 La Vista Dr,6:00,cream cheese kolache,18,2.90,2026-10-06 19:22,extra napkins
+O1007-11,Legacy Plano Coffee,"5800 Legacy Dr, Plano",7:00,peach kolache,12,2.75,2026-10-06 14:11,
+O1007-07,Cedars Roastery,1110 S Lamar St,6:30,apricot kolache,36,2.65,2026-10-06 17:45,call on arrival
+O1007-08,Harwood Clinic Staff Room,5323 Harry Hines Blvd,8:00,apricot kolache,36,3.10,2026-10-06 17:51,call on arrival
+O1007-01,Ellum Grind,2715 Elm St,,sausage-jalapeno klobasnek,30,2.75,2026-10-06 14:03,extra napkins
+O1007-03,Greenville Grounds,1920 Greenville Ave,7:00,sausage-jalapeno klobasnek,18,2.75,2026-10-06 14:15,
+O1007-11,Legacy Plano Coffee,"5800 Legacy Dr, Plano",7:00,apricot kolache,12,2.75,2026-10-06 14:11,
+O1007-06,Cedar Springs Cafe,3902 Cedar Springs Rd,6:00,cream cheese kolache,12,2.70,2026-10-06 18:23,call on arrival
+O1007-05,Knox Kettle,4514 Travis St,6:30,sausage-jalapeno klobasnek,12,2.75,2026-10-06 18:30,no peach this week

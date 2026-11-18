@@ -1,0 +1,19 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O0821-09,Harwood Clinic Staff Room,5323 Harry Hines Blvd,7:30,apricot kolache,30,3.10,2026-08-20 16:17,
+O0821-05,Main Street Law Breakfast,1601 Main St,8:30,apricot kolache,24,3.00,2026-08-20 19:30,gate code 4411
+O0821-03,Uptown Commons Cowork,2401 McKinney Ave,7:30,ham-cheese klobasnek,12,2.60,2026-08-20 17:43,no peach this week
+O0821-07,Cedar Springs Cafe,3902 Cedar Springs Rd,6:30,apricot kolache,18 pcs,2.70,2026-08-20 20:44,back door please
+O0821-03,Uptown Commons Cowork,2401 McKinney Ave,7:30,cream cheese kolache,12,2.60,2026-08-20 17:43,no peach this week
+O0821-01,Ellum Grind,2715 Elm St,6:30,peach kolache,24,2.75,2026-08-20 18:12,leave with barista
+O0821-09,Harwood Clinic Staff Room,5323 Harry Hines Blvd,7:30,cream cheese kolache,30,3.10,2026-08-20 16:17,
+O0821-07,Cedar Springs Cafe,3902 Cedar Springs Rd,,peach kolache,18 pcs,2.70,2026-08-20 20:44,back door please
+O0821-10,White Rock Brew,7324 Gaston Ave,7:30,cream cheese kolache,12,2.75,2026-08-20 20:54,
+O0821-04,Greenville Grounds,1920 Greenville Ave,7:00,sausage-jalapeno klobasnek,36,2.75,2026-08-20 20:51,gate code 4411
+O0821-08,Groves Coffee,3011 Gulden Ln,7:15,cream cheese kolache,18,2.75,2026-08-20 16:32,gate code 4411
+O0821-10,White Rock Brew,7324 Gaston Ave,7:30,apricot kolache,18,2.75,2026-08-20 20:54,
+O0821-05,Main Street Law Breakfast,1601 Main St,8:30,cream cheese kolache,24,3.00,2026-08-20 19:30,gate code 4411
+O0821-11,Harwood Clinic Staff Room,5323 Harry Hines Blvd,7:30,ham-cheese klobasnek,60,3.10,2026-08-20 17:16,leave with barista
+O0821-06,Victory Desk Cowork,2500 Victory Ave,8:30,sausage-jalapeno klobasnek,18,2.60,2026-08-20 15:49,leave with barista
+O0821-12,Ellum Grind,2715 Elm St,6:30,peach kolache,30 pcs,2.75,2026-08-20 20:20,updated qty
+O0821-02,Bishop Bean,408 N Bishop Ave,7:00,sausage-jalapeno klobasnek,24,2.85,2026-08-20 15:39,gate code 4411
+O0821-08,Groves Coffee,3011 Gulden Ln,7:15,peach kolache,1.5 dozen,2.75,2026-08-20 16:32,gate code 4411

@@ -1,0 +1,19 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O0922-02,Bishop Bean,408 N Bishop Ave,7:30,cream cheese kolache,12,2.85,2026-09-21 18:10,extra napkins
+O0922-08,Cedars Roastery,1110 S Lamar St,6:45,peach kolache,30,2.65,2026-09-21 15:23,no peach this week
+O0922-05,Knox Kettle,4514 Travis St,6:30,cream cheese kolache,30,2.75,2026-09-21 16:57,call on arrival
+O0922-01,Ellum Grind,2715 Elm St,6:45,cream cheese kolache,12,2.75,2026-09-21 17:43,extra napkins
+O0922-06,Victory Desk Cowork,2500 Victory Ave,8:15,ham-cheese klobasnek,12,2.60,2026-09-21 15:15,no peach this week
+O0922-07,Cedar Springs Cafe,3902 Cedar Springs Rd,,peach kolache,30,2.70,2026-09-21 17:01,
+O0922-10,White Rock Brew,7324 Gaston Ave,7:30,apricot kolache,12,2.75,2026-09-21 15:45,leave with barista
+O0922-04,Main Street Law Breakfast,1601 Main St,8:00,ham-cheese klobasnek,18,3.00,2026-09-21 17:41,leave with barista
+O0922-10,White Rock Brew,7324 Gaston Ave,7:30,peach kolache,18,2.75,2026-09-21 15:45,leave with barista
+O0922-09,M Street Morning,5610 Lewis St,6:00,apricot kolache,18,2.80,2026-09-21 19:04,call on arrival
+O0922-03,Lakewood Perk,6334 La Vista Dr,6:15,apricot kolache,24,2.90,2026-09-21 20:50,no peach this week
+O0922-11,Bishop Bean,408 N Bishop Ave,7:15,apricot kolache,12,2.85,2026-09-21 21:07,extra napkins
+O0922-11,Bishop Bean,408 N Bishop Ave,7:15,peach kolache,18,2.85,2026-09-21 21:40,extra napkins
+O0922-09,M Street Morning,5610 Lewis St,6:00,sausage-jalapeno klobasnek,18,2.80,2026-09-21 19:04,call on arrival
+O0922-02,Bishop Bean,408 N Bishop Ave,7:30,peach kolache,18,2.85,2026-09-21 18:10,extra napkins
+O0922-01,Ellum Grind,2715 Elm St,6:45,sausage-jalapeno klobasnek,18 pcs,2.75,2026-09-21 17:43,extra napkins
+O0922-04,Main Street Law Breakfast,1601 Main St,8:00,sausage-jalapeno klobasnek,24,3.00,2026-09-21 17:41,leave with barista
+O0922-06,Victory Desk Cowork,2500 Victory Ave,8:15,cream cheese kolache,12,2.60,2026-09-21 15:15,no peach this week

@@ -1,0 +1,12 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O1106-05,Main Street Law Breakfast,1601 Main St,8:00,apricot kolache,54,3.00,2026-11-05 14:11,no peach this week
+O1106-06,Cedar Springs Cafe,3902 Cedar Springs Rd,6:15,apricot kolache,24,2.70,2026-11-05 14:23,
+O1106-01,Ellum Grind,2715 Elm St,6:30,apricot kolache,12,2.75,2026-11-05 17:05,gate code 4411
+O1106-03,Greenville Grounds,1920 Greenville Ave,7:00,cream cheese kolache,24,2.75,2026-11-05 17:05,extra napkins
+O1106-01,Ellum Grind,2715 Elm St,6:30,sausage-jalapeno klobasnek,18,2.75,2026-11-05 17:05,gate code 4411
+O1106-07,M Street Morning,5610 Lewis St,6:30,apricot kolache,18,2.80,2026-11-05 15:57,leave with barista
+O1106-08,Harwood Clinic Staff Room,5323 Harry Hines Blvd,7:30,ham-cheese klobasnek,30,3.10,2026-11-05 20:11,extra napkins
+O1106-02,Uptown Commons Cowork,2401 McKinney Ave,7:45,sausage-jalapeno klobasnek,24,2.60,2026-11-05 17:53,leave with barista
+O1106-09,Main Street Law Breakfast,1601 Main St,8:00,apricot kolache,60,3.00,2026-11-05 20:45,no peach this week
+O1106-04,Lakewood Perk,6334 La Vista Dr,6:00,apricot kolache,18,2.90,2026-11-05 15:52,call on arrival
+O1106-08,Harwood Clinic Staff Room,5323 Harry Hines Blvd,7:30,cream cheese kolache,30,3.10,2026-11-05 20:11,extra napkins

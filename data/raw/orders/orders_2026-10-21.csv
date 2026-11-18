@@ -1,0 +1,17 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O1021-02,Uptown Commons Cowork,2401 McKinney Ave,8:00,ham-cheese klobasnek,30 pcs,2.60,2026-10-20 19:50,
+O1021-09,Ellum Grind,2715 Elm St,7:00,peach kolache,24,2.75,2026-10-20 20:27,updated qty
+O1021-07,Harwood Clinic Staff Room,5323 Harry Hines Blvd,8:00,cream cheese kolache,18,3.10,2026-10-20 16:56,gate code 4411
+O1021-07,Harwood Clinic Staff Room,5323 Harry Hines Blvd,8:00,sausage-jalapeno klobasnek,18,3.10,2026-10-20 16:56,gate code 4411
+O1021-05,Cedar Springs Cafe,3902 Cedar Springs Rd,6:30,peach kolache,12,2.70,2026-10-20 19:52,back door please
+O1021-06,Cedars Roastery,1110 S Lamar St,7:00,cream cheese kolache,24,2.65,2026-10-20 15:40,no peach this week
+O1021-10,Sunrise Yoga Studio,900 Unknown Rd,7:00,apricot kolache,24,2.75,2026-10-20 19:30,first order!
+O1021-08,White Rock Brew,7324 Gaston Ave,7:00,apricot kolache,30,2.75,2026-10-20 14:23,
+O1021-01,Ellum Grind,2715 Elm St,7:00,peach kolache,18,2.75,2026-10-20 15:35,
+O1021-01,Ellum Grind,2715 Elm St,7:00,cream cheese kolache,18 pcs,2.75,2026-10-20 15:35,
+O1021-04,Lakewood Perk,6334 La Vista Dr,,peach kolache,18,2.90,2026-10-20 18:51,back door please
+O1021-05,Cedar Springs Cafe,3902 Cedar Springs Rd,6:30,cream cheese kolache,18 pcs,2.70,2026-10-20 19:52,back door please
+O1021-04,Lakewood Perk,6334 La Vista Dr,6:30,apricot kolache,18,2.90,2026-10-20 18:51,back door please
+O1021-09,Ellum Grind,2715 Elm St,7:00,cream cheese kolache,24,2.75,2026-10-20 20:23,updated qty
+O1021-03,Greenville Grounds,1920 Greenville Ave,6:30,sausage-jalapeno klobasnek,12,2.75,2026-10-20 18:31,gate code 4411
+O1021-03,Greenville Grounds,1920 Greenville Ave,6:30,peach kolache,18,2.75,2026-10-20 18:31,gate code 4411

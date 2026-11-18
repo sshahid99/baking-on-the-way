@@ -1,0 +1,12 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O1001-05,Groves Coffee,3011 Gulden Ln,7:15,peach kolache,30,2.75,2026-09-30 16:59,call on arrival
+O1001-03,Knox Kettle,4514 Travis St,7:00,apricot kolache,18,2.75,2026-09-30 16:04,
+O1001-04,Victory Desk Cowork,2500 Victory Ave,8:15,cream cheese kolache,12,0.00,2026-09-30 15:39,extra napkins
+O1001-03,Knox Kettle,4514 Travis St,7:00,cream cheese kolache,18,2.75,2026-09-30 16:04,
+O1001-06,M Street Morning,5610 Lewis St,6:00,apricot kolache,36,2.80,2026-09-30 18:06,no peach this week
+O1001-01,Ellum Grind,2715 Elm St,7:00,sausage-jalapeno klobasnek,18,2.75,2026-09-30 19:19,gate code 4411
+O1001-02,Main Street Law Breakfast,1601 Main St,8:00,apricot kolache,24,3.00,2026-09-30 15:41,call on arrival
+O1001-04,Victory Desk Cowork,2500 Victory Ave,,sausage-jalapeno klobasnek,12,2.60,2026-09-30 15:39,extra napkins
+O1001-02,Main Street Law Breakfast,1601 Main St,8:00,sausage-jalapeno klobasnek,18,3.00,2026-09-30 15:41,call on arrival
+O1001-01,Ellum Grind,2715 Elm St,7:00,peach kolache,12,2.75,2026-09-30 19:19,gate code 4411
+O1001-07,White Rock Brew,7324 Gaston Ave,7:30,apricot kolache,24,2.75,2026-09-30 15:55,

@@ -1,0 +1,17 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O0902-07,Cedars Roastery,1110 S Lamar St,7:00,peach kolache,30,2.65,2026-09-01 18:20,
+O0902-02,Uptown Commons Cowork,2401 McKinney Ave,8:00,cream cheese kolache,12,2.60,2026-09-01 15:22,
+O0902-02,Uptown Commons Cowork,2401 McKinney Ave,8:00,sausage-jalapeno klobasnek,12,2.60,2026-09-01 15:22,
+O0902-05,Knox Kettle,4514 Travis St,6:30,peach kolache,18,2.75,2026-09-01 16:35,leave with barista
+O0902-08,Harwood Clinic Staff Room,5323 Harry Hines Blvd,8:00,ham-cheese klobasnek,18,3.10,2026-09-01 14:03,
+O0902-01,Ellum Grind,2715 Elm St,6:30,cream cheese kolache,36,2.75,2026-09-01 15:02,gate code 4411
+O0902-06,Cedar Springs Cafe,3902 Cedar Springs Rd,6:30,peach kolache,12,2.70,2026-09-01 17:57,no peach this week
+O0902-04,Lakewood Perk,6334 La Vista Dr,6:30,apricot kolache,18,2.90,2026-09-01 15:10,call on arrival
+O0902-08,Harwood Clinic Staff Room,5323 Harry Hines Blvd,8:00,cream cheese kolache,18,3.10,2026-09-01 14:03,
+O0902-04,Lakewood Perk,6334 La Vista Dr,6:30,peach kolache,12,2.90,2026-09-01 15:10,call on arrival
+O0902-06,Cedar Springs Cafe,3902 Cedar Springs Rd,6:30,cream cheese kolache,18,2.70,2026-09-01 17:57,no peach this week
+O0902-03,Greenville Grounds,1920 Greenville Ave,6:30,sausage-jalapeno klobasnek,12,2.75,2026-09-01 16:53,
+O0902-03,Greenville Grounds,1920 Greenville Ave,6:30,cream cheese kolache,12,2.75,2026-09-01 16:53,
+O0902-05,Knox Kettle,4514 Travis St,6:30,cream cheese kolache,12,2.75,2026-09-01 16:35,leave with barista
+O0902-09,White Rock Brew,7324 Gaston Ave,7:30,apricot kolache,12,2.75,2026-09-01 14:09,
+O0902-09,White Rock Brew,7324 Gaston Ave,7:30,sausage-jalapeno klobasnek,12,2.75,2026-09-01 14:09,

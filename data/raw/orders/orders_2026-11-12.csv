@@ -1,0 +1,15 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O1112-04,Victory Desk Cowork,2500 Victory Ave,8:00,ham-cheese klobasnek,12,2.60,2026-11-11 15:56,gate code 4411
+O1112-06,Cedars Roastery,1110 S Lamar St,7:00,sausage-jalapeno klobasnek,12,2.65,2026-11-11 15:57,
+O1112-01,Ellum Grind,2715 Elm St,6:45,cream cheese kolache,18,2.75,2026-11-11 15:10,no peach this week
+O1112-02,Lakewood Perk,6334 La Vista Dr,6:15,apricot kolache,12,2.90,2026-11-11 18:16,no peach this week
+O1112-03,Main Street Law Breakfast,1601 Main St,8:30,apricot kolache,18,3.00,2026-11-11 18:24,extra napkins
+O1112-05,Groves Coffee,3011 Gulden Ln,,apricot kolache,18,2.75,2026-11-11 17:59,
+O1112-06,Cedars Roastery,1110 S Lamar St,7:00,peach kolache,12,2.65,2026-11-11 15:57,
+O1112-08,White Rock Brew,7324 Gaston Ave,7:00,cream cheese kolache,12,2.75,2026-11-11 18:56,
+O1112-07,M Street Morning,5610 Lewis St,6:30,apricot kolache,18,2.80,2026-11-11 14:08,gate code 4411
+O1112-08,White Rock Brew,7324 Gaston Ave,7:00,apricot kolache,12,2.75,2026-11-11 18:56,
+O1112-03,Main Street Law Breakfast,1601 Main St,8:30,cream cheese kolache,24,3.00,2026-11-11 18:24,extra napkins
+O1112-05,Groves Coffee,3011 Gulden Ln,7:00,peach kolache,12,2.75,2026-11-11 17:59,
+O1112-02,Lakewood Perk,6334 La Vista Dr,6:15,cream cheese kolache,12,2.90,2026-11-11 18:16,no peach this week
+O1112-04,Victory Desk Cowork,2500 Victory Ave,8:00,sausage-jalapeno klobasnek,18,2.60,2026-11-11 15:56,gate code 4411

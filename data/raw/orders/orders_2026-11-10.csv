@@ -1,0 +1,17 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O1110-02,Bishop Bean,408 N Bishop Ave,7:00,sausage-jalapeno klobasnek,18,2.85,2026-11-09 17:00,extra napkins
+O1110-03,Lakewood Perk,6334 La Vista Dr,6:15,cream cheese kolache,12,2.90,2026-11-09 16:11,back door please
+O1110-09,Legacy Plano Coffee,"5800 Legacy Dr, Plano",6:30,sausage-jalapeno klobasnek,18,2.75,2026-11-09 15:56,
+O1110-02,Bishop Bean,408 N Bishop Ave,,cream cheese kolache,18,2.85,2026-11-09 17:00,extra napkins
+O1110-06,Victory Desk Cowork,2500 Victory Ave,8:15,ham-cheese klobasnek,18,2.60,2026-11-09 19:59,extra napkins
+O1110-05,Knox Kettle,4514 Travis St,7:00,sausage-jalapeno klobasnek,18,2.75,2026-11-09 16:36,
+O1110-05,Knox Kettle,4514 Travis St,7:00,apricot kolache,12,0.00,2026-11-09 16:36,
+O1110-07,Cedars Roastery,1110 S Lamar St,6:45,sausage-jalapeno klobasnek,30,2.65,2026-11-09 19:30,back door please
+O1110-04,Main Street Law Breakfast,1601 Main St,8:30,apricot kolache,2 dozen,3.00,2026-11-09 20:07,gate code 4411
+O1110-01,Ellum Grind,2715 Elm St,7:00,apricot kolache,1.5 dozen,2.75,2026-11-09 15:21,
+O1110-03,Lakewood Perk,6334 La Vista Dr,6:15,apricot kolache,18,2.90,2026-11-09 16:11,back door please
+O1110-01,Ellum Grind,2715 Elm St,7:00,sausage-jalapeno klobasnek,12,2.75,2026-11-09 15:21,
+O1110-08,M Street Morning,5610 Lewis St,6:15,peach kolache,18,2.80,2026-11-09 16:39,gate code 4411
+O1110-08,M Street Morning,5610 Lewis St,6:15,sausage-jalapeno klobasnek,12,2.80,2026-11-09 16:39,gate code 4411
+O1110-09,Legacy Plano Coffee,"5800 Legacy Dr, Plano",6:30,peach kolache,12,2.75,2026-11-09 15:56,
+O1110-04,Main Street Law Breakfast,1601 Main St,8:30,ham-cheese klobasnek,18,3.00,2026-11-09 20:07,gate code 4411

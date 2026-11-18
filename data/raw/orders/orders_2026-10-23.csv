@@ -1,0 +1,17 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O1023-04,Lakewood Perk,6334 La Vista Dr,6:15,peach kolache,18,2.90,2026-10-22 20:28,back door please
+O1023-08,White Rock Brew,7324 Gaston Ave,7:30,cream cheese kolache,18,2.75,2026-10-22 15:20,call on arrival
+O1023-01,Ellum Grind,2715 Elm St,7:00,peach kolache,18,2.75,2026-10-22 18:57,
+O1023-01,Ellum Grind,2715 Elm St,7:00,cream cheese kolache,18,2.75,2026-10-22 18:57,
+O1023-07,Harwood Clinic Staff Room,5323 Harry Hines Blvd,8:00,cream cheese kolache,30,3.10,2026-10-22 16:11,call on arrival
+O1023-03,Greenville Grounds,1920 Greenville Ave,6:45,sausage-jalapeno klobasnek,24,2.75,2026-10-22 20:06,
+O1023-10,Harwood Clinic Staff Room,5323 Harry Hines Blvd,8:00,apricot kolache,60,3.10,2026-10-22 22:15,leave with barista
+O1023-09,Main Street Law Breakfast,1601 Main St,8:30,cream cheese kolache,30,3.00,2026-10-22 17:23,
+O1023-06,Cedar Springs Cafe,3902 Cedar Springs Rd,6:15,cream cheese kolache,18,2.70,2026-10-22 18:05,
+O1023-06,Cedar Springs Cafe,3902 Cedar Springs Rd,6:15,peach kolache,12,2.70,2026-10-22 18:05,
+O1023-05,Main Street Law Breakfast,1601 Main St,8:30,ham-cheese klobasnek,60,3.00,2026-10-22 20:09,leave with barista
+O1023-02,Uptown Commons Cowork,2401 McKinney Ave,7:30,ham-cheese klobasnek,18,2.60,2026-10-22 14:41,extra napkins
+O1023-09,Main Street Law Breakfast,1601 Main St,8:30,ham-cheese klobasnek,30,3.00,2026-10-22 17:23,
+O1023-04,Lakewood Perk,6334 La Vista Dr,6:15,sausage-jalapeno klobasnek,12,2.90,2026-10-22 20:28,back door please
+O1023-07,Harwood Clinic Staff Room,5323 Harry Hines Blvd,8:00,apricot kolache,30,3.10,2026-10-22 16:11,call on arrival
+O1023-08,White Rock Brew,7324 Gaston Ave,7:30,peach kolache,12,2.75,2026-10-22 15:20,call on arrival

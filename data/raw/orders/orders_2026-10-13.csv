@@ -1,0 +1,12 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O1013-02,Main Street Law Breakfast,1601 Main St,8:30,cream cheese kolache,18,3.00,2026-10-12 19:10,
+O1013-04,Victory Desk Cowork,2500 Victory Ave,8:30,cream cheese kolache,18,2.60,2026-10-12 18:52,
+O1013-05,Cedars Roastery,1110 S Lamar St,6:45,peach kolache,18,2.65,2026-10-12 19:01,
+O1013-03,Knox Kettle,4514 Travis St,6:30,apricot kolache,12,2.75,2026-10-12 19:02,leave with barista
+O1013-06,M Street Morning,5610 Lewis St,6:00,cream cheese kolache,18,2.80,2026-10-12 15:59,
+O1013-01,Ellum Grind,2715 Elm St,6:45,sausage-jalapeno klobasnek,12,2.75,2026-10-12 18:11,call on arrival
+O1013-01,Ellum Grind,2715 Elm St,6:45,apricot kolache,12,2.75,2026-10-12 18:11,call on arrival
+O1013-02,Main Street Law Breakfast,1601 Main St,,apricot kolache,18,3.00,2026-10-12 19:10,
+O1013-05,Cedars Roastery,1110 S Lamar St,6:45,cream cheese kolache,12,2.65,2026-10-12 19:01,
+O1013-06,M Street Morning,5610 Lewis St,6:00,peach kolache,18,2.80,2026-10-12 15:59,
+O1013-03,Knox Kettle,4514 Travis St,6:30,peach kolache,12,2.75,2026-10-12 19:02,leave with barista

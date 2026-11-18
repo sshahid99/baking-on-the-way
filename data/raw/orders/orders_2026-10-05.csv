@@ -1,0 +1,8 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O1005-02,Greenville Grounds,1920 Greenville Ave,7:00,sausage-jalapeno klobasnek,18,2.75,2026-10-04 19:09,
+O1005-03,Lakewood Perk,6334 La Vista Dr,6:30,cream cheese kolache,12,2.90,2026-10-04 17:33,gate code 4411
+O1005-01,Uptown Commons Cowork,2401 McKinney Ave,8:00,cream cheese kolache,18,2.60,2026-10-04 17:20,
+O1005-03,Lakewood Perk,6334 La Vista Dr,6:30,apricot kolache,12,2.90,2026-10-04 17:33,gate code 4411
+O1005-06,Arlington Daily Grind,"301 E Abram St, Arlington",7:00,peach kolache,18,2.75,2026-10-04 20:09,
+O1005-05,White Rock Brew,7324 Gaston Ave,7:15,sausage-jalapeno klobasnek,18,2.75,2026-10-04 15:36,
+O1005-04,Cedar Springs Cafe,3902 Cedar Springs Rd,6:00,apricot kolache,18,2.70,2026-10-04 17:40,extra napkins

@@ -1,0 +1,12 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O0908-01,Ellum Grind,2715 Elm St,,cream cheese kolache,30,2.75,2026-09-07 15:42,extra napkins
+O0908-05,Victory Desk Cowork,2500 Victory Ave,8:00,ham-cheese klobasnek,12,2.60,2026-09-07 15:08,no peach this week
+O0908-07,Ellum Grind,2715 Elm St,6:45,cream cheese kolache,36,2.75,2026-09-07 20:30,updated qty
+O0908-06,M Street Morning,5610 Lewis St,,sausage-jalapeno klobasnek,18,2.80,2026-09-07 20:40,
+O0908-04,Knox Kettle,4514 Travis St,6:45,peach kolache,18,2.75,2026-09-07 16:33,
+O0908-03,Main Street Law Breakfast,1601 Main St,8:30,ham-cheese klobasnek,18 pcs,3.00,2026-09-07 18:19,extra napkins
+O0908-03,Main Street Law Breakfast,1601 Main St,8:30,sausage-jalapeno klobasnek,1.5 dozen,3.00,2026-09-07 18:19,extra napkins
+O0908-02,Lakewood Perk,6334 La Vista Dr,6:15,cream cheese kolache,30,2.90,2026-09-07 17:38,
+O0908-04,Knox Kettle,4514 Travis St,6:45,apricot kolache,12,2.75,2026-09-07 16:33,
+O0908-06,M Street Morning,5610 Lewis St,6:30,apricot kolache,18,2.80,2026-09-07 20:40,
+O0908-05,Victory Desk Cowork,2500 Victory Ave,8:00,cream cheese kolache,12,2.60,2026-09-07 15:08,no peach this week

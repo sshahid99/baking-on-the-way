@@ -1,0 +1,16 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O1104-09,Legacy Plano Coffee,"5800 Legacy Dr, Plano",6:45,cream cheese kolache,18,2.75,2026-11-03 20:03,extra napkins
+O1104-04,Knox Kettle,4514 Travis St,7:00,peach kolache,12,2.75,2026-11-03 18:24,call on arrival
+O1104-01,Ellum Grind,2715 Elm St,6:30,sausage-jalapeno klobasnek,18,2.75,2026-11-03 18:10,extra napkins
+O1104-06,Cedars Roastery,1110 S Lamar St,7:00,sausage-jalapeno klobasnek,18,2.65,2026-11-03 15:04,no peach this week
+O1104-04,Knox Kettle,4514 Travis St,7:00,sausage-jalapeno klobasnek,18,2.75,2026-11-03 18:24,call on arrival
+O1104-03,Lakewood Perk,6334 La Vista Dr,6:15,sausage-jalapeno klobasnek,30,2.90,2026-11-03 15:09,
+O1104-07,Harwood Clinic Staff Room,5323 Harry Hines Blvd,7:30,sausage-jalapeno klobasnek,36,3.10,2026-11-03 18:56,call on arrival
+O1104-02,Uptown Commons Cowork,2401 McKinney Ave,8:00,ham-cheese klobasnek,18 pcs,2.60,2026-11-03 17:15,
+O1104-05,Cedar Springs Cafe,3902 Cedar Springs Rd,6:30,cream cheese kolache,12,2.70,2026-11-03 20:43,
+O1104-05,Cedar Springs Cafe,3902 Cedar Springs Rd,6:30,sausage-jalapeno klobasnek,18 pcs,2.70,2026-11-03 20:43,
+O1104-06,Cedars Roastery,1110 S Lamar St,7:00,cream cheese kolache,12,2.65,2026-11-03 15:04,no peach this week
+O1104-01,Ellum Grind,2715 Elm St,6:30,peach kolache,12,2.75,2026-11-03 18:10,extra napkins
+O1104-08,White Rock Brew,7324 Gaston Ave,7:00,cream cheese kolache,18,2.75,2026-11-03 14:26,
+O1104-09,Legacy Plano Coffee,"5800 Legacy Dr, Plano",6:45,peach kolache,12,2.75,2026-11-03 20:03,extra napkins
+O1104-08,White Rock Brew,7324 Gaston Ave,7:00,apricot kolache,12,2.75,2026-11-03 14:26,

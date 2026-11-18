@@ -1,0 +1,23 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O1113-12,Ellum Grind,2715 Elm St,6:45,cream cheese kolache,18,2.75,2026-11-12 20:28,updated qty
+O1113-11,Harwood Clinic Staff Room,5323 Harry Hines Blvd,7:30,cream cheese kolache,30,3.10,2026-11-12 20:05,gate code 4411
+O1113-03,Uptown Commons Cowork,2401 McKinney Ave,8:00,ham-cheese klobasnek,12,2.60,2026-11-12 17:41,gate code 4411
+O1113-12,Ellum Grind,2715 Elm St,6:45,peach kolache,18,2.75,2026-11-12 20:36,updated qty
+O1113-06,Cedar Springs Cafe,3902 Cedar Springs Rd,,apricot kolache,12,2.70,2026-11-12 20:31,
+O1113-09,Harwood Clinic Staff Room,5323 Harry Hines Blvd,7:30,sausage-jalapeno klobasnek,60,3.10,2026-11-12 20:22,
+O1113-10,White Rock Brew,7324 Gaston Ave,7:00,sausage-jalapeno klobasnek,12,2.75,2026-11-12 14:54,extra napkins
+O1113-04,Greenville Grounds,1920 Greenville Ave,7:00,peach kolache,30,2.75,2026-11-12 15:51,
+O1113-11,Harwood Clinic Staff Room,5323 Harry Hines Blvd,7:30,sausage-jalapeno klobasnek,30,3.10,2026-11-12 20:05,gate code 4411
+O1113-05,Lakewood Perk,6334 La Vista Dr,6:15,cream cheese kolache,24,2.90,2026-11-12 17:10,no peach this week
+O1113-03,Uptown Commons Cowork,2401 McKinney Ave,8:00,cream cheese kolache,12,2.60,2026-11-12 17:41,gate code 4411
+O1113-01,Ellum Grind,2715 Elm St,6:45,peach kolache,12,2.75,2026-11-12 16:37,back door please
+O1113-13,Arlington Daily Grind,"301 E Abram St, Arlington",7:00,apricot kolache,12,2.75,2026-11-12 14:54,
+O1113-01,Ellum Grind,2715 Elm St,6:45,cream cheese kolache,12,2.75,2026-11-12 16:37,back door please
+O1113-13,Arlington Daily Grind,"301 E Abram St, Arlington",7:00,cream cheese kolache,12,2.75,2026-11-12 14:54,
+O1113-07,Groves Coffee,3011 Gulden Ln,7:00,apricot kolache,18,2.75,2026-11-12 17:24,
+O1113-08,M Street Morning,5610 Lewis St,6:30,cream cheese kolache,24 pieces,2.80,2026-11-12 19:46,call on arrival
+O1113-02,Bishop Bean,408 N Bishop Ave,7:15,sausage-jalapeno klobasnek,18,2.85,2026-11-12 18:39,leave with barista
+O1113-10,White Rock Brew,7324 Gaston Ave,7:00,apricot kolache,12,2.75,2026-11-12 14:54,extra napkins
+O1113-07,Groves Coffee,3011 Gulden Ln,7:00,peach kolache,18,2.75,2026-11-12 17:24,
+O1113-02,Bishop Bean,408 N Bishop Ave,7:15,cream cheese kolache,18,2.85,2026-11-12 18:39,leave with barista
+O1113-06,Cedar Springs Cafe,3902 Cedar Springs Rd,6:30,sausage-jalapeno klobasnek,18,2.70,2026-11-12 20:31,

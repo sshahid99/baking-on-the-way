@@ -1,0 +1,8 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O1102-05,White Rock Brew,7324 Gaston Ave,7:00,peach kolache,18,2.75,2026-11-01 20:21,
+O1102-01,Ellum Grind,2715 Elm St,7:00,peach kolache,12,2.75,2026-11-01 19:21,extra napkins
+O1102-06,Ellum Grind,2715 Elm St,6:45,sausage-jalapeno klobasnek,18,2.75,2026-11-01 21:07,
+O1102-03,Lakewood Perk,6334 La Vista Dr,6:00,apricot kolache,18,2.90,2026-11-01 15:34,
+O1102-02,Greenville Grounds,1920 Greenville Ave,6:45,apricot kolache,18,2.75,2026-11-01 20:36,extra napkins
+O1102-01,Ellum Grind,2715 Elm St,7:00,cream cheese kolache,12,2.75,2026-11-01 19:21,extra napkins
+O1102-04,Cedar Springs Cafe,3902 Cedar Springs Rd,6:30,sausage-jalapeno klobasnek,18,2.70,2026-11-01 16:05,

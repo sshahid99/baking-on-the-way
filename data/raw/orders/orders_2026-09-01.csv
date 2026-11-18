@@ -1,0 +1,12 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O0901-06,Victory Desk Cowork,2500 Victory Ave,8:30,ham-cheese klobasnek,30,2.60,2026-08-31 17:17,gate code 4411
+O0901-04,Main Street Law Breakfast,1601 Main St,8:30,sausage-jalapeno klobasnek,12,3.00,2026-08-31 14:44,no peach this week
+O0901-05,Knox Kettle,4514 Travis St,7:00,apricot kolache,18,2.75,2026-08-31 14:24,
+O0901-03,Greenville Grounds,1920 Greenville Ave,6:30,cream cheese kolache,24,2.75,2026-08-31 19:34,gate code 4411
+O0901-01,Ellum Grind,2715 Elm St,6:45,cream cheese kolache,30,2.75,2026-08-31 15:05,
+O0901-07,Cedars Roastery,1110 S Lamar St,,peach kolache,24,2.65,2026-08-31 17:17,no peach this week
+O0901-04,Main Street Law Breakfast,1601 Main St,8:30,ham-cheese klobasnek,18,3.00,2026-08-31 14:44,no peach this week
+O0901-08,M Street Morning,5610 Lewis St,6:00,sausage-jalapeno klobasnek,12,2.80,2026-08-31 15:43,extra napkins
+O0901-05,Knox Kettle,4514 Travis St,7:00,sausage-jalapeno klobasnek,18,2.75,2026-08-31 14:24,
+O0901-02,Bishop Bean,408 N Bishop Ave,7:30,peach kolache,36,2.85,2026-08-31 20:06,
+O0901-08,M Street Morning,5610 Lewis St,6:00,apricot kolache,12,2.80,2026-08-31 15:43,extra napkins

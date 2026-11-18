@@ -1,0 +1,15 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O0923-05,Knox Kettle,4514 Travis St,7:00,peach kolache,18,2.75,2026-09-22 17:06,back door please
+O0923-03,Greenville Grounds,1920 Greenville Ave,6:30,peach kolache,12,2.75,2026-09-22 20:00,call on arrival
+O0923-03,Greenville Grounds,1920 Greenville Ave,6:30,apricot kolache,12,2.75,2026-09-22 20:00,call on arrival
+O0923-07,Cedars Roastery,1110 S Lamar St,6:45,peach kolache,18,2.65,2026-09-22 20:48,extra napkins
+O0923-08,Harwood Clinic Staff Room,5323 Harry Hines Blvd,7:30,ham-cheese klobasnek,18,3.10,2026-09-22 19:15,call on arrival
+O0923-10,Arlington Daily Grind,"301 E Abram St, Arlington",6:45,apricot kolache,36,2.75,2026-09-22 14:53,extra napkins
+O0923-07,Cedars Roastery,1110 S Lamar St,,cream cheese kolache,12,2.65,2026-09-22 20:48,extra napkins
+O0923-01,Ellum Grind,2715 Elm St,6:45,peach kolache,30,2.75,2026-09-22 18:53,
+O0923-05,Knox Kettle,4514 Travis St,7:00,apricot kolache,12,2.75,2026-09-22 17:06,back door please
+O0923-02,Uptown Commons Cowork,2401 McKinney Ave,,ham-cheese klobasnek,18,2.60,2026-09-22 14:34,back door please
+O0923-04,Lakewood Perk,6334 La Vista Dr,6:15,apricot kolache,36,2.90,2026-09-22 19:51,back door please
+O0923-08,Harwood Clinic Staff Room,5323 Harry Hines Blvd,7:30,sausage-jalapeno klobasnek,18,3.10,2026-09-22 19:15,call on arrival
+O0923-09,White Rock Brew,7324 Gaston Ave,7:00,sausage-jalapeno klobasnek,24,2.75,2026-09-22 19:50,
+O0923-06,Cedar Springs Cafe,3902 Cedar Springs Rd,6:30,apricot kolache,36,2.70,2026-09-22 15:10,call on arrival

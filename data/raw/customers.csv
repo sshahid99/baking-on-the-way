@@ -1,0 +1,17 @@
+customer_id,name,address,lat,lon,opens_at,contract_price,type
+C01,Ellum Grind,2715 Elm St,32.7841,-96.7812,6:30,2.75,cafe
+C02,Bishop Bean,408 N Bishop Ave,32.7489,-96.8285,7:00,2.85,cafe
+C03,Uptown Commons Cowork,2401 McKinney Ave,32.799,-96.801,7:30,2.6,cowork
+C04,Greenville Grounds,1920 Greenville Ave,32.816,-96.77,6:30,2.75,cafe
+C05,Lakewood Perk,6334 La Vista Dr,32.813,-96.752,6:00,2.9,cafe
+C06,Main Street Law Breakfast,1601 Main St,32.781,-96.798,8:00,3.0,office
+C07,Knox Kettle,4514 Travis St,32.8215,-96.789,6:30,2.75,cafe
+C08,Victory Desk Cowork,2500 Victory Ave,32.7875,-96.81,8:00,2.6,cowork
+C09,Cedar Springs Cafe,3902 Cedar Springs Rd,32.811,-96.811,6:00,2.7,cafe
+C10,Groves Coffee,3011 Gulden Ln,32.779,-96.838,7:00,2.75,cafe
+C11,Cedars Roastery,1110 S Lamar St,32.77,-96.795,6:30,2.65,cafe
+C12,M Street Morning,5610 Lewis St,32.831,-96.771,6:00,2.8,cafe
+C13,Harwood Clinic Staff Room,5323 Harry Hines Blvd,32.812,-96.838,7:30,3.1,office
+C14,White Rock Brew,7324 Gaston Ave,32.827,-96.729,7:00,2.75,cafe
+C15,Legacy Plano Coffee,"5800 Legacy Dr, Plano",33.0198,-96.6989,6:30,2.75,cafe
+C16,Arlington Daily Grind,"301 E Abram St, Arlington",32.7357,-97.1081,6:30,2.75,cafe

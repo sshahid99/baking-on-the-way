@@ -1,0 +1,9 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O0921-03,Greenville Grounds,1920 Greenville Ave,7:00,cream cheese kolache,24,2.75,2026-09-20 15:07,no peach this week
+O0921-08,White Rock Brew,7324 Gaston Ave,7:30,peach kolache,18,2.75,2026-09-20 15:36,
+O0921-04,Lakewood Perk,6334 La Vista Dr,,cream cheese kolache,24,2.90,2026-09-20 20:11,no peach this week
+O0921-01,Ellum Grind,2715 Elm St,7:00,apricot kolache,18,2.75,2026-09-20 15:04,no peach this week
+O0921-02,Uptown Commons Cowork,2401 McKinney Ave,7:30,sausage-jalapeno klobasnek,18,2.60,2026-09-20 16:08,back door please
+O0921-07,Cedars Roastery,1110 S Lamar St,7:00,sausage-jalapeno klobasnek,18 pcs,2.65,2026-09-20 20:01,
+O0921-05,Victory Desk Cowork,2500 Victory Ave,8:15,ham-cheese klobasnek,18,2.60,2026-09-20 20:52,
+O0921-06,Cedar Springs Cafe,3902 Cedar Springs Rd,6:00,cream cheese kolache,18,2.70,2026-09-20 15:12,

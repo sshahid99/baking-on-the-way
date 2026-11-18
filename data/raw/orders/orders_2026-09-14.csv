@@ -1,0 +1,10 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O0914-04,Lakewood Perk,6334 La Vista Dr,6:15,apricot kolache,12,2.90,2026-09-13 17:01,gate code 4411
+O0914-05,Cedar Springs Cafe,3902 Cedar Springs Rd,6:30,peach kolache,12,2.70,2026-09-13 17:54,
+O0914-05,Cedar Springs Cafe,3902 Cedar Springs Rd,6:30,apricot kolache,12,2.70,2026-09-13 17:54,
+O0914-02,Uptown Commons Cowork,2401 McKinney Ave,7:30,sausage-jalapeno klobasnek,18,0.00,2026-09-13 19:55,
+O0914-06,Cedars Roastery,1110 S Lamar St,6:45,sausage-jalapeno klobasnek,18,2.65,2026-09-13 17:27,gate code 4411
+O0914-03,Greenville Grounds,1920 Greenville Ave,,sausage-jalapeno klobasnek,18,2.75,2026-09-13 19:18,extra napkins
+O0914-07,White Rock Brew,7324 Gaston Ave,7:15,peach kolache,18,2.75,2026-09-13 19:04,gate code 4411
+O0914-01,Ellum Grind,2715 Elm St,7:00,apricot kolache,18,2.75,2026-09-13 20:14,gate code 4411
+O0914-04,Lakewood Perk,6334 La Vista Dr,6:15,peach kolache,12,2.90,2026-09-13 17:01,gate code 4411

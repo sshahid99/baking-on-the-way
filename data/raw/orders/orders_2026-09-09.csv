@@ -1,0 +1,14 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O0909-04,Cedar Springs Cafe,3902 Cedar Springs Rd,6:30,apricot kolache,12,2.70,2026-09-08 17:20,extra napkins
+O0909-07,White Rock Brew,7324 Gaston Ave,7:15,apricot kolache,12,2.75,2026-09-08 16:02,
+O0909-07,White Rock Brew,7324 Gaston Ave,7:15,sausage-jalapeno klobasnek,12,2.75,2026-09-08 16:02,
+O0909-01,Uptown Commons Cowork,2401 McKinney Ave,8:00,sausage-jalapeno klobasnek,12,2.60,2026-09-08 15:44,
+O0909-04,Cedar Springs Cafe,3902 Cedar Springs Rd,6:30,sausage-jalapeno klobasnek,12,2.70,2026-09-08 17:20,extra napkins
+O0909-03,Knox Kettle,4514 Travis St,7:00,cream cheese kolache,12,2.75,2026-09-08 14:11,gate code 4411
+O0909-02,Greenville Grounds,1920 Greenville Ave,,sausage-jalapeno klobasnek,18,2.75,2026-09-08 19:42,back door please
+O0909-03,Knox Kettle,4514 Travis St,7:00,sausage-jalapeno klobasnek,a dozen,2.75,2026-09-08 14:11,gate code 4411
+O0909-05,Cedars Roastery,1110 S Lamar St,6:30,sausage-jalapeno klobasnek,12,2.65,2026-09-08 17:51,no peach this week
+O0909-05,Cedars Roastery,1110 S Lamar St,6:30,peach kolache,12,2.65,2026-09-08 17:51,no peach this week
+O0909-06,Harwood Clinic Staff Room,5323 Harry Hines Blvd,7:30,cream cheese kolache,18,3.10,2026-09-08 16:50,back door please
+O0909-01,Uptown Commons Cowork,2401 McKinney Ave,,ham-cheese klobasnek,18,2.60,2026-09-08 15:44,
+O0909-06,Harwood Clinic Staff Room,5323 Harry Hines Blvd,7:30,apricot kolache,24,3.10,2026-09-08 16:50,back door please

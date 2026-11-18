@@ -1,0 +1,13 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O1109-04,Lakewood Perk,6334 La Vista Dr,6:30,cream cheese kolache,a dozen,2.90,2026-11-08 17:31,gate code 4411
+O1109-04,Lakewood Perk,6334 La Vista Dr,6:30,sausage-jalapeno klobasnek,12,2.90,2026-11-08 17:31,gate code 4411
+O1109-03,Greenville Grounds,1920 Greenville Ave,7:00,apricot kolache,24,2.75,2026-11-08 15:13,call on arrival
+O1109-08,White Rock Brew,7324 Gaston Ave,7:30,peach kolache,18,2.75,2026-11-08 20:38,call on arrival
+O1109-01,Ellum Grind,2715 Elm St,6:45,apricot kolache,18 pcs,2.75,2026-11-08 14:14,
+O1109-09,Uptown Commons Cowork,2401 McKinney Ave,7:45,ham-cheese klobasnek,18,2.60,2026-11-08 21:07,
+O1109-02,Uptown Commons Cowork,2401 McKinney Ave,7:45,sausage-jalapeno klobasnek,12,2.60,2026-11-08 17:46,extra napkins
+O1109-05,Main Street Law Breakfast,1601 Main St,8:30,apricot kolache,12,3.00,2026-11-08 15:34,back door please
+O1109-06,Cedar Springs Cafe,3902 Cedar Springs Rd,6:00,peach kolache,12,2.70,2026-11-08 14:51,gate code 4411
+O1109-06,Cedar Springs Cafe,3902 Cedar Springs Rd,6:00,sausage-jalapeno klobasnek,12,2.70,2026-11-08 14:51,gate code 4411
+O1109-07,Cedars Roastery,1110 S Lamar St,7:00,sausage-jalapeno klobasnek,18,2.65,2026-11-08 18:08,extra napkins
+O1109-05,Main Street Law Breakfast,1601 Main St,8:30,cream cheese kolache,12,3.00,2026-11-08 15:34,back door please

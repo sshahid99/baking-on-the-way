@@ -1,0 +1,21 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+O1002-06,Main Street Law Breakfast,1601 Main St,8:00,ham-cheese klobasnek,30,3.00,2026-10-01 15:12,
+O1002-04,Greenville Grounds,1920 Greenville Ave,6:45,cream cheese kolache,18,2.75,2026-10-01 18:15,
+O1002-02,Bishop Bean,408 N Bishop Ave,7:15,apricot kolache,30,2.85,2026-10-01 17:45,leave with barista
+O1002-11,White Rock Brew,7324 Gaston Ave,7:15,apricot kolache,18,2.75,2026-10-01 18:12,call on arrival
+O1002-04,Greenville Grounds,1920 Greenville Ave,6:45,peach kolache,18,2.75,2026-10-01 18:15,
+O1002-07,Cedar Springs Cafe,3902 Cedar Springs Rd,6:30,apricot kolache,18,2.70,2026-10-01 14:00,
+O1002-01,Ellum Grind,2715 Elm St,6:30,apricot kolache,18,2.75,2026-10-01 15:27,
+O1002-09,M Street Morning,5610 Lewis St,6:15,peach kolache,12,2.80,2026-10-01 16:51,no peach this week
+O1002-05,Lakewood Perk,6334 La Vista Dr,6:00,cream cheese kolache,36,2.90,2026-10-01 18:28,back door please
+O1002-09,M Street Morning,5610 Lewis St,6:15,cream cheese kolache,18,2.80,2026-10-01 16:51,no peach this week
+O1002-13,Harwood Clinic Staff Room,5323 Harry Hines Blvd,8:00,ham-cheese klobasnek,60,3.10,2026-10-01 22:15,leave with barista
+O1002-11,White Rock Brew,7324 Gaston Ave,7:15,cream cheese kolache,12,2.75,2026-10-01 18:12,call on arrival
+O1002-10,Harwood Clinic Staff Room,5323 Harry Hines Blvd,,apricot kolache,4 dozen,3.10,2026-10-01 14:50,
+O1002-01,Ellum Grind,2715 Elm St,6:30,sausage-jalapeno klobasnek,12,2.75,2026-10-01 15:27,
+O1002-06,Main Street Law Breakfast,1601 Main St,8:00,sausage-jalapeno klobasnek,30,3.00,2026-10-01 15:12,
+O1002-07,Cedar Springs Cafe,3902 Cedar Springs Rd,6:30,cream cheese kolache,12,2.70,2026-10-01 14:00,
+O1002-12,Harwood Clinic Staff Room,5323 Harry Hines Blvd,8:00,cream cheese kolache,60,3.10,2026-10-01 17:26,extra napkins
+O1002-08,Cedars Roastery,1110 S Lamar St,7:00,cream cheese kolache,30,2.65,2026-10-01 15:18,call on arrival
+O1002-03,Uptown Commons Cowork,2401 McKinney Ave,7:45,ham-cheese klobasnek,18,2.60,2026-10-01 14:53,gate code 4411
+O1002-03,Uptown Commons Cowork,2401 McKinney Ave,7:45,cream cheese kolache,12,2.60,2026-10-01 14:53,gate code 4411
