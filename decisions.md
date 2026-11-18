@@ -91,3 +91,11 @@ do not edit the old one.
 | S3 | 2026-11-18 | First screen = the decision: oven, leave time, how many to decline, expected profit vs old way. Then "needs your eye" flags, then one minute-by-minute list mixing LOAD and STOP lines. Trends below. | Team |
 | S4 | 2026-11-18 | The reviewer subagent uses `checks/verify_plan.py`, which re-types the rules instead of importing the planner, so a planner bug cannot hide in both places. | Agent → Team |
 | S5 | 2026-11-18 | Optimizer loop: one run per oven size from a greedy wanted-by route; each round takes the single best move (2-opt, move a stop, decline, accept, leave ±1/3/10 min). Stop when a round adds < $1 or after 20 rounds (proposal). Checked against exhaustive search on a 5-order case in the tests (must reach ≥ 95%). | Team (rule), Agent (moves) |
+
+## Outside connections
+
+| id | date | rule | who |
+|---|---|---|---|
+| O1 | 2026-11-18 | **GitHub via the `gh` CLI**, logged in by Sana in her own browser (the agent never saw a password). Token scopes: `repo`, `workflow`, `gist`, `read:org` (gh defaults). Used to create the public repo `sshahid99/baking-on-the-way`, enable Pages from `/docs`, and read Actions results. Pushes happen only in step 7 of `/plan-run`, after Rosa approves. | Team |
+| O2 | 2026-11-18 | **BLS public API v2** and **OpenStreetMap (Overpass via OSMnx)**: read-only, no account, no key. Only public series ids / a bounding box are sent. | Team |
+| O3 | 2026-11-18 | Commits use the GitHub noreply address, so no personal email is in the public history. | Team |
