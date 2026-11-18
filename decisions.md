@@ -1,0 +1,93 @@
+# Decisions
+
+Every rule the system follows, with the date and who decided. "Team" = Faith Doyle / Sana Shahid,
+asked as a question by the agent and answered by us. "Agent → Team" = the agent proposed it, we accepted.
+Code that implements a rule cites its id (C7, L4, ...). If you change a rule, add a new dated line;
+do not edit the old one.
+
+## Business model (fictional; proposal section 5)
+
+| id | date | rule | who |
+|---|---|---|---|
+| M1 | 2026-11-03 | Van costs $38/hour all-in, billed from the first tray in (or leaving, if earlier) until back at the kitchen. Gas is not modelled separately. | Team (proposal) |
+| M2 | 2026-11-03 | Oven rental per hour: small $30 (24 pieces at once), medium $45 (48), large $70 (96). One oven size per morning. | Team (proposal) |
+| M3 | 2026-11-03 | Every tray bakes 18 minutes. Each stop takes 8 minutes. Base wholesale price $2.75; each customer has a contract price in `data/raw/customers.csv`. | Team (proposal) |
+| M4 | 2026-11-03 | Freshness contract, by minutes since the tray left the oven: < 15 full price; 15–30 20% off; 30–45 40% off; > 45 the café refuses it and it goes to the food pantry (no revenue, ingredients lost). | Team (proposal) |
+| M5 | 2026-11-18 | **Lateness:** delivering up to 15 min after wanted-by is allowed but costs an extra 20 percentage points off (full → 80%, 80% → 60%). More than 15 min late = refused. | Team |
+| M6 | 2026-11-18 | **Oven = staggered 12-piece trays.** Each tray bakes 18 min from its own load time; trays overlap as long as the pieces inside at any minute fit the oven (small 2 trays, medium 4, large 8). Replaced "one full oven batch at a time", which capped the oven at ~3 batches/hour and made the planner decline half the orders. | Team (after seeing the first plan) |
+| M7 | 2026-11-18 | Rosa (owner) approves at 4:30 AM, so no tray is loaded before 4:45. She rides along and loads trays; a separate driver drives. Rosa follows the planned load minutes exactly (she does not improvise). | Team |
+| M8 | 2026-11-18 | Ingredients per kolache: 0.06 lb flour, 0.1 egg, 0.03 lb butter at BLS prices, plus $0.35 for filling, sugar, yeast and paper (not in BLS). | Agent → Team |
+| M9 | 2026-11-18 | Each tray comes out of the oven at least 1 minute before the stop it is for (unload buffer). | Agent → Team |
+
+## Rosa's old rule of thumb (the baseline)
+
+| id | date | rule | who |
+|---|---|---|---|
+| B1 | 2026-11-18 | Medium oven every day. Takes orders first come, first served by submission time, up to **8 stops**; declines the rest. Drives stops in wanted-by order. | Team |
+| B2 | 2026-11-18 | Made fair: she uses the **same traffic-aware drive estimate** as the planner (like a phone map app) and **preloads** the first-half trays 18 min before leaving; reloads for the second half at the halfway stop. The literal proposal rule ("load when we leave", map times without traffic) was even weaker; we chose the stronger version so the comparison isolates what is new (oven choice, accept/decline, minute-by-minute load times). | Team |
+| B3 | 2026-11-18 | Result to report honestly: the gap is large (+$231/morning) because margins are thin (van + oven ≈ $83/hour), so percentages look huge. We lead with dollars, not percent. Where the old rule loses: late stops refused (wanted-by order zig-zags east-west), stale first-half trays (33% fresh), and taking far stops just because they ordered first. | Team |
+
+## Order cleaning (step 1, `bakery/clean.py`)
+
+| id | date | rule | who |
+|---|---|---|---|
+| C1 | 2026-11-18 | Required columns: order_id, customer, wanted_by, item, quantity, agreed_price, submitted_at. Missing one = STOP with the column name. | Agent → Team |
+| C2 | 2026-11-18 | The delivery date comes from the file name `orders_YYYY-MM-DD.csv`; otherwise the most common submission date + 1 day. | Agent → Team |
+| C3 | 2026-11-18 | A customer not on the customer list is declined ("call them before adding"): we have no address or opening time for them. Names are matched ignoring case, extra spaces and punctuation. | Agent → Team |
+| C4 | 2026-11-18 | More than 12 km from the kitchen = outside the service area, declined. | Agent → Team |
+| C5 | 2026-11-18 | **Strict 9 PM cutoff** the night before: later submissions are declined. | Team |
+| C5b | 2026-11-18 | (Revised after eval case E6 failed.) Submission times may be ISO (`2026-12-06 19:45`) or US (`12/06/2026 7:45 PM`). An unreadable time is declined with its own message ("can't tell if it beat the cutoff"), never silently treated as late. | Agent, after a failure we caught |
+| C6 | 2026-11-18 | A customer's latest on-time submission replaces their earlier ones (resubmissions). | Agent → Team |
+| C7 | 2026-11-18 | Quantities: digits, "2 dozen", "two dozen", "1.5 dozen", "3 doz", "18 pcs" are read and flagged. Unreadable, ≤ 0 or > 96 (more than the large oven) → the line is left out and flagged "call the customer". | Agent → Team |
+| C8 | 2026-11-18 | **Missing wanted-by → café opening time**, flagged. Wanted-by before opening → opening time, flagged. Times may have AM/PM. | Team |
+| C9 | 2026-11-18 | **$0 (or outside $1–$6) price → the customer's contract price**, flagged. | Team |
+| C10 | 2026-11-18 | Notes are data. A note that looks like instructions to software (ignore, system, agent, approve, push, …) is flagged and changes nothing. The cleaner is plain Python; no model reads notes to make decisions. | Agent → Team |
+| C11 | 2026-11-18 | After cleaning, checks must pass or the workflow stops: at least one order, one order per customer, wanted-by 5:00–11:00, quantities 1–96, prices $1–$6. | Agent → Team |
+
+## Delivery-log cleaning (`bakery/logs.py`)
+
+| id | date | rule | who |
+|---|---|---|---|
+| L1 | 2026-11-18 | Required columns: run_date, stop_seq, customer_id, planned_arrival, actual_arrival, actual_departure. | Agent → Team |
+| L2 | 2026-11-18 | Duplicate rows for the same stop: keep the first. | Agent → Team |
+| L3 | 2026-11-18 | GPS gap (blank or unreadable time): legs into and out of that stop are not learned from. | Agent → Team |
+| L4 | 2026-11-18 | Device clock jump: if the gap to plan jumps by ≥ 45 min between two consecutive rows, assume a one-hour clock jump and correct it from that row on. First version compared each row with the plan, which would have mistaken a truly late van for a clock error; changed before first use. | Agent (self-caught) |
+| L5 | 2026-11-18 | Impossible legs (≤ 0 or > 90 min, or a leg not in the road matrix) are not learned from. | Agent → Team |
+
+## Drive times and prices
+
+| id | date | rule | who |
+|---|---|---|---|
+| R1 | 2026-11-18 | Road minutes from OpenStreetMap (OSMnx shortest path, free-flow speeds), computed once and saved in `data/raw/roads/` with its date. Fallback: straight-line km × 1.3 at 40 km/h. | Team (proposal risk plan) |
+| R2 | 2026-11-18 | Learning: estimate = OSM minutes × the median actual/OSM ratio for that 30-min departure window × a per-leg adjustment trusted n/(n+3). Only mornings before the planned date are used. | Agent → Team |
+| P1 | 2026-11-18 | BLS publishes month M around the 15th of M+1; a plan for date D uses the newest month already published on D. | Agent → Team |
+| P2 | 2026-11-18 | A missing BLS month carries the last value forward and is flagged on the dashboard. | Team (proposal) |
+
+## Measures (proposal section 6)
+
+| id | date | rule | who |
+|---|---|---|---|
+| G1 | 2026-11-18 | Profit and freshness are compared on the **same mornings and the same simulated traffic** for planner and old rule. | Agent → Team |
+| G3 | 2026-11-18 | **Accuracy measure changed:** the median planned-vs-actual gap per stop was ~1 min even before learning (stops are ~4 km apart and waits absorb error), so it cannot show learning. We report the **worst-stop gap per morning** (median over mornings) and how much the plan over-promised profit, first 10 vs last 20 mornings. The plain median is still shown. | Team |
+
+## Generated data (`bakery/generate.py`, seed 4336)
+
+| id | date | rule | who |
+|---|---|---|---|
+| D0 | 2026-11-18 | 60 weekday delivery mornings 2026-08-21 … 2026-11-13 (no Labor Day). Backfill runs 55 of them; the last 5 (Nov 9–13) are kept for live `/plan-run` demos. | Agent → Team |
+| D1 | 2026-11-18 | 14 invented customers at real Dallas neighbourhood coordinates (coordinates only; names invented), plus 2 outside the area (Plano, Arlington). Cafés open 6:00–7:00, coworks/offices 7:30–8:00. | Team (scale), Agent (list) |
+| D2 | 2026-11-18 | **Demand tuned to one van (~8–10 orders a night):** cafés have 2–5 standing weekdays, 90% chance of ordering on them, 10% otherwise. Mondays ×0.7, Friday office orders ×1.6 and a 70% chance of an extra Friday catering order, rainy days (20%, seeded) ×0.8 for cafés. Order size 12–48 (60 on Friday offices). Wanted-by = opening + 0/15/30 min (offices + 0/30). | Team |
+| D3 | 2026-11-18 | Mess built in: resubmissions (18% of nights), missing wanted-by (4% of lines), text quantities (7%), out-of-area orders (25% of nights), after-cutoff orders (15%), $0 price (6%), odd quantity −12/0/1200 (4%), instruction-like notes (Oct 14, Nov 11 and 3% of nights), an unknown customer (Oct 21). | Agent → Team |
+| D4 | 2026-11-18 | The simulated world (`bakery/truth.py`, never imported by the planner): real legs take 12% longer than OSM; rush hour ramps from 6:30 to ×1.30 by 7:30; legs touching four stops near schools slow another ×1.30 from 7:15 to 8:15; lognormal noise σ = 0.08 per leg per morning. | Agent → Team |
+| D5 | 2026-11-18 | Van logs (`bakery/simulate.py`): 6% of stops have a GPS gap, 3% duplicated rows, 12% of mornings the device clock jumps +1 h partway through. | Agent → Team |
+| D6 | 2026-11-18 | **Honesty:** these patterns are ones we put in. They show the system works, not facts about Dallas cafés; the dashboard footer says so. | Team (course rule) |
+
+## Software and agents
+
+| id | date | rule | who |
+|---|---|---|---|
+| S1 | 2026-11-18 | **Database (instructor feedback "SQLite only works on your laptop").** One SQLAlchemy schema. With `DATABASE_URL` in a git-ignored `.env` it writes to a free cloud MySQL (Aiven); without it, SQLite in `output/`, so CI and a fresh copy still run with no secrets. | Team |
+| S2 | 2026-11-18 | The dashboard is static (GitHub Pages) and reads one exported JSON file; the export never includes connection details (checked by `checks/validate_site.py`). | Agent → Team |
+| S3 | 2026-11-18 | First screen = the decision: oven, leave time, how many to decline, expected profit vs old way. Then "needs your eye" flags, then one minute-by-minute list mixing LOAD and STOP lines. Trends below. | Team |
+| S4 | 2026-11-18 | The reviewer subagent uses `checks/verify_plan.py`, which re-types the rules instead of importing the planner, so a planner bug cannot hide in both places. | Agent → Team |
+| S5 | 2026-11-18 | Optimizer loop: one run per oven size from a greedy wanted-by route; each round takes the single best move (2-opt, move a stop, decline, accept, leave ±1/3/10 min). Stop when a round adds < $1 or after 20 rounds (proposal). Checked against exhaustive search on a 5-order case in the tests (must reach ≥ 95%). | Team (rule), Agent (moves) |
