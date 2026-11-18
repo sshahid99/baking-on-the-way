@@ -1,0 +1,11 @@
+run_date,stop_seq,customer_id,customer,planned_arrival,actual_arrival,actual_departure,pieces_delivered,status,gps
+2026-10-23,0,DEPOT,Kitchen,,,5:51,0,left kitchen,ok
+2026-10-23,1,C05,Lakewood Perk,6:03,6:02,6:10,30,delivered,ok
+2026-10-23,2,C09,Cedar Springs Cafe,6:20,6:20,6:28,30,delivered,ok
+2026-10-23,3,C04,Greenville Grounds,6:35,6:35,6:43,24,delivered,ok
+2026-10-23,4,C01,Ellum Grind,6:49,6:49,6:57,36,delivered,ok
+2026-10-23,5,C14,White Rock Brew,7:08,7:10,7:18,30,delivered,ok
+2026-10-23,6,C03,Uptown Commons Cowork,7:30,7:31,7:39,18,delivered,ok
+2026-10-23,7,C13,Harwood Clinic Staff Room,7:44,7:46,7:54,60,delivered,ok
+2026-10-23,8,C06,Main Street Law Breakfast,8:01,8:02,8:10,60,delivered,ok
+2026-10-23,9,DEPOT,Kitchen,8:15,8:16,,0,back at kitchen,ok

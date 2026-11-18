@@ -1,0 +1,9 @@
+run_date,stop_seq,customer_id,customer,planned_arrival,actual_arrival,actual_departure,pieces_delivered,status,gps
+2026-09-04,0,DEPOT,Kitchen,,,6:00,0,left kitchen,ok
+2026-09-04,1,C12,M Street Morning,6:10,,,30,delivered,no signal
+2026-09-04,2,C04,Greenville Grounds,6:21,6:20,6:38,36,delivered,ok
+2026-09-04,3,C01,Ellum Grind,6:44,6:45,6:53,36,delivered,ok
+2026-09-04,4,C10,Groves Coffee,6:59,7:02,7:10,36,delivered,ok
+2026-09-04,5,C13,Harwood Clinic Staff Room,7:15,7:15,7:38,60,delivered,ok
+2026-09-04,6,C03,Uptown Commons Cowork,7:45,7:45,7:53,30,delivered,ok
+2026-09-04,7,DEPOT,Kitchen,7:57,7:58,,0,back at kitchen,ok

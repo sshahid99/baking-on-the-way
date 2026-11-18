@@ -1,0 +1,7 @@
+run_date,stop_seq,customer_id,customer,planned_arrival,actual_arrival,actual_departure,pieces_delivered,status,gps
+2026-11-02,0,DEPOT,Kitchen,,,5:35,0,left kitchen,ok
+2026-11-02,1,C05,Lakewood Perk,5:46,5:46,6:08,18,delivered,ok
+2026-11-02,2,C09,Cedar Springs Cafe,6:17,6:16,6:25,18,delivered,ok
+2026-11-02,3,C04,Greenville Grounds,6:32,6:33,6:41,18,delivered,ok
+2026-11-02,4,C01,Ellum Grind,6:46,6:47,6:55,24,delivered,ok
+2026-11-02,5,DEPOT,Kitchen,7:01,7:02,,0,back at kitchen,ok

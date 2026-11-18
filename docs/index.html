@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baking on the way · Morning run sheet</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="viz-root" id="app">
+  <header class="top">
+    <div>
+      <p class="eyebrow">Baking on the way · run sheet</p>
+      <h1 id="day">Loading…</h1>
+    </div>
+    <span class="badge" id="status"></span>
+  </header>
+
+  <section class="card decision" id="decision" aria-live="polite"></section>
+
+  <section class="card" id="attention-card">
+    <h2>Needs your eye</h2>
+    <ul class="flags" id="attention"></ul>
+  </section>
+
+  <section class="card">
+    <h2>Minute by minute</h2>
+    <p class="hint">Oven lines tell you when to put trays in. Stops show how fresh the oldest tray will be.</p>
+    <ol class="timeline" id="timeline"></ol>
+    <details class="money"><summary>Where the money goes</summary><div id="money"></div></details>
+  </section>
+
+  <section class="card" id="last-card">
+    <h2 id="last-title">Last morning</h2>
+    <div class="tiles" id="last-tiles"></div>
+    <details><summary>Stop by stop: planned vs actual arrival</summary>
+      <div class="table-wrap"><table id="last-table"></table></div></details>
+  </section>
+
+  <section class="card">
+    <h2>Week by week</h2>
+    <p class="hint">Average per morning. "Your old way" is your current rule of thumb, replayed on the same orders and traffic.</p>
+    <figure>
+      <figcaption>Profit per morning</figcaption>
+      <div class="chart" id="chart-profit"></div>
+    </figure>
+    <figure>
+      <figcaption>Kolaches delivered less than 15 minutes out of the oven</figcaption>
+      <div class="chart" id="chart-fresh"></div>
+    </figure>
+    <figure>
+      <figcaption>Learning Dallas traffic: how far off the plan's arrival time was at the worst stop</figcaption>
+      <div class="chart" id="chart-gap"></div>
+    </figure>
+    <details><summary>Show the numbers as a table</summary>
+      <div class="table-wrap"><table id="weekly-table"></table></div></details>
+  </section>
+
+  <section class="card">
+    <h2>Customers to talk to</h2>
+    <p class="hint">Who to renegotiate with: orders that often don't fit the route, or prices below base.</p>
+    <div class="table-wrap"><table id="customers"></table></div>
+  </section>
+
+  <section class="card" id="goals-card">
+    <h2>Is it working?</h2>
+    <div class="tiles" id="goals"></div>
+  </section>
+
+  <footer class="foot" id="foot"></footer>
+</main>
+<div class="tooltip" id="tooltip" role="status" hidden></div>
+<script src="app.js"></script>
+</body>
+</html>

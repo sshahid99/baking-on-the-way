@@ -1,0 +1,9 @@
+run_date,stop_seq,customer_id,customer,planned_arrival,actual_arrival,actual_departure,pieces_delivered,status,gps
+2026-09-15,0,DEPOT,Kitchen,,,5:50,0,left kitchen,ok
+2026-09-15,1,C05,Lakewood Perk,6:01,6:01,6:09,24,delivered,ok
+2026-09-15,2,C12,M Street Morning,6:15,6:15,6:23,30,delivered,ok
+2026-09-15,3,C04,Greenville Grounds,6:26,6:25,6:38,30,delivered,ok
+2026-09-15,4,C07,Knox Kettle,6:41,6:41,6:49,24,delivered,ok
+2026-09-15,5,C02,Bishop Bean,7:00,7:00,7:08,36,delivered,ok
+2026-09-15,6,C06,Main Street Law Breakfast,7:17,7:16,8:08,36,delivered,ok
+2026-09-15,7,DEPOT,Kitchen,8:14,8:14,,0,back at kitchen,ok

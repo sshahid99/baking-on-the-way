@@ -1,0 +1,9 @@
+run_date,stop_seq,customer_id,customer,planned_arrival,actual_arrival,actual_departure,pieces_delivered,status,gps
+2026-09-08,0,DEPOT,Kitchen,,,5:35,0,left kitchen,ok
+2026-09-08,1,C12,M Street Morning,5:44,5:45,6:08,36,delivered,ok
+2026-09-08,2,C05,Lakewood Perk,6:13,6:13,6:21,30,delivered,ok
+2026-09-08,3,C01,Ellum Grind,6:27,6:27,6:38,36,delivered,ok
+2026-09-08,4,C07,Knox Kettle,6:43,6:43,6:51,30,delivered,ok
+2026-09-08,5,C08,Victory Desk Cowork,6:56,6:56,8:08,24,delivered,ok
+2026-09-08,6,C06,Main Street Law Breakfast,8:11,8:11,8:19,36,delivered,ok
+2026-09-08,7,DEPOT,Kitchen,8:25,8:25,,0,back at kitchen,ok

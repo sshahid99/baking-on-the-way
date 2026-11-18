@@ -1,0 +1,12 @@
+run_date,stop_seq,customer_id,customer,planned_arrival,actual_arrival,actual_departure,pieces_delivered,status,gps
+2026-08-21,0,DEPOT,Kitchen,,,6:05,0,left kitchen,ok
+2026-08-21,1,C09,Cedar Springs Cafe,6:08,6:08,6:16,36,delivered,ok
+2026-08-21,2,C01,Ellum Grind,6:22,6:23,6:38,30,delivered,ok
+2026-08-21,3,C04,Greenville Grounds,6:44,6:44,6:52,36,delivered,ok
+2026-08-21,4,C10,Groves Coffee,7:00,7:01,7:09,36,delivered,ok
+2026-08-21,5,C02,Bishop Bean,7:13,7:16,7:24,0,refused - pantry,ok
+2026-08-21,6,C13,Harwood Clinic Staff Room,7:30,7:38,7:46,60,delivered,ok
+2026-08-21,7,C03,Uptown Commons Cowork,7:43,7:53,8:01,0,refused - pantry,ok
+2026-08-21,8,C06,Main Street Law Breakfast,7:53,8:05,8:13,48,delivered,ok
+2026-08-21,9,C08,Victory Desk Cowork,8:10,,,18,delivered,no signal
+2026-08-21,10,DEPOT,Kitchen,8:20,8:27,,0,back at kitchen,ok

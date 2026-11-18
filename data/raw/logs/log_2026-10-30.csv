@@ -1,0 +1,11 @@
+run_date,stop_seq,customer_id,customer,planned_arrival,actual_arrival,actual_departure,pieces_delivered,status,gps
+2026-10-30,0,DEPOT,Kitchen,,,5:40,0,left kitchen,ok
+2026-10-30,1,C05,Lakewood Perk,5:52,5:50,6:08,24,delivered,ok
+2026-10-30,2,C12,M Street Morning,6:13,6:13,6:21,36,delivered,ok
+2026-10-30,3,C11,Cedars Roastery,6:30,6:28,6:38,36,delivered,ok
+2026-10-30,4,C01,Ellum Grind,6:42,6:41,6:49,30,delivered,ok
+2026-10-30,5,C02,Bishop Bean,6:59,6:58,7:08,30,delivered,ok
+2026-10-30,6,C13,Harwood Clinic Staff Room,7:21,7:18,7:38,48,delivered,ok
+2026-10-30,7,C03,Uptown Commons Cowork,7:45,7:45,7:53,30,delivered,ok
+2026-10-30,8,C06,Main Street Law Breakfast,7:57,7:57,8:08,54,delivered,ok
+2026-10-30,9,DEPOT,Kitchen,8:14,8:14,,0,back at kitchen,ok

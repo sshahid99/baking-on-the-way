@@ -1,0 +1,11 @@
+run_date,stop_seq,customer_id,customer,planned_arrival,actual_arrival,actual_departure,pieces_delivered,status,gps
+2026-08-27,0,DEPOT,Kitchen,,,6:01,0,left kitchen,ok
+2026-08-27,1,C05,Lakewood Perk,6:13,6:13,6:21,30,delivered,ok
+2026-08-27,2,C12,M Street Morning,6:26,6:26,6:34,36,delivered,ok
+2026-08-27,3,C01,Ellum Grind,6:42,6:41,6:49,36,delivered,ok
+2026-08-27,4,C14,White Rock Brew,7:01,6:59,7:08,30,delivered,ok
+2026-08-27,5,C02,Bishop Bean,7:29,7:28,7:36,36,delivered,ok
+2026-08-27,6,C10,Groves Coffee,7:44,7:45,7:53,36,delivered,ok
+2026-08-27,6,C10,Groves Coffee,7:44,7:45,7:53,36,delivered,ok
+2026-08-27,7,C08,Victory Desk Cowork,7:58,7:57,8:08,30,delivered,ok
+2026-08-27,8,DEPOT,Kitchen,8:11,8:11,,0,back at kitchen,ok
