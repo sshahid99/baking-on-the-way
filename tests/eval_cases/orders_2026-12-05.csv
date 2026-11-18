@@ -1,0 +1,5 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+E4-1,  ellum   GRIND ,2715 Elm St,6:45,apricot kolache,Two Dozen,$2.75,2026-12-04 18:00,
+E4-2,Sunrise Yoga Studio,900 Unknown Rd,7:00,apricot kolache,24,2.75,2026-12-04 18:00,new!
+E4-3,Lakewood Perk,6334 La Vista Dr,5:30,peach kolache,3 doz,2.90,2026-12-04 17:00,
+E4-4,Cedars Roastery,1110 S Lamar St,6:45,peach kolache,200,2.65,2026-12-04 17:00,

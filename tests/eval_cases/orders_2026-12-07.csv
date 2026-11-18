@@ -1,0 +1,4 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+E6-1,Ellum Grind,2715 Elm St,6:45 AM,apricot kolache,24,2.75,12/06/2026 7:45 PM,
+E6-2,Lakewood Perk,6334 La Vista Dr,6:15 AM,peach kolache,24,2.90,12/06/2026 6:10 PM,
+E6-3,Knox Kettle,4514 Travis St,7:00 AM,apricot kolache,24,2.75,12/06/2026 9:30 PM,

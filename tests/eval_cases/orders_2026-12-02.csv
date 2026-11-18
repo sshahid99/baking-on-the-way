@@ -1,0 +1,6 @@
+order_id,customer,address,wanted_by,item,quantity,agreed_price,submitted_at,notes
+E1-1,Ellum Grind,2715 Elm St,6:45,apricot kolache,24,2.75,2026-12-01 18:00,
+E1-2,Lakewood Perk,6334 La Vista Dr,6:15,peach kolache,36,2.90,2026-12-01 17:00,
+E1-3,Bishop Bean,408 N Bishop Ave,7:15,cream cheese kolache,24,2.85,2026-12-01 19:00,
+E1-4,Main Street Law Breakfast,1601 Main St,8:30,ham-cheese klobasnek,48,3.00,2026-12-01 16:00,
+E1-5,Knox Kettle,4514 Travis St,6:45,apricot kolache,30,2.75,2026-12-01 20:10,
