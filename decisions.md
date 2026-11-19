@@ -70,6 +70,7 @@ do not edit the old one.
 |---|---|---|---|
 | G1 | 2026-11-18 | Profit and freshness are compared on the **same mornings and the same simulated traffic** for planner and old rule. | Agent → Team |
 | G3 | 2026-11-18 | **Accuracy measure changed:** the median planned-vs-actual gap per stop was ~1 min even before learning (stops are ~4 km apart and waits absorb error), so it cannot show learning. We report the **worst-stop gap per morning** (median over mornings) and how much the plan over-promised profit, first 10 vs last 20 mornings. The plain median is still shown. | Team |
+| G4 | 2026-11-19 | **Planning-time measure added (proposal measure 3, second half, was never built).** Minutes from `clean` starting to Rosa's `approve`, live `/plan-run` mornings only; target: under 5 min on *every* timed night (slowest, not median). `runs.cleaned_at` and `runs.approved_at` record it from Nov 13 on; backfill never sets `approved_at`, so it is not timed. Nov 10–12 are reconstructed from the trace's "plan written" time to the "Run sheet" commit and labelled so; Nov 9 is left out (re-planned, errors #8). "About 45 min by hand" is our proposal estimate, never measured, and is shown as an estimate. Limit: "Rosa" here is a teammate clicking approve, so a real 4:30 AM read on a phone may take longer. | Team |
 
 ## Generated data (`bakery/generate.py`, seed 4336)
 

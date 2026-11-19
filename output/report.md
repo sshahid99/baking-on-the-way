@@ -33,16 +33,17 @@ HOW TO KEEP THIS REPORT UP TO DATE
 **Measured value.** Simulated on the same mornings, orders and traffic for both:
 
 <!-- auto:measures -->
-_From `checks/measures.py`, 57 completed mornings (2026-08-21 to 2026-11-10), refreshed 2026-11-18._
+_From `checks/measures.py`, 58 completed mornings (2026-08-21 to 2026-11-11), refreshed 2026-11-19._
 
 | Measure (proposal §6) | Target | Planner | Rosa's old rule | Result |
 |---|---|---|---|---|
-| Profit per morning | +15% | $256 | $29 | +$227/morning (+776%); planner better on 57/57: met |
-| Kolaches delivered < 15 min from the oven | ≥ 85% | 94% | 33% | met |
-| Worst-stop arrival error, last 20 mornings | ≤ 5 min | 1.5 min (first 10: 2.0) | – | met |
+| Profit per morning | +15% | $256 | $25 | +$231/morning (+910%); planner better on 58/58: met |
+| Kolaches delivered < 15 min from the oven | ≥ 85% | 94% | 32% | met |
+| Worst-stop arrival error, last 20 mornings | ≤ 5 min | 2.0 min (first 10: 2.0) | – | met |
 | Median stop arrival error (proposal's original measure) | ≤ 5 min | 1.0 min (first 10: 1.0) | – | met, but it was met before any learning (decisions G3) |
-| Plan's profit over-promise per morning | (learning effect) | $15 last 20 (first 10: $52) | – | – |
+| Plan's profit over-promise per morning | (learning effect) | $14 last 20 (first 10: $52) | – | – |
 | Pieces refused (pantry), planner | (learning effect) | 66 in last 20 mornings (first 10: 150) | – | – |
+| Planning time, order sheet to Rosa's approval (live `/plan-run`s) | < 5 min | median 1.7 min, slowest 4.1 min over 3 runs (0 measured, 3 reconstructed from git, see decisions G4) | ~45 min by hand (our estimate, not measured) | met on every run |
 <!-- /auto:measures -->
 
 Notes for the argument: the margin is thin (van + oven about $83/hour), so the percentage looks very large; lead with dollars (decisions B3). The patterns are generated, so these numbers show the system works, not facts about Dallas cafés (decisions D6).
@@ -120,6 +121,7 @@ Each entry: date, the move, why, evidence. Keep adding as you work; entries are 
 | 2026-11-09 | `/plan-run` (reviewer PASS) | small oven, leave 5:35, 8 stops, declined 0, expected profit $168.04, 100% fresh. [trace](../work/runs/2026-11-09-trace.md) |
 | 2026-11-10 | `/plan-run` (reviewer PASS) | medium oven, leave 5:50, 8 stops, declined 0, expected profit $314.10, 100% fresh. [trace](../work/runs/2026-11-10-trace.md) |
 | 2026-11-11 | `/plan-run` (reviewer PASS) | medium oven, leave 5:45, 8 stops, declined 2, expected profit $267.65, 100% fresh. [trace](../work/runs/2026-11-11-trace.md) |
+| 2026-11-12 | `/plan-run` (reviewer PASS) | medium oven, leave 5:53, 7 stops, declined 1, expected profit $201.44, 100% fresh. [trace](../work/runs/2026-11-12-trace.md) |
 <!-- /auto:runs -->
 
 **Trace of one full run (Nov 9).** See `work/runs/2026-11-09-trace.md`: step 1 learned 9 legs; step 2 cleaned 12 rows into 8 orders; step 3 ran the loop once per oven size (each stopped at "gain < $1" after 2 rounds); step 4 the **plan-reviewer subagent** returned PASS (recomputed $168.04 = claimed); step 4b the main session found a misleading "say no" and fixed it; Rosa approved; pushed.
@@ -136,7 +138,7 @@ Each entry: date, the move, why, evidence. Keep adding as you work; entries are 
 | Outside connection | BLS API, OpenStreetMap, GitHub via `gh` | permissions in decisions O1–O3 |
 
 <!-- auto:hook -->
-The pre-push hook has fired 8 times: 7 passed, 1 blocked.
+The pre-push hook has fired 16 times: 15 passed, 1 blocked.
 
 - 2026-11-18T18:16:17 pre-push hook on `git push origin main`: BLOCKED - -m pytest -q tests, checks/validate_site.py
 <!-- /auto:hook -->
@@ -168,6 +170,7 @@ _Criteria written before the first run: `work/eval-criteria.md`._
 | 7 | 2026-11-18 | **Prompt text corrupted by argument substitution:** `$1` in plan-run.md became the log file path. | Reading the expanded command at the start of the first live run | plan-run.md v2 ("one dollar") |
 | 8 | 2026-11-18 | **Re-planning erased what actually happened.** A second Claude session drove the Nov 9 morning (18:05) while the first session re-ran `plan` for Nov 9 (18:06) after a wording fix; `plan` replaces the stored run, so Nov 9's actual profit was wiped and `approve` then marked it "approved" instead of "done". The dashboard's "last morning" silently stayed on Nov 6. | Main session, auditing the database after run 2 (runs table: Nov 9 planner `approved`, actual_profit NULL, while `log_2026-11-09.csv` existed) | Guards: `plan` refuses a morning already driven; `drive` needs an approved plan and runs once; `approve` never downgrades "done"; `backfill` skips done mornings. Re-drove Nov 9 (seeded, log byte-identical per `git diff`) to restore $168 actual. |
 | 9 | 2026-11-18 | **Verification gap: the "old way" figure Rosa compares against was never independently checked.** Only the planner's plan goes through `verify_plan.py`. | **plan-reviewer subagent**, run 3 (Nov 11), sanity check: old rule -$199.90 vs plan $267.65 flagged "suspicious" | Main session recomputed and explained it (108 pieces refused); still a gap: next step is to run `verify_plan.py` on `old_rule_plan` too. |
+| 10 | 2026-11-19 | **The pre-push hook broke whenever the terminal was not in the project root.** `.claude/settings.json` called `python .claude/hooks/pre_push_check.py` by a relative path, so from `docs/` Python could not find the script. Python exits 2 for a missing file, which is also the hook's block signal, so every Bash command (not just pushes) was blocked there. | **Main session**, while screenshotting the dashboard from `docs/` (2026-11-18): "can't open file ...docs\.claude\hooks\pre_push_check.py" | Command now uses `$CLAUDE_PROJECT_DIR` (set by Claude Code for hooks). Re-tested from `docs/`: no hook error, script exits 0; a real push from `docs/` logged in `work/hook-log.md`. Approved by Sana. |
 <!-- /auto:errors -->
 
 **What the system cannot do.** ✍ In your words. Facts: demand and traffic are generated, so results show the system works, not that Dallas cafés behave this way; it plans one van and one oven size per morning; it assumes Rosa follows the load times exactly (M7); it knows nothing about road closures or a café changing its order in the morning; gas is not modelled (M1); the old-rule figure is not independently verified (errors #9).
@@ -189,7 +192,7 @@ Claude Code (Claude Opus 5.5) in VS Code built most of the code, data generator 
 
 ### Project history
 <!-- auto:commits -->
-17 commits on 1 day(s) (2026-11-18 to 2026-11-18).
+23 commits on 2 day(s) (2026-11-18 to 2026-11-19).
 <!-- /auto:commits -->
 
 ### Full context log

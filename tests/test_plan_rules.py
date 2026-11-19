@@ -157,3 +157,19 @@ def test_dashboard_json_shape_if_present():
         return
     from checks.validate_site import validate
     assert validate(json.loads(p.read_text(encoding="utf-8"))) == []
+
+
+def test_planning_time_counts_cleaning_to_approval_only():
+    """G4: measured planning time = cleaning started -> Rosa approved; backfill runs (no approval stamp) are not timed."""
+    from checks.measures import planning_times
+    runs = [
+        {"planner": "planner", "delivery_date": "2099-01-05", "cleaned_at": "2099-01-04T23:00:00+00:00",
+         "approved_at": "2099-01-04T23:03:30+00:00"},
+        {"planner": "planner", "delivery_date": "2099-01-06", "cleaned_at": "2099-01-05T23:00:00+00:00",
+         "approved_at": None},   # backfill: auto-approved, never timed
+        {"planner": "old_rule", "delivery_date": "2099-01-05", "cleaned_at": "2099-01-04T23:00:00+00:00",
+         "approved_at": "2099-01-04T23:10:00+00:00"},
+    ]
+    rows = {r["day"]: r for r in planning_times(runs)}
+    assert rows["2099-01-05"]["minutes"] == 3.5 and rows["2099-01-05"]["how"].startswith("measured")
+    assert "2099-01-06" not in rows

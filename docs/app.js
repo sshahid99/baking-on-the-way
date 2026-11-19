@@ -105,6 +105,7 @@ function render(d) {
       tile("+" + money(m.profit_gain_per_morning), "more profit per morning than your old way", passFail(m.targets.profit_uplift_at_least_15pct, `${money(m.profit_per_morning_planner)} vs ${money(m.profit_per_morning_old_rule)} a morning · goal: at least 15% more`)),
       tile(pct(m.fresh_share_planner), "delivered within 15 min of the oven", passFail(m.targets.fresh_at_least_85pct, `goal: 85% · old way ${pct(m.fresh_share_old_rule)}`)),
       tile(m.worst_gap_after.toFixed(1) + " min", "worst-stop arrival error, last 20 mornings", passFail(m.targets.worst_gap_after_at_most_5min, `goal: ≤ 5 min · was ${m.worst_gap_before.toFixed(1)} at the start`)),
+      ...(m.planning_time && m.planning_time.counted ? [tile(m.planning_time.slowest_min.toFixed(1) + " min", "longest night from order sheet to your OK", passFail(m.targets.planning_under_5min, `goal: under ${m.planning_time.target_min} min · by hand about ${m.planning_time.by_hand_estimate_min} (our guess) · ${m.planning_time.counted} nights timed`))] : []),
     ].join("");
   } else { $("goals-card").hidden = true; }
 

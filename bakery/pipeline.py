@@ -71,7 +71,8 @@ def plan_day(day, verbose=True):
     wanted = {c: o["wanted_by"] for c, o in orders.items()}
     extra = dict(rounds=sum(1 for r in rounds if r["round"] > 0), per_oven=per_oven,
                  bls_months=", ".join(sorted(set(months.values()))),
-                 drive_source=f"{source}; learned from {drive.n_obs} legs", wanted=wanted)
+                 drive_source=f"{source}; learned from {drive.n_obs} legs", wanted=wanted,
+                 cleaned_at=clean_result.get("cleaned_at"))  # G4: planning-time clock start
     db.save_run(day, "planner", plan, res, extra)
     db.save_run(day, "old_rule", old, old_expected, dict(extra, rounds=0, per_oven={}))
     db.save_orders_and_flags(clean_result, declined, rounds)

@@ -8,3 +8,9 @@
 - 2026-11-18T18:44:16 pre-push hook on `cd "c:/Users/purpl/Downloads/ITOM4336/finalproject" && echo "output/_report.html`: passed
 - 2026-11-18T18:52:43 pre-push hook on `cd /c/Users/purpl/Downloads/ITOM4336/finalproject; git push 2>&1 | tail -3; tail`: passed
 - 2026-11-18T19:00:18 pre-push hook on `cd /c/Users/purpl/Downloads/ITOM4336/finalproject; git push 2>&1 | tail -2; tail`: passed
+- 2026-11-19T12:23:31 pre-push hook on `cd /c/Users/purpl/Downloads/ITOM4336/finalproject; export PATH="/c/Users/purpl/t`: passed
+- 2026-11-19T12:26:09 pre-push hook on `cd /c/Users/purpl/Downloads/ITOM4336/finalproject; export PATH="/c/Users/purpl/t`: passed
+- 2026-11-19T12:28:00 pre-push hook on `cd "c:/Users/purpl/Downloads/ITOM4336/finalproject" && PY=.venv/Scripts/python; `: passed
+- 2026-11-19T13:58:30 pre-push hook on `cd /c/Users/purpl/Downloads/ITOM4336/finalproject; .venv/Scripts/python -c "
+fro`: passed
+- 2026-11-19T13:59:26 pre-push hook on `cd /c/Users/purpl/Downloads/ITOM4336/finalproject; export PATH="/c/Users/purpl/t`: passed
