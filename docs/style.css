@@ -65,7 +65,7 @@ h1 { margin: 2px 0 0; font-size: 28px; font-weight: 800; line-height: 1.15; }
 h2 { margin: 0 0 8px; font-size: 20px; font-weight: 600; }
 .hint { margin: -4px 0 10px; color: var(--text-secondary); font-size: 14px; }
 .card { background: var(--surface-1); border: 1px solid var(--rule); border-radius: 14px; padding: 14px; margin: 0 0 12px; }
-.badge { font-size: 13px; font-weight: 800; padding: 4px 10px; border-radius: 999px; white-space: nowrap; border: 2px solid; background: #fffaf0; }
+.badge { font-size: 13px; font-weight: 800; padding: 4px 10px; border-radius: 6px; white-space: nowrap; border: 2px solid; background: #fffaf0; }
 .badge.wait { color: #6b4b00; border-color: var(--apricot); }
 .badge.ok { color: #236b2e; border-color: #3f9b4c; }
 @media (prefers-color-scheme: dark) { .top { color: #fff8ec; } .badge { background: #2b211a; } .badge.wait { color: #ffd36b; } .badge.ok { color: #7fd18b; } }
@@ -80,10 +80,14 @@ h2 { margin: 0 0 8px; font-size: 20px; font-weight: 600; }
 .decision .fact b { display: block; font-size: 21px; font-weight: 600; }
 .decision .fact span { font-size: 13px; color: var(--text-secondary); }
 .decision .why { font-size: 14px; color: var(--text-secondary); margin: 10px 0 0; }
+.decision .waiting { margin: 10px 0 0; font-weight: 700; color: var(--stale-text); }
+.todo-link { display: block; margin: 12px 0 0; padding: 9px 12px; border-left: 4px solid var(--critical); background: var(--surface-2);
+  border-radius: 4px; color: var(--text-primary); font-weight: 800; text-decoration: none; }
+.todo-link.all-done { border-left-color: var(--good); color: var(--good-text); }
 
 /* ---------- route map ---------- */
-.tabs { display: inline-flex; background: var(--surface-2); border-radius: 999px; padding: 3px; margin: 0 0 8px; gap: 2px; }
-.tabs button { border: 0; background: transparent; color: var(--text-secondary); font-weight: 700; font-size: 14px; padding: 5px 12px; border-radius: 999px; cursor: pointer; }
+.tabs { display: inline-flex; background: var(--surface-2); border-radius: 8px; padding: 3px; margin: 0 0 8px; gap: 2px; }
+.tabs button { border: 0; background: transparent; color: var(--text-secondary); font-weight: 700; font-size: 14px; padding: 5px 12px; border-radius: 6px; cursor: pointer; }
 .tabs button.on { background: var(--sky); color: #3a2a1e; }
 .tabs button:disabled { opacity: .45; cursor: default; }
 .now-line { margin: 0 0 8px; font-size: 15px; font-weight: 700; min-height: 1.5em; }
@@ -97,21 +101,7 @@ h2 { margin: 0 0 8px; font-size: 20px; font-weight: 600; }
 .player #play { width: 40px; height: 40px; border-radius: 50%; border: 0; background: var(--jam); color: #fff; font-size: 16px; cursor: pointer; flex: 0 0 auto; }
 .player input[type=range] { flex: 1 1 160px; accent-color: var(--series-1); min-width: 120px; }
 .player .clock { font-family: var(--font-display); font-weight: 800; font-size: 20px; font-variant-numeric: tabular-nums; min-width: 52px; text-align: right; }
-.golive { border: 2px solid var(--jam); background: transparent; color: var(--critical-text); border-radius: 999px; padding: 3px 10px; font-weight: 800; font-size: 13px; cursor: pointer; }
-.stoplist { list-style: none; margin: 4px 0 0; padding: 0; }
-.stoplist li { display: grid; grid-template-columns: 30px 1fr; gap: 10px; padding: 8px 4px; border-top: 1px solid var(--rule); cursor: pointer; border-radius: 8px; }
-.stoplist li:first-child { border-top: 0; }
-.stoplist li:hover { background: var(--surface-2); }
-.stoplist .n { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 13px;
-  background: var(--surface-2); color: var(--text-primary); border: 2px solid var(--series-1); }
-.stoplist .done .n { background: var(--series-1); color: #fff; }
-.stoplist .now { background: var(--sky-soft); }
-.stoplist .now .n { background: var(--jam); border-color: var(--jam); color: #fff; }
-.stoplist .what b { display: block; }
-.stoplist .what small { color: var(--text-secondary); font-size: 13px; }
-.stoplist .early { color: var(--good-text); font-weight: 700; }
-.stoplist .behind { color: var(--critical-text); font-weight: 700; }
-
+.golive { border: 2px solid var(--jam); background: transparent; color: var(--critical-text); border-radius: 6px; padding: 3px 10px; font-weight: 800; font-size: 13px; cursor: pointer; }
 /* leaflet markers */
 .pin { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font: 800 13px/1 var(--font-body);
   background: #fffaf0; color: #4a3426; border: 3px solid var(--series-1); box-shadow: 0 1px 4px rgba(0,0,0,.3); transition: background .2s; }
@@ -137,6 +127,15 @@ h2 { margin: 0 0 8px; font-size: 20px; font-weight: 600; }
 .flags .no { color: var(--critical-text); }
 .flags .info { color: var(--text-secondary); }
 .flags small { display: block; color: var(--text-secondary); }
+.flags .ok { color: var(--good-text); }
+.flags .body { flex: 1 1 auto; }
+.flags .actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.act { border: 1.5px solid var(--rule); background: var(--surface-2); color: var(--text-primary); font-size: 14px; font-weight: 700;
+  padding: 5px 10px; border-radius: 6px; cursor: pointer; min-height: 34px; }
+.act:hover { border-color: var(--text-muted); }
+.act.tick[aria-pressed="true"] { border-color: var(--good); color: var(--good-text); }
+.flags li.done b, .flags li.done small { color: var(--text-muted); text-decoration: line-through; text-decoration-thickness: 1px; }
+.flags li.note { font-size: 13px; color: var(--text-secondary); display: block; }
 
 /* ---------- minute by minute ---------- */
 .timeline { list-style: none; margin: 0; padding: 0; }
@@ -149,10 +148,23 @@ h2 { margin: 0 0 8px; font-size: 20px; font-weight: 600; }
 .timeline .stop .what { font-weight: 700; }
 .timeline .leave .what, .timeline .back .what { font-style: italic; }
 .timeline .sub { display: block; font-size: 14px; color: var(--text-secondary); font-weight: 400; }
-.chip { display: inline-block; font-size: 12px; font-weight: 700; padding: 1px 8px; border-radius: 999px; margin: 3px 4px 0 0; border: 1.5px solid; background: var(--surface-2); }
-.chip.fresh { color: var(--good-text); border-color: var(--good); }
-.chip.stale { color: var(--stale-text); border-color: var(--serious); }
-.chip.late { color: var(--critical-text); border-color: var(--critical); }
+.fresh-summary { margin: 0 0 8px; font-size: 15px; }
+.fresh-summary .ok-text { color: var(--good-text); font-weight: 800; }
+.fresh-summary .warn-text { color: var(--stale-text); font-weight: 800; }
+.timeline .stop { cursor: pointer; border-radius: 4px; }
+.timeline .stop:hover { background: var(--surface-2); }
+.timeline .stop .what b { font-weight: 800; }
+.timeline .sn { display: inline-grid; place-items: center; width: 22px; height: 22px; margin-right: 7px; border-radius: 50%;
+  border: 2px solid var(--series-1); font-size: 12px; font-weight: 800; vertical-align: 1px; }
+.timeline .warn { display: block; font-size: 14px; font-weight: 700; color: var(--stale-text); }
+.timeline .problem { box-shadow: -9px 0 0 -6px var(--serious); }
+.timeline li.past { opacity: .5; }
+.timeline li.now { background: var(--sky-soft); }
+.timeline li.now .sn { background: var(--jam); border-color: var(--jam); color: #fff; }
+.timeline li.flash { animation: flash 1.4s ease-out; }
+@keyframes flash { 0% { background: var(--sky-soft); } 100% { background: transparent; } }
+.section-break { font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted);
+  font-family: var(--font-body); margin: 26px 4px 10px; padding-top: 12px; border-top: 2px solid var(--rule); }
 
 .money table, .table-wrap table { width: 100%; border-collapse: collapse; font-size: 14px; }
 .table-wrap { overflow-x: auto; }
@@ -192,4 +204,4 @@ figcaption { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
   .tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .map { height: 400px; }
 }
-@media (prefers-reduced-motion: reduce) { .now-line .live::before { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .now-line .live::before, .timeline li.flash { animation: none; } }

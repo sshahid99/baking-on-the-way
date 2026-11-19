@@ -1,6 +1,6 @@
 // Reads data/dashboard.json (exported from the database by `python -m bakery export`) and draws the page.
 "use strict";
-window.MAP_VERSION = 2;  // bump together with ?v= in index.html so phones fetch the new script
+window.MAP_VERSION = 3;  // bump together with ?v= in index.html so phones fetch the new script
 // Any script error shows on the page instead of failing silently.
 window.addEventListener("error", (e) => {
   const box = document.getElementById("map");
@@ -40,30 +40,18 @@ function render(d) {
       <div class="fact"><b>${pct(rs.expected_fresh)}</b><span>arrive &lt; 15 min from oven</span></div>
       <div class="fact"><b>${rs.back}</b><span>back at the kitchen</span></div>
     </div>
-    <p class="why">Why this oven? Expected profit with each size: ${ovenWhy}. The ${ovenWord[rs.oven]} oven holds ${rs.oven_pieces} kolaches at once.</p>`;
+    <p class="why">Why this oven? Expected profit with each size: ${ovenWhy}. The ${ovenWord[rs.oven]} oven holds ${rs.oven_pieces} kolaches at once.</p>
+    ${approved ? "" : `<p class="waiting">Not approved yet. Say "approve" to the planner when you've read this; nothing is sent until you do.</p>`}
+    <a class="todo-link" id="todo-link" href="#attention-card" hidden></a>`;
 
-  // ---------- 1b. the route map ----------
-  try { initRoute(d.route); } catch (e) { $("map").innerHTML = `<p class="fallback">The map could not be drawn (${esc(e.message)}). The stop list below still works.</p>`; }
+  // ---------- 2. needs your eye: every decision and issue gets something Rosa can do about it ----------
+  renderAttention(rs);
 
-  // ---------- 2. needs your eye ----------
-  const items = [];
-  rs.declined.forEach((x) => items.push(`<li><span class="icon no" aria-label="declined">✕</span><div><b>Say no: ${esc(x.customer)}</b><small>${esc(x.why.replace(/^\[C\d+\] /, ""))}</small></div></li>`));
-  rs.flags.forEach((f) => items.push(`<li><span class="icon info" aria-label="note">!</span><div>${esc(f.customer ? f.customer + ": " : "")}${esc(f.text)}</div></li>`));
-  $("attention").innerHTML = items.length ? items.join("") : `<li><span class="icon info">✓</span><div>Nothing unusual in tonight's orders.</div></li>`;
+  // ---------- 3. minute by minute (stops here are also the route's stop list) ----------
+  renderTimeline(rs);
 
-  // ---------- 3. timeline ----------
-  $("timeline").innerHTML = rs.events.map((e) => {
-    let sub = "";
-    if (e.kind === "load") sub = `<span class="sub">out of the oven ${e.out}</span>`;
-    if (e.kind === "stop") {
-      const chips = [];
-      chips.push(e.oldest_tray_min < 15 ? `<span class="chip fresh">✓ fresh (${e.oldest_tray_min} min)</span>`
-        : `<span class="chip stale">oldest tray ${e.oldest_tray_min} min · discount</span>`);
-      if (e.late) chips.push(`<span class="chip late">late · 20% off</span>`);
-      sub = `<span class="sub">${esc(e.detail)}</span>${chips.join("")}`;
-    }
-    return `<li class="${e.kind}"><span class="t">${e.time}</span><span class="what">${esc(e.text)}${sub}</span></li>`;
-  }).join("");
+  // ---------- 3b. the route map ----------
+  try { initRoute(d.route); } catch (e) { $("map").innerHTML = `<p class="fallback">The map could not be drawn (${esc(e.message)}). The minute-by-minute list above still has every time.</p>`; }
   const c = rs.costs;
   $("money").innerHTML = `<table>
     <tr><td>Sales (after freshness discounts)</td><td class="n">${money(c.revenue)}</td></tr>
@@ -124,6 +112,106 @@ function render(d) {
 
 function tile(v, l, s) { return `<div class="tile"><div class="v">${v}</div><div class="l">${l}</div><div class="s">${s}</div></div>`; }
 function passFail(ok, text) { return `<span class="s ${ok ? "pass" : "fail"}">${ok ? "✓ met" : "✕ not met"} · ${text}</span>`; }
+
+// ---------- needs your eye ----------
+// The page is static, so it cannot change the plan. What Rosa can do here: copy a ready message for a café
+// she is saying no to, and tick each item off. Ticks are kept in this phone's browser (localStorage), per morning.
+const tickKey = (day, id) => `bakery:${day}:${id}`;
+const getTick = (k) => { try { return localStorage.getItem(k) === "1"; } catch (e) { return false; } };
+const setTick = (k, on) => { try { on ? localStorage.setItem(k, "1") : localStorage.removeItem(k); } catch (e) { /* private mode: tick lasts until reload */ } };
+
+function sayNoMessage(x, day) {
+  const weekday = new Date(day + "T12:00:00").toLocaleDateString("en-US", { weekday: "long" });
+  const rule = (/^\[(C\d+)\]/.exec(x.why) || [])[1];
+  const why = rule === "C4" ? "your address is outside the area the van can reach in time"
+    : rule === "C5" ? "the order reached us after our 9 PM cutoff"
+    : x.by === "planner" ? "I can't reach you by the time you asked for without making other deliveries late"
+    : "I couldn't fit it in this time";
+  const next = rule === "C5" ? " Orders in by 9 PM always make the next morning."
+    : x.by === "planner" ? " A later wanted-by time would help me fit you in next time." : "";
+  return `Hi ${x.customer}, this is Rosa from Baking on the Way. I'm sorry, I can't deliver your kolache order on ${weekday} morning: ${why}.${next}`;
+}
+
+function renderAttention(rs) {
+  const day = rs.delivery_date, list = $("attention");
+  const items = [
+    ...rs.declined.map((x) => ({ id: "no:" + x.customer, kind: "no", title: `Say no to ${x.customer}`,
+      text: x.why.replace(/^\[C\d+\] /, ""), msg: sayNoMessage(x, day), tick: "Told them" })),
+    ...rs.flags.map((f, i) => ({ id: `flag:${f.rule}:${f.customer || ""}:${i}`, kind: "info",
+      title: f.customer || "Order sheet", text: f.text, tick: "Seen" })),
+  ];
+  if (!items.length) {
+    list.innerHTML = `<li><span class="icon ok">✓</span><div>Nothing unusual in tonight's orders.</div></li>`;
+    $("attention-hint").hidden = true;
+    return;
+  }
+  list.innerHTML = items.map((it, i) => `<li data-i="${i}">
+      <span class="icon ${it.kind}" aria-hidden="true">${it.kind === "no" ? "✕" : "!"}</span>
+      <div class="body"><b>${esc(it.title)}</b><small>${esc(it.text)}</small>
+        <div class="actions">
+          ${it.msg ? `<button type="button" class="act copy">Copy a message for them</button>` : ""}
+          <button type="button" class="act tick" aria-pressed="false">${it.tick}</button>
+        </div></div></li>`).join("") +
+    (rs.declined.length ? `<li class="note">Want a declined order after all? Ask for tonight's plan to be run again with it; the planner re-checks the whole route.</li>` : "");
+  const update = () => {
+    let done = 0;
+    list.querySelectorAll("li[data-i]").forEach((li) => {
+      const it = items[+li.dataset.i], on = getTick(tickKey(day, it.id));
+      li.classList.toggle("done", on); done += on;
+      const b = li.querySelector(".tick");
+      b.setAttribute("aria-pressed", on); b.textContent = on ? `✓ ${it.tick}` : it.tick;
+    });
+    const link = $("todo-link");
+    if (link) {
+      link.hidden = false;
+      link.textContent = done === items.length ? `✓ All ${items.length} things that needed your eye are handled`
+        : `${items.length - done} of ${items.length} things need your eye before you leave ↓`;
+      link.classList.toggle("all-done", done === items.length);
+    }
+  };
+  list.querySelectorAll("li[data-i]").forEach((li) => {
+    const it = items[+li.dataset.i];
+    li.querySelector(".tick").addEventListener("click", () => { setTick(tickKey(day, it.id), !getTick(tickKey(day, it.id))); update(); });
+    const copy = li.querySelector(".copy");
+    if (copy) copy.addEventListener("click", () => {
+      const done = () => { copy.textContent = "Copied. Paste it into a text or email"; setTimeout(() => (copy.textContent = "Copy a message for them"), 4000); };
+      if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(it.msg).then(done, () => window.prompt("Copy this message:", it.msg));
+      else window.prompt("Copy this message:", it.msg);
+    });
+  });
+  update();
+}
+
+// ---------- minute by minute ----------
+// Freshness is only called out where something is wrong (old tray or late); fresh stops just show the minutes.
+let routeApi = null;  // set by initRoute so a tap on a stop can move the map
+function renderTimeline(rs) {
+  const stops = rs.events.filter((e) => e.kind === "stop");
+  const problems = stops.filter((e) => e.oldest_tray_min >= 15 || e.late);
+  const name = (e) => e.text.replace(/^Stop \d+: /, "");
+  $("fresh-summary").innerHTML = problems.length
+    ? `<span class="warn-text">${stops.length - problems.length} of ${stops.length} stops get their kolaches fresh and on time.</span> Check ${problems.map((e) => esc(name(e))).join(", ")} below.`
+    : `<span class="ok-text">✓</span> All ${stops.length} stops get their kolaches less than 15 minutes out of the oven, on time.`;
+  $("timeline").innerHTML = rs.events.map((e) => {
+    if (e.kind === "stop") {
+      const warn = [];
+      if (e.oldest_tray_min >= 15) warn.push(`⚠ Oldest tray is ${e.oldest_tray_min} min out of the oven, so they pay ${e.oldest_tray_min < 30 ? "80%" : "60%"} of the price`);
+      if (e.late) warn.push("⚠ Arrives after their wanted-by time: 20% off");
+      return `<li class="stop${warn.length ? " problem" : ""}" data-seq="${e.seq}" data-min="${e.min}" tabindex="0" role="button" aria-label="Show stop ${e.seq} on the map">
+        <span class="t">${e.time}</span>
+        <span class="what"><span class="sn">${e.seq}</span><b>${esc(name(e))}</b>
+          <span class="sub">${esc(e.detail)} · ${e.oldest_tray_min} min from the oven</span>
+          ${warn.map((w) => `<span class="warn">${w}</span>`).join("")}</span></li>`;
+    }
+    const sub = e.kind === "load" ? `<span class="sub">out of the oven ${e.out}</span>` : "";
+    return `<li class="${e.kind}" data-min="${e.min}"><span class="t">${e.time}</span><span class="what">${esc(e.text)}${sub}</span></li>`;
+  }).join("");
+  $("timeline").querySelectorAll("li.stop").forEach((li) => {
+    const go = () => { if (!routeApi) return; routeApi.showStop(+li.dataset.seq); $("route-card").scrollIntoView({ behavior: "smooth", block: "start" }); };
+    li.addEventListener("click", go);
+    li.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); go(); } });
+  });
+}
 
 // ---------- a small SVG line chart: one y-axis, thin 2px lines, legend + direct end labels, crosshair tooltip ----------
 function lineChart(el, rows, series, fmt, zeroLine, domain) {
@@ -217,7 +305,7 @@ function vanAt(segs, m) {
 
 function initRoute(R) {
   if (!R || !R.next) { $("route-card").hidden = true; return; }
-  if (!window.L) $("map").innerHTML = `<p class="fallback">The street map needs an internet connection. The stop list below still has every time.</p>`;
+  if (!window.L) $("map").innerHTML = `<p class="fallback">The street map needs an internet connection. The minute-by-minute list above still has every time.</p>`;
   const fake = /^(\d{1,2}):(\d{2})$/.exec(new URLSearchParams(location.search).get("now") || "");
   const fakeOffset = fake ? (+fake[1] * 60 + +fake[2]) - nowMin() : 0;
   const clockNow = () => nowMin() + fakeOffset;
@@ -249,27 +337,7 @@ function initRoute(R) {
     scrub.min = Math.floor(r.leave_min - 10); scrub.max = Math.ceil(r.back_min + 5); scrub.step = 0.5;
     $("map-note").textContent = mode === "next"
       ? "Planned times. Lines join the stops in order; the van follows real roads between them."
-      : "Actual arrival times from the van's log, with the planned time beside each one.";
-
-    $("stoplist").innerHTML = r.stops.map((s) => {
-      let when;
-      if (mode === "next") {
-        when = `arrive ${s.arrive}${s.handoff !== s.arrive ? ` · hand off ${s.handoff}` : ""} · leave ${s.depart}`;
-      } else if (s.arrive_min == null) {
-        when = `no GPS · planned ${s.planned_arrive}`;
-      } else {
-        const [ph, pm] = s.planned_arrive.split(":").map(Number), diff = Math.round(s.arrive_min - (ph * 60 + pm));
-        const tag = diff === 0 ? "on time" : diff < 0 ? `<span class="early">${-diff} min early</span>` : `<span class="behind">${diff} min late</span>`;
-        when = `arrived ${s.arrive} · planned ${s.planned_arrive} · ${tag}`;
-      }
-      return `<li data-seq="${s.seq}"><span class="n">${s.seq}</span><span class="what"><b>${esc(s.customer)}</b><small>${when} · ${s.pieces} kolaches</small></span></li>`;
-    }).join("");
-    $("stoplist").querySelectorAll("li").forEach((li) => li.addEventListener("click", () => {
-      const s = r.stops.find((x) => x.seq === +li.dataset.seq);
-      if (s.arrive_min == null) return;
-      stopLive(); pause(); setTime(s.arrive_min);
-      if (map) map.panTo([s.lat, s.lon]);
-    }));
+      : "Actual arrival times from the van's log. Tap a pin for planned vs actual; the full table is under Last morning.";
 
     if (map) {
       if (layer) layer.remove();
@@ -283,7 +351,8 @@ function initRoute(R) {
       r.stops.forEach((s) => {
         const when = mode === "next" ? "arrive " + s.arrive : s.arrive_min == null ? "no GPS" : `arrived ${s.arrive} (planned ${s.planned_arrive})`;
         pins[s.seq] = L.marker([s.lat, s.lon], { icon: L.divIcon({ className: "", html: `<div class="pin${s.arrive_min == null ? " nogps" : ""}">${s.seq}</div>`, iconSize: [28, 28], iconAnchor: [14, 14] }) })
-          .bindTooltip(`${s.seq}. ${esc(s.customer)}<br>${when}`).addTo(layer);
+          .bindTooltip(`${s.seq}. ${esc(s.customer)}<br>${when}`).addTo(layer)
+          .on("click", () => { if (state.mode === "next") jumpToRow(s.seq); });
       });
       van = L.marker([R.depot.lat, R.depot.lon], { icon: L.divIcon({ className: "", html: '<div class="van" aria-label="van">🚐</div>', iconSize: [38, 38], iconAnchor: [19, 19] }), zIndexOffset: 1000 }).addTo(layer);
       map.fitBounds(L.latLngBounds(path).pad(0.12));
@@ -301,11 +370,10 @@ function initRoute(R) {
     // a stop is "done" once the van has left it, "now" while the van is there or driving to it
     r.stops.forEach((s) => {
       const st = s.depart_min != null && state.t >= s.depart_min ? "done" : p.stop === s.seq ? "now" : "";
-      const li = $("stoplist").querySelector(`li[data-seq="${s.seq}"]`);
-      if (li) li.className = st;
       const el = pins[s.seq] && pins[s.seq].getElement() && pins[s.seq].getElement().querySelector(".pin");
       if (el) el.className = "pin " + st + (s.arrive_min == null ? " nogps" : "");
     });
+    markTimeline(p);
     if (van) {
       van.setLatLng([p.lat, p.lon]);
       const trail = [[R.depot.lat, R.depot.lon]];
@@ -316,6 +384,32 @@ function initRoute(R) {
       trailLine.setLatLngs(trail);
     }
   }
+
+  // In "next run" mode the minute-by-minute list follows the van: past lines fade, the current stop is marked.
+  function markTimeline(p) {
+    const next = state.mode === "next";
+    document.querySelectorAll("#timeline li").forEach((li) => {
+      const seq = +li.dataset.seq, s = seq ? state.r.stops.find((x) => x.seq === seq) : null;
+      const end = s ? s.depart_min : +li.dataset.min;
+      li.classList.toggle("past", next && state.t >= end);
+      li.classList.toggle("now", next && !!seq && p.stop === seq && state.t < end);
+    });
+  }
+  function jumpToRow(seq) {
+    const li = document.querySelector(`#timeline li[data-seq="${seq}"]`);
+    if (!li) return;
+    li.scrollIntoView({ behavior: "smooth", block: "center" });
+    li.classList.remove("flash"); void li.offsetWidth; li.classList.add("flash");
+  }
+  routeApi = {
+    showStop(seq) {
+      if (state.mode !== "next") { stopLive(); pause(); draw("next"); }
+      const s = state.r.stops.find((x) => x.seq === seq);
+      if (!s || s.arrive_min == null) return;
+      stopLive(); pause(); setTime(s.arrive_min + 0.5);
+      if (map) map.panTo([s.lat, s.lon]);
+    },
+  };
 
   // replay: one minute of the morning every 120 ms (a 2-hour run takes about 15 seconds)
   function frame(ts) {
