@@ -12,7 +12,7 @@ import os
 from datetime import datetime, timezone
 
 from sqlalchemy import (Column, Float, Integer, MetaData, String, Table, Text, create_engine,
-                        delete, insert, select)
+                        delete, insert, inspect, select, text)
 
 from . import config
 
@@ -47,7 +47,12 @@ runs = Table("runs", meta,
     Column("actual_profit", Float), Column("actual_fresh", Float), Column("actual_back_at", Float),
     Column("refused_pieces", Integer), Column("median_gap_min", Float),
     Column("rounds", Integer), Column("per_oven_json", Text), Column("bls_months", String(80)),
-    Column("drive_source", String(200)), Column("created_at", String(32)))
+    Column("drive_source", String(200)), Column("created_at", String(32)),
+    # Planning time (decision G4, 2026-11-19): clock starts when `clean` starts, stops at Rosa's `approve`.
+    Column("cleaned_at", String(32)), Column("approved_at", String(32)))
+
+# Columns added after the first release: create_all() does not add columns to an existing table.
+_ADDED_COLUMNS = {"runs": ["cleaned_at", "approved_at"]}
 
 stops = Table("stops", meta,
     Column("id", Integer, primary_key=True, autoincrement=True),
@@ -107,7 +112,18 @@ def engine():
             path = os.environ.get("BAKERY_SQLITE") or str(config.OUTPUT / "bakery.db")  # evaluate.py uses a temp file
             _engine = create_engine(f"sqlite:///{path}")
         meta.create_all(_engine)
+        _add_missing_columns(_engine)
     return _engine
+
+
+def _add_missing_columns(e):
+    insp = inspect(e)
+    for table, cols in _ADDED_COLUMNS.items():
+        have = {c["name"] for c in insp.get_columns(table)}
+        for col in cols:
+            if col not in have:
+                with e.begin() as c:
+                    c.execute(text(f"ALTER TABLE {table} ADD COLUMN {col} VARCHAR(32)"))
 
 
 def where():
@@ -170,7 +186,7 @@ def save_run(day, planner, plan, res, extra):
             van_cost=res["van_cost"], oven_cost=res["oven_cost"], ingredient_cost=res["ingredient_cost"],
             pieces=res["pieces"], rounds=extra.get("rounds"), per_oven_json=json.dumps(extra.get("per_oven", {})),
             bls_months=extra.get("bls_months", ""), drive_source=extra.get("drive_source", ""),
-            created_at=now())).inserted_primary_key[0]
+            created_at=now(), cleaned_at=extra.get("cleaned_at"))).inserted_primary_key[0]
         c.execute(insert(stops), [{
             "run_id": rid, "seq": i + 1, "customer_id": s["customer_id"], "planned_curb": s["curb"],
             "planned_deliver": s["deliver"], "wanted_by": extra["wanted"][s["customer_id"]], "pieces": s["pieces"],
@@ -236,3 +252,17 @@ def set_status(day, status):
     with engine().begin() as c:
         c.execute(runs.update().where((runs.c.delivery_date == day) & (runs.c.planner == "planner")
                                       & (runs.c.status != "done")).values(status=status))
+
+
+def mark_approved_by_rosa(day):
+    """`python -m bakery approve`: status approved + the time she approved (G4). Backfill does not call
+    this, so only real approvals are timed. Returns minutes from cleaning to approval, or None."""
+    stamp = now()
+    with engine().begin() as c:
+        c.execute(runs.update().where((runs.c.delivery_date == day) & (runs.c.planner == "planner")
+                                      & (runs.c.status != "done")).values(status="approved", approved_at=stamp))
+        start = c.execute(select(runs.c.cleaned_at).where(
+            (runs.c.delivery_date == day) & (runs.c.planner == "planner"))).scalar()
+    if not start:
+        return None
+    return (datetime.fromisoformat(stamp) - datetime.fromisoformat(start)).total_seconds() / 60

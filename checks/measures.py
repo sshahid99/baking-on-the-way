@@ -8,10 +8,17 @@
    (target: <= 5 min after recalibration). Decision 2026-11-18: the plain median gap per stop is
    reported too, but it was already low before learning, so it cannot show the learning.
    "Before" = first 10 mornings (little or no history), "after" = last 20 mornings.
+3b. Planning time (decision G4, 2026-11-19): minutes from `clean` starting to Rosa's `approve`, live
+   /plan-run mornings only (target: under 5 min; "about 45 by hand" is our proposal estimate, not measured).
+   Runs before G4 have no timestamps: they are reconstructed from the trace's "plan written" time to the
+   "Run sheet <date>" commit, and labelled so. Nov 9 is left out: it was re-planned after a fix (errors #8).
 """
 import json
+import re
 import statistics as st
+import subprocess
 import sys
+from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -21,9 +28,51 @@ from sqlalchemy import select  # noqa: E402
 from bakery import db  # noqa: E402
 
 
+PLANNING_TARGET_MIN = 5          # proposal section 6, measure 3
+BY_HAND_ESTIMATE_MIN = 45        # proposal estimate, never measured (G4)
+NOT_RECONSTRUCTED = {"2026-11-09": "re-planned after a wording fix, so its plan time is the second try (errors #8)"}
+
+
+def _minutes(a, b):
+    return round((datetime.fromisoformat(b) - datetime.fromisoformat(a)).total_seconds() / 60, 1)
+
+
+def _commit_time(day):
+    try:
+        out = subprocess.run(["git", "log", "--format=%cI", f"--grep=^Run sheet {day}$"], cwd=ROOT,
+                             capture_output=True, text=True, timeout=20).stdout.split()
+    except (OSError, subprocess.SubprocessError):
+        return None
+    return out[-1] if out else None  # oldest matching commit
+
+
+def planning_times(runs):
+    """One row per live /plan-run morning: measured (G4 timestamps) or reconstructed (trace + git)."""
+    rows = {}
+    for r in runs:
+        if r["planner"] == "planner" and r.get("cleaned_at") and r.get("approved_at"):
+            rows[r["delivery_date"]] = {"day": r["delivery_date"], "minutes": _minutes(r["cleaned_at"], r["approved_at"]),
+                                        "how": "measured: cleaning started -> Rosa approved"}
+    for t in sorted((ROOT / "work" / "runs").glob("*-trace.md")):
+        day = t.name[:10]
+        text = t.read_text(encoding="utf-8")
+        if day in rows or "plan-reviewer" not in text:
+            continue
+        if day in NOT_RECONSTRUCTED:
+            rows[day] = {"day": day, "minutes": None, "how": "left out: " + NOT_RECONSTRUCTED[day]}
+            continue
+        m = re.search(r"Written by `python -m bakery plan` at (\S+?)\.", text)
+        end = _commit_time(day)
+        if m and end:
+            rows[day] = {"day": day, "minutes": _minutes(m.group(1), end),
+                         "how": "reconstructed from git: plan written -> 'Run sheet' commit"}
+    return [rows[d] for d in sorted(rows)]
+
+
 def compute():
     with db.engine().connect() as c:
-        runs = [dict(r) for r in c.execute(select(db.runs).where(db.runs.c.status == "done")).mappings()]
+        all_runs = [dict(r) for r in c.execute(select(db.runs)).mappings()]
+        runs = [r for r in all_runs if r["status"] == "done"]
         gaps = [dict(r) for r in c.execute(select(db.arrival_gaps)).mappings()]
     plan = {r["delivery_date"]: r for r in runs if r["planner"] == "planner"}
     old = {r["delivery_date"]: r for r in runs if r["planner"] == "old_rule"}
@@ -65,10 +114,18 @@ def compute():
         "refused_pieces_after": sum(plan[d]["refused_pieces"] for d in days[-20:]),
         "profit_gain_per_morning": round(st.mean(p_profit) - st.mean(o_profit), 2),
     }
+    pt = planning_times(all_runs)
+    mins = [r["minutes"] for r in pt if r["minutes"] is not None]
+    m["planning_time"] = {
+        "runs": pt, "counted": len(mins), "measured": sum(1 for r in pt if r["how"].startswith("measured")),
+        "median_min": st.median(mins) if mins else None, "slowest_min": max(mins) if mins else None,
+        "target_min": PLANNING_TARGET_MIN, "by_hand_estimate_min": BY_HAND_ESTIMATE_MIN,
+    }
     m["targets"] = {
         "profit_uplift_at_least_15pct": uplift is not None and uplift >= 0.15,
         "fresh_at_least_85pct": p_fresh >= 0.85,
         "worst_gap_after_at_most_5min": m["worst_gap_after"] is not None and m["worst_gap_after"] <= 5,
+        "planning_under_5min": bool(mins) and max(mins) < PLANNING_TARGET_MIN,  # every counted run, not the median
     }
     return m
 
@@ -89,6 +146,13 @@ def main():
           f"{m['targets']['worst_gap_after_at_most_5min']}")
     print(f"  learning: plan over-promised ${m['overpromise_per_morning_before']:.0f}/morning (first 10) -> "
           f"${m['overpromise_per_morning_after']:.0f} (last 20); pieces refused {m['refused_pieces_before']} -> {m['refused_pieces_after']}")
+    p = m["planning_time"]
+    if p["counted"]:
+        print(f"3b planning time, order sheet to approval: median {p['median_min']:.1f} min, slowest {p['slowest_min']:.1f} min "
+              f"over {p['counted']} live runs ({p['measured']} measured, the rest reconstructed)  target < {p['target_min']}: "
+              f"{m['targets']['planning_under_5min']}  (by hand: ~{p['by_hand_estimate_min']} min, our estimate, not measured)")
+    for r in p["runs"]:
+        print(f"   {r['day']}: {'-' if r['minutes'] is None else str(r['minutes']) + ' min'}  ({r['how']})")
 
 
 if __name__ == "__main__":

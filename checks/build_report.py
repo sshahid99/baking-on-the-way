@@ -35,7 +35,20 @@ def block_measures():
 | Worst-stop arrival error, last 20 mornings | ≤ 5 min | {m['worst_gap_after']:.1f} min (first 10: {m['worst_gap_before']:.1f}) | – | {ok(t['worst_gap_after_at_most_5min'])} |
 | Median stop arrival error (proposal's original measure) | ≤ 5 min | {m['median_gap_after']:.1f} min (first 10: {m['median_gap_before']:.1f}) | – | met, but it was met before any learning (decisions G3) |
 | Plan's profit over-promise per morning | (learning effect) | ${m['overpromise_per_morning_after']:.0f} last 20 (first 10: ${m['overpromise_per_morning_before']:.0f}) | – | – |
-| Pieces refused (pantry), planner | (learning effect) | {m['refused_pieces_after']} in last 20 mornings (first 10: {m['refused_pieces_before']}) | – | – |"""
+| Pieces refused (pantry), planner | (learning effect) | {m['refused_pieces_after']} in last 20 mornings (first 10: {m['refused_pieces_before']}) | – | – |
+{planning_row(m)}"""
+
+
+def planning_row(m):
+    p = m["planning_time"]
+    if not p["counted"]:
+        return "| Planning time, order sheet to Rosa's approval | < 5 min | no live runs timed yet | ~45 min by hand (our estimate, not measured) | – |"
+    ok = "met" if m["targets"]["planning_under_5min"] else "**not met**"
+    rec = p["counted"] - p["measured"]
+    how = f"{p['measured']} measured" + (f", {rec} reconstructed from git, see decisions G4" if rec else "")
+    return (f"| Planning time, order sheet to Rosa's approval (live `/plan-run`s) | < 5 min | median {p['median_min']:.1f} min, "
+            f"slowest {p['slowest_min']:.1f} min over {p['counted']} runs ({how}) | ~{p['by_hand_estimate_min']} min by hand "
+            f"(our estimate, not measured) | {ok} on every run |")
 
 
 def block_runs():

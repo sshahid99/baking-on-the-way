@@ -222,11 +222,13 @@ def check_clean(result):
 
 
 def main(path):
+    started = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")  # G4: planning-time clock starts here
     try:
         result = clean_file(path)
     except CleaningError as e:
         print(f"STOPPED at cleaning: {e}", file=sys.stderr)
         sys.exit(2)
+    result["cleaned_at"] = started
     config.CLEAN_DIR.mkdir(parents=True, exist_ok=True)
     out = config.CLEAN_DIR / f"{result['delivery_date']}.json"
     out.write_text(json.dumps(result, indent=1), encoding="utf-8")

@@ -51,8 +51,9 @@ def main():
             export.main()
         elif args.cmd == "approve":
             from . import db
-            db.set_status(args.date, "approved")
-            print(f"Plan for {args.date} marked approved by Rosa")
+            mins = db.mark_approved_by_rosa(args.date)
+            took = f" ({mins:.1f} min from cleaning the order sheet to your approval)" if mins is not None else ""
+            print(f"Plan for {args.date} marked approved by Rosa{took}")
         elif args.cmd == "drive":
             pipeline.drive_morning(args.date)
         elif args.cmd == "backfill":
