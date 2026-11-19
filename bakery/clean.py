@@ -131,8 +131,10 @@ def clean_file(path) -> dict:
                                        f"tell if it beat the 9 PM cutoff. Check with the customer."})
             continue
         if sub > cutoff:  # C5
-            declined.append({"order_id": oid, "customer": c["name"], "rule": "C5",
-                             "reason": f"Submitted at {sub.strftime('%I:%M %p').lstrip('0')}, after the 9 PM cutoff."})
+            what = ", ".join(f"{ln['quantity']} {ln['item']}" for ln in lines)
+            declined.append({"order_id": oid, "customer": c["name"], "rule": "C5", "customer_id": c["customer_id"],
+                             "reason": f"Order {oid} ({what}) was submitted at "
+                                       f"{sub.strftime('%I:%M %p').lstrip('0')}, after the 9 PM cutoff."})
             continue
         by_customer[c["customer_id"]].append((sub, oid, lines, c))
 
@@ -185,6 +187,14 @@ def clean_file(path) -> dict:
             "revenue_full": round(sum(x["qty"] * x["price"] for x in out_lines), 2),
         })
 
+    # C5c (2026-11-18, found in the first live /plan-run): if the same customer still has an on-time
+    # order on the sheet, say so - "say no to Uptown" must not read as "Uptown is off the route".
+    on_route = {o["customer_id"]: o for o in accepted}
+    for d in declined:
+        o = on_route.get(d.pop("customer_id", None))
+        if o and d["rule"] in ("C5", "C6"):
+            d["reason"] += (f" Only this order is declined: their order {o['order_id']} "
+                            f"({o['pieces']} pcs) is still on the route.")
     result = {"delivery_date": day.isoformat(), "source_file": path.name,
               "raw_rows": len(rows), "orders": sorted(accepted, key=lambda o: o["customer_id"]),
               "declined_at_cleaning": declined, "flags": flags}
