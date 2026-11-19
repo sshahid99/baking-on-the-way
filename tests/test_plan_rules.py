@@ -196,3 +196,15 @@ def test_day_file_check_catches_a_finished_morning_without_actuals():
     assert any("no actual arrival" in x for x in validate_day("2026-10-05", day))
     events[1]["actual"] = {"curb": "5:20"}
     assert validate_day("2026-10-05", day) == []
+
+
+def test_replaced_order_says_the_newer_one_is_still_on_the_route():
+    """C5c also covers C6: on Nov 13 Ellum Grind and Harwood Clinic resubmitted. "Say no to Ellum Grind"
+    must not read as "Ellum Grind is off the route" (caught by the plan-reviewer, 2026-11-19)."""
+    result = clean.clean_file(config.RAW / "orders" / "orders_2026-11-13.csv")
+    on_route = {o["customer"] for o in result["orders"]}
+    replaced = [d for d in result["declined_at_cleaning"] if d["rule"] == "C6"]
+    assert replaced, "the Nov 13 sheet has resubmissions"
+    for d in replaced:
+        if d["customer"] in on_route:
+            assert "still on the route" in d["reason"], d

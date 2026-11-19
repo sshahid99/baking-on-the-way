@@ -142,8 +142,8 @@ def clean_file(path) -> dict:
     for cid, subs in by_customer.items():
         subs.sort(key=lambda s: (s[0], s[1]))
         for sub, oid, _, c in subs[:-1]:  # C6 latest on-time submission replaces earlier ones
-            declined.append({"order_id": oid, "customer": c["name"], "rule": "C6",
-                             "reason": f"Replaced by a later submission ({subs[-1][1]})."})
+            declined.append({"order_id": oid, "customer": c["name"], "rule": "C6", "customer_id": c["customer_id"],
+                             "reason": f"Replaced by a later submission ({subs[-1][1]})."})  # customer_id: C5c below
         sub, oid, lines, c = subs[-1]
         out_lines = []
         for ln in lines:
