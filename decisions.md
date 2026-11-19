@@ -88,6 +88,7 @@ do not edit the old one.
 | id | date | rule | who |
 |---|---|---|---|
 | S1 | 2026-11-18 | **Database (instructor feedback "SQLite only works on your laptop").** One SQLAlchemy schema. With `DATABASE_URL` in a git-ignored `.env` it writes to a free cloud MySQL (Aiven); without it, SQLite in `output/`, so CI and a fresh copy still run with no secrets. | Team |
+| S1b | 2026-11-18 | **Stay on SQLite; no cloud database.** The instructor's note was a suggestion. A cloud MySQL needs a password in `.env`, which a fresh copy of the repo (the instructor's fresh-start test) does not have, and GitHub Pages cannot query a database anyway: the dashboard reads the exported JSON. The MySQL path stays in `bakery/db.py`, switched on only by `DATABASE_URL`, if a real business later needs several people writing at once. | Team |
 | S2 | 2026-11-18 | The dashboard is static (GitHub Pages) and reads one exported JSON file; the export never includes connection details (checked by `checks/validate_site.py`). | Agent → Team |
 | S3 | 2026-11-18 | First screen = the decision: oven, leave time, how many to decline, expected profit vs old way. Then "needs your eye" flags, then one minute-by-minute list mixing LOAD and STOP lines. Trends below. | Team |
 | S4 | 2026-11-18 | The reviewer subagent uses `checks/verify_plan.py`, which re-types the rules instead of importing the planner, so a planner bug cannot hide in both places. | Agent → Team |

@@ -59,7 +59,7 @@ writes `data/raw/logs/log_2026-11-09.csv`, which you pass to the next night's `/
 **Checks:** `python -m pytest -q tests` · `python checks/measures.py` (the three goals) ·
 `python checks/evaluate.py` (small evaluation, 6 cases).
 
-### Optional: cloud MySQL (instructor feedback)
+### Optional: cloud MySQL (not used; see decisions.md S1b)
 Create a free MySQL service on Aiven, then put this in a file named `.env` (git-ignored):
 ```
 DATABASE_URL=mysql://avnadmin:PASSWORD@HOST:PORT/defaultdb?ssl-mode=REQUIRED

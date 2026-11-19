@@ -7,3 +7,4 @@ output/bakery.db
 output/clean/
 output/plans/
 cache/
+output/_report.html
