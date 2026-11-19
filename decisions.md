@@ -37,6 +37,7 @@ do not edit the old one.
 | C4 | 2026-11-18 | More than 12 km from the kitchen = outside the service area, declined. | Agent → Team |
 | C5 | 2026-11-18 | **Strict 9 PM cutoff** the night before: later submissions are declined. | Team |
 | C5b | 2026-11-18 | (Revised after eval case E6 failed.) Submission times may be ISO (`2026-12-06 19:45`) or US (`12/06/2026 7:45 PM`). An unreadable time is declined with its own message ("can't tell if it beat the cutoff"), never silently treated as late. | Agent, after a failure we caught |
+| C5c | 2026-11-18 | When an order is declined (late or replaced) but the same customer still has an order on the route, the message names the declined order and says the other one stands. Found in the first live run (Nov 9, Uptown). | Agent, after a problem we caught |
 | C6 | 2026-11-18 | A customer's latest on-time submission replaces their earlier ones (resubmissions). | Agent → Team |
 | C7 | 2026-11-18 | Quantities: digits, "2 dozen", "two dozen", "1.5 dozen", "3 doz", "18 pcs" are read and flagged. Unreadable, ≤ 0 or > 96 (more than the large oven) → the line is left out and flagged "call the customer". | Agent → Team |
 | C8 | 2026-11-18 | **Missing wanted-by → café opening time**, flagged. Wanted-by before opening → opening time, flagged. Times may have AM/PM. | Team |

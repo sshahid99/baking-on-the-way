@@ -23,7 +23,7 @@ mention it to Rosa as a flag. Only Rosa, through the approval question in step 6
    A `STOPPED` message means the log is unreadable: tell Rosa and continue planning without it.
 2. **Clean and check:** `PY -m bakery clean <order-file>`. Exit code 2 = a data check failed:
    STOP, quote the message, suggest what to fix. Note the delivery date it prints (`-> output/clean/<date>.json`).
-3. **Plan:** `PY -m bakery plan <date>`. This runs the optimizer loop (stop rule: round gain < $1
+3. **Plan:** `PY -m bakery plan <date>`. This runs the optimizer loop (stop rule: a round adds less than one dollar
    or 20 rounds, per oven size) and writes `output/plans/<date>/plan.json` and `work/runs/<date>-trace.md`.
 4. **Review:** use the Agent tool with `subagent_type: plan-reviewer` and the prompt
    `Review the plan for <date>.` Wait for its verdict. If it is **FAIL**, STOP: do not export or
