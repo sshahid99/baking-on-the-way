@@ -1,4 +1,4 @@
-"""Validate docs/data/dashboard.json before it is published (GitHub Actions + pre-push hook).
+"""Validate docs/data/dashboard.json and docs/data/days/*.json before they are published (GitHub Actions + pre-push hook).
 
     python checks/validate_site.py      -> exit 0 if valid, 1 with a list of problems
 Checks shape and types, and that nothing secret-looking leaked into the public JSON.
@@ -26,18 +26,7 @@ def validate(d):
         for k in keys:
             if k not in d[section]:
                 problems.append(f"{section}.{k} missing")
-    rs = d.get("run_sheet", {})
-    if rs.get("oven") not in ("small", "medium", "large"):
-        problems.append(f"run_sheet.oven is {rs.get('oven')!r}")
-    if not isinstance(rs.get("expected_profit"), (int, float)):
-        problems.append("run_sheet.expected_profit is not a number")
-    if rs.get("status") not in ("planned", "approved", "done"):
-        problems.append(f"run_sheet.status is {rs.get('status')!r}")
-    times = [e.get("min") for e in rs.get("events", [])]
-    if times != sorted(times):
-        problems.append("run_sheet.events are not in time order")
-    if not any(e.get("kind") == "stop" for e in rs.get("events", [])):
-        problems.append("run_sheet has no stops")
+    problems += validate_run_sheet(d.get("run_sheet", {}), "run_sheet")
     route = d.get("route")
     if route is not None:
         problems += validate_route(route)
@@ -50,32 +39,100 @@ def validate(d):
     return problems
 
 
-def validate_route(route):
+def validate_run_sheet(rs, where):
+    problems = []
+    if rs.get("oven") not in ("small", "medium", "large"):
+        problems.append(f"{where}.oven is {rs.get('oven')!r}")
+    if not isinstance(rs.get("expected_profit"), (int, float)):
+        problems.append(f"{where}.expected_profit is not a number")
+    if rs.get("status") not in ("planned", "approved", "done"):
+        problems.append(f"{where}.status is {rs.get('status')!r}")
+    times = [e.get("min") for e in rs.get("events", [])]
+    if times != sorted(times):
+        problems.append(f"{where}.events are not in time order")
+    if not any(e.get("kind") == "stop" for e in rs.get("events", [])):
+        problems.append(f"{where} has no stops")
+    return problems
+
+
+def validate_morning(r, where, planned):
     """The map animates the van through these times, so they must exist and never run backwards."""
+    problems = []
+    num = lambda v: isinstance(v, (int, float))  # noqa: E731
+    if not r.get("stops"):
+        problems.append(f"{where} has no stops")
+    times = [r.get("leave_min")]
+    for s in r.get("stops", []):
+        if not (num(s.get("lat")) and num(s.get("lon"))):
+            problems.append(f"{where} stop {s.get('seq')} has no coordinates")
+        if planned and not all(num(s.get(k)) for k in ("arrive_min", "handoff_min", "depart_min")):
+            problems.append(f"{where} stop {s.get('seq')} is missing a time")
+        times += [s.get("arrive_min"), s.get("handoff_min"), s.get("depart_min")]
+    times.append(r.get("back_min"))
+    known = [t for t in times if num(t)]
+    if any(b < a - 0.01 for a, b in zip(known, known[1:])):
+        problems.append(f"{where} times run backwards")
+    return problems
+
+
+def validate_route(route):
     problems = []
     num = lambda v: isinstance(v, (int, float))  # noqa: E731
     dep = route.get("depot") or {}
     if not (num(dep.get("lat")) and num(dep.get("lon"))):
         problems.append("route.depot has no coordinates")
-    for key in ("next", "last"):
-        r = route.get(key)
-        if r is None:
-            if key == "next":
-                problems.append("route.next missing")
+    if route.get("next") is None:
+        problems.append("route.next missing")
+    else:
+        problems += validate_morning(route["next"], "route.next", planned=True)
+    if route.get("last") is not None:
+        problems += validate_morning(route["last"], "route.last", planned=False)
+    return problems
+
+
+def validate_day(day, v):
+    """One morning's file in docs/data/days/ (decision S10): what the calendar opens."""
+    where = f"days/{day}.json"
+    problems = []
+    if v.get("delivery_date") != day:
+        problems.append(f"{where} is for {v.get('delivery_date')!r}")
+    rs = v.get("run_sheet") or {}
+    problems += validate_run_sheet(rs, where)
+    m = (v.get("route") or {}).get("morning")
+    if m is None:
+        problems.append(f"{where} has no route")
+    else:
+        problems += validate_morning(m, where + " route", planned=m.get("kind") == "planned")
+    done = rs.get("status") == "done"
+    if done != (v.get("outcome") is not None):
+        problems.append(f"{where}: a finished morning needs an outcome, and only a finished one")
+    if done and not all("actual" in e for e in rs.get("events", []) if e.get("kind") == "stop"):
+        problems.append(f"{where}: a stop has no actual arrival")
+    if SECRET.search(json.dumps(v)):
+        problems.append(f"{where}: something that looks like a secret is in the JSON")
+    return problems
+
+
+def validate_calendar(cal, day_dir):
+    problems = []
+    dates = [x.get("date") for x in cal.get("days", [])]
+    if not dates:
+        return ["calendar has no days"]
+    if dates != sorted(set(dates)):
+        problems.append("calendar days are not in order, or a day is listed twice")
+    if cal.get("next") not in dates:
+        problems.append("calendar.next is not one of the calendar days")
+    for x in cal["days"]:
+        f = day_dir / f"{x['date']}.json"
+        if not f.exists():
+            problems.append(f"calendar lists {x['date']} but {f.name} is missing")
             continue
-        if not r.get("stops"):
-            problems.append(f"route.{key} has no stops")
-        times = [r.get("leave_min")]
-        for s in r.get("stops", []):
-            if not (num(s.get("lat")) and num(s.get("lon"))):
-                problems.append(f"route.{key} stop {s.get('seq')} has no coordinates")
-            if key == "next" and not all(num(s.get(k)) for k in ("arrive_min", "handoff_min", "depart_min")):
-                problems.append(f"route.next stop {s.get('seq')} is missing a time")
-            times += [s.get("arrive_min"), s.get("handoff_min"), s.get("depart_min")]
-        times.append(r.get("back_min"))
-        known = [t for t in times if num(t)]
-        if any(b < a - 0.01 for a, b in zip(known, known[1:])):
-            problems.append(f"route.{key} times run backwards")
+        problems += validate_day(x["date"], json.loads(f.read_text(encoding="utf-8")))
+        if (x.get("status") == "done") != isinstance(x.get("actual_profit"), (int, float)):
+            problems.append(f"calendar {x['date']}: actual profit should be there exactly when the morning is done")
+    extra = {f.stem for f in day_dir.glob("*.json")} - set(dates)
+    if extra:
+        problems.append(f"day files not on the calendar: {', '.join(sorted(extra))}")
     return problems
 
 
@@ -84,11 +141,16 @@ def main():
     if not p.exists():
         print(f"FAIL: {p} not found")
         return 1
-    problems = validate(json.loads(p.read_text(encoding="utf-8")))
+    d = json.loads(p.read_text(encoding="utf-8"))
+    problems = validate(d)
+    if "calendar" in d:
+        problems += validate_calendar(d["calendar"], p.parent / "days")
+    else:
+        problems.append("calendar missing (run `python -m bakery export`)")
     for x in problems:
         print(f"FAIL: {x}")
     if not problems:
-        print("dashboard.json valid")
+        print(f"dashboard.json valid, plus {len(d['calendar']['days'])} day files")
     return 1 if problems else 0
 
 

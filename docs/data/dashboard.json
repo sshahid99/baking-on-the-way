@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated_at": "2026-11-19T18:28:03+00:00",
+  "generated_at": "2026-11-19T20:19:03+00:00",
   "database": "SQLite",
   "orders_through": "2026-11-12",
   "mornings_completed": 58,
@@ -829,5 +829,543 @@
    "fresh_at_least_85pct": true,
    "worst_gap_after_at_most_5min": true
   }
+ },
+ "calendar": {
+  "first": "2026-08-21",
+  "next": "2026-11-12",
+  "last": "2026-11-11",
+  "days": [
+   {
+    "date": "2026-08-21",
+    "status": "done",
+    "planned_profit": 479.46,
+    "actual_profit": 327.67,
+    "old_rule_actual_profit": 76.93,
+    "actual_fresh": 0.808,
+    "refused_pieces": 48
+   },
+   {
+    "date": "2026-08-24",
+    "status": "done",
+    "planned_profit": 145.82,
+    "actual_profit": 147.93,
+    "old_rule_actual_profit": -136.05,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-08-25",
+    "status": "done",
+    "planned_profit": 251.04,
+    "actual_profit": 231.4,
+    "old_rule_actual_profit": 31.77,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-08-26",
+    "status": "done",
+    "planned_profit": 352.3,
+    "actual_profit": 221.92,
+    "old_rule_actual_profit": 24.69,
+    "actual_fresh": 0.848,
+    "refused_pieces": 42
+   },
+   {
+    "date": "2026-08-27",
+    "status": "done",
+    "planned_profit": 307.15,
+    "actual_profit": 307.68,
+    "old_rule_actual_profit": 102.23,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-08-28",
+    "status": "done",
+    "planned_profit": 508.13,
+    "actual_profit": 462.54,
+    "old_rule_actual_profit": 237.09,
+    "actual_fresh": 0.943,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-08-31",
+    "status": "done",
+    "planned_profit": 106.5,
+    "actual_profit": 106.88,
+    "old_rule_actual_profit": -62.26,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-09-01",
+    "status": "done",
+    "planned_profit": 259.7,
+    "actual_profit": 206.05,
+    "old_rule_actual_profit": -47.03,
+    "actual_fresh": 0.886,
+    "refused_pieces": 24
+   },
+   {
+    "date": "2026-09-02",
+    "status": "done",
+    "planned_profit": 299.46,
+    "actual_profit": 299.92,
+    "old_rule_actual_profit": 50.1,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-09-03",
+    "status": "done",
+    "planned_profit": 370.98,
+    "actual_profit": 247.78,
+    "old_rule_actual_profit": 182.53,
+    "actual_fresh": 0.83,
+    "refused_pieces": 36
+   },
+   {
+    "date": "2026-09-04",
+    "status": "done",
+    "planned_profit": 341.81,
+    "actual_profit": 320.82,
+    "old_rule_actual_profit": -156.44,
+    "actual_fresh": 0.947,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-09-08",
+    "status": "done",
+    "planned_profit": 205.15,
+    "actual_profit": 205.16,
+    "old_rule_actual_profit": -24.82,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-09-09",
+    "status": "done",
+    "planned_profit": 211.65,
+    "actual_profit": 183.94,
+    "old_rule_actual_profit": -120.52,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-09-10",
+    "status": "done",
+    "planned_profit": 317.19,
+    "actual_profit": 316.43,
+    "old_rule_actual_profit": -14.21,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-09-11",
+    "status": "done",
+    "planned_profit": 391.4,
+    "actual_profit": 339.23,
+    "old_rule_actual_profit": -187.2,
+    "actual_fresh": 0.848,
+    "refused_pieces": 24
+   },
+   {
+    "date": "2026-09-14",
+    "status": "done",
+    "planned_profit": 116.08,
+    "actual_profit": 116.36,
+    "old_rule_actual_profit": -45.22,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-09-15",
+    "status": "done",
+    "planned_profit": 201.72,
+    "actual_profit": 201.98,
+    "old_rule_actual_profit": 40.67,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-09-16",
+    "status": "done",
+    "planned_profit": 270.99,
+    "actual_profit": 267.96,
+    "old_rule_actual_profit": -49.49,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-09-17",
+    "status": "done",
+    "planned_profit": 347.96,
+    "actual_profit": 259.87,
+    "old_rule_actual_profit": 85.11,
+    "actual_fresh": 0.872,
+    "refused_pieces": 36
+   },
+   {
+    "date": "2026-09-18",
+    "status": "done",
+    "planned_profit": 408.32,
+    "actual_profit": 408.59,
+    "old_rule_actual_profit": -0.57,
+    "actual_fresh": 0.913,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-09-21",
+    "status": "done",
+    "planned_profit": 124.41,
+    "actual_profit": 124.18,
+    "old_rule_actual_profit": -64.86,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-09-22",
+    "status": "done",
+    "planned_profit": 334.17,
+    "actual_profit": 233.53,
+    "old_rule_actual_profit": 51.61,
+    "actual_fresh": 0.826,
+    "refused_pieces": 30
+   },
+   {
+    "date": "2026-09-23",
+    "status": "done",
+    "planned_profit": 281.91,
+    "actual_profit": 265.84,
+    "old_rule_actual_profit": 0.33,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-09-24",
+    "status": "done",
+    "planned_profit": 284.05,
+    "actual_profit": 258.66,
+    "old_rule_actual_profit": -26.32,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-09-25",
+    "status": "done",
+    "planned_profit": 274.39,
+    "actual_profit": 287.37,
+    "old_rule_actual_profit": -34.14,
+    "actual_fresh": 0.947,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-09-28",
+    "status": "done",
+    "planned_profit": 141.85,
+    "actual_profit": 141.84,
+    "old_rule_actual_profit": 34.47,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-09-29",
+    "status": "done",
+    "planned_profit": 254.2,
+    "actual_profit": 254.06,
+    "old_rule_actual_profit": 98.71,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-09-30",
+    "status": "done",
+    "planned_profit": 306.74,
+    "actual_profit": 196.58,
+    "old_rule_actual_profit": 119.83,
+    "actual_fresh": 0.857,
+    "refused_pieces": 36
+   },
+   {
+    "date": "2026-10-01",
+    "status": "done",
+    "planned_profit": 280.47,
+    "actual_profit": 280.43,
+    "old_rule_actual_profit": 115.7,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-10-02",
+    "status": "done",
+    "planned_profit": 492.03,
+    "actual_profit": 431.41,
+    "old_rule_actual_profit": 420.85,
+    "actual_fresh": 0.789,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-10-05",
+    "status": "done",
+    "planned_profit": 68.74,
+    "actual_profit": 68.92,
+    "old_rule_actual_profit": -1.44,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-10-06",
+    "status": "done",
+    "planned_profit": 309.44,
+    "actual_profit": 309.34,
+    "old_rule_actual_profit": 93.16,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-10-07",
+    "status": "done",
+    "planned_profit": 324.83,
+    "actual_profit": 324.6,
+    "old_rule_actual_profit": 137.41,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-10-08",
+    "status": "done",
+    "planned_profit": 341.87,
+    "actual_profit": 339.51,
+    "old_rule_actual_profit": 211.8,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-10-09",
+    "status": "done",
+    "planned_profit": 516.67,
+    "actual_profit": 413.71,
+    "old_rule_actual_profit": -60.08,
+    "actual_fresh": 0.879,
+    "refused_pieces": 30
+   },
+   {
+    "date": "2026-10-12",
+    "status": "done",
+    "planned_profit": 129.08,
+    "actual_profit": 127.87,
+    "old_rule_actual_profit": 20.94,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-10-13",
+    "status": "done",
+    "planned_profit": 143.39,
+    "actual_profit": 143.17,
+    "old_rule_actual_profit": -112.16,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-10-14",
+    "status": "done",
+    "planned_profit": 182.47,
+    "actual_profit": 170.39,
+    "old_rule_actual_profit": -167.95,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-10-15",
+    "status": "done",
+    "planned_profit": 286.62,
+    "actual_profit": 285.78,
+    "old_rule_actual_profit": -105.6,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-10-16",
+    "status": "done",
+    "planned_profit": 476.12,
+    "actual_profit": 464.2,
+    "old_rule_actual_profit": -53.24,
+    "actual_fresh": 0.92,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-10-19",
+    "status": "done",
+    "planned_profit": 94.66,
+    "actual_profit": 95.66,
+    "old_rule_actual_profit": -43.27,
+    "actual_fresh": 0.87,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-10-20",
+    "status": "done",
+    "planned_profit": 143.8,
+    "actual_profit": 143.43,
+    "old_rule_actual_profit": -58.83,
+    "actual_fresh": 0.852,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-10-21",
+    "status": "done",
+    "planned_profit": 325.9,
+    "actual_profit": 312.75,
+    "old_rule_actual_profit": 136.9,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-10-22",
+    "status": "done",
+    "planned_profit": 255.72,
+    "actual_profit": 238.2,
+    "old_rule_actual_profit": -93.65,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-10-23",
+    "status": "done",
+    "planned_profit": 430.55,
+    "actual_profit": 419.33,
+    "old_rule_actual_profit": 328.11,
+    "actual_fresh": 0.875,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-10-26",
+    "status": "done",
+    "planned_profit": 165.06,
+    "actual_profit": 162.2,
+    "old_rule_actual_profit": -120.56,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-10-27",
+    "status": "done",
+    "planned_profit": 285.55,
+    "actual_profit": 285.82,
+    "old_rule_actual_profit": 28.14,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-10-28",
+    "status": "done",
+    "planned_profit": 409.1,
+    "actual_profit": 376.69,
+    "old_rule_actual_profit": 195.91,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-10-29",
+    "status": "done",
+    "planned_profit": 367.2,
+    "actual_profit": 348.74,
+    "old_rule_actual_profit": 180.29,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-10-30",
+    "status": "done",
+    "planned_profit": 435.07,
+    "actual_profit": 434.96,
+    "old_rule_actual_profit": 88.38,
+    "actual_fresh": 0.979,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-11-02",
+    "status": "done",
+    "planned_profit": 75.91,
+    "actual_profit": 75.04,
+    "old_rule_actual_profit": -3.98,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-11-03",
+    "status": "done",
+    "planned_profit": 262.31,
+    "actual_profit": 258.29,
+    "old_rule_actual_profit": 141.06,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-11-04",
+    "status": "done",
+    "planned_profit": 257.41,
+    "actual_profit": 243.33,
+    "old_rule_actual_profit": -1.58,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-11-05",
+    "status": "done",
+    "planned_profit": 234.38,
+    "actual_profit": 168.79,
+    "old_rule_actual_profit": -103.14,
+    "actual_fresh": 0.857,
+    "refused_pieces": 30
+   },
+   {
+    "date": "2026-11-06",
+    "status": "done",
+    "planned_profit": 354.39,
+    "actual_profit": 342.5,
+    "old_rule_actual_profit": 186.88,
+    "actual_fresh": 0.907,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-11-09",
+    "status": "done",
+    "planned_profit": 168.04,
+    "actual_profit": 168.41,
+    "old_rule_actual_profit": 30.27,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-11-10",
+    "status": "done",
+    "planned_profit": 314.1,
+    "actual_profit": 232.18,
+    "old_rule_actual_profit": 109.62,
+    "actual_fresh": 0.854,
+    "refused_pieces": 36
+   },
+   {
+    "date": "2026-11-11",
+    "status": "done",
+    "planned_profit": 267.65,
+    "actual_profit": 268.51,
+    "old_rule_actual_profit": -194.68,
+    "actual_fresh": 1.0,
+    "refused_pieces": 0
+   },
+   {
+    "date": "2026-11-12",
+    "status": "approved",
+    "planned_profit": 201.44,
+    "actual_profit": null,
+    "old_rule_actual_profit": null,
+    "actual_fresh": null,
+    "refused_pieces": null
+   }
+  ]
  }
 }
