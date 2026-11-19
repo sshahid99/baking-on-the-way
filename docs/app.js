@@ -1,6 +1,6 @@
 // Reads data/dashboard.json and data/days/<date>.json (exported by `python -m bakery export`) and draws the page.
 "use strict";
-window.MAP_VERSION = 5;  // bump together with ?v= in index.html so phones fetch the new script
+window.MAP_VERSION = 6;  // bump together with ?v= in index.html so phones fetch the new script
 // Any script error shows on the page instead of failing silently.
 window.addEventListener("error", (e) => {
   const box = document.getElementById("map");
@@ -21,13 +21,40 @@ const dayCache = {};
 const loadJSON = (url) => fetch(url, { cache: "no-store" }).then((r) => { if (!r.ok) throw new Error(`${url}: ${r.status}`); return r.json(); });
 const loadDay = (iso) => dayCache[iso] || (dayCache[iso] = loadJSON(`data/days/${iso}.json`).catch((e) => { delete dayCache[iso]; throw e; }));
 const wantedDay = () => { const m = /day=(\d{4}-\d\d-\d\d)/.exec(location.hash); return m && DASH.calendar.days.some((x) => x.date === m[1]) ? m[1] : DASH.calendar.next; };
+// Three tabs (decision S11): run sheet (one morning), the business (all mornings), the old way (how she planned
+// before, and the shown morning planned that way). The tab is in the address too: #tab=oldway&day=2026-10-05.
+const TABS = ["run", "business", "oldway"];
+const wantedTab = () => { const m = /tab=(\w+)/.exec(location.hash); return m && TABS.includes(m[1]) ? m[1] : "run"; };
+function setAddress(day, tab) {
+  const parts = [];
+  if (tab !== "run") parts.push("tab=" + tab);
+  if (day && day !== DASH.calendar.next) parts.push("day=" + day);
+  if (parts.length) location.hash = parts.join("&");
+  else history.pushState(null, "", location.pathname + location.search);  // the next run's sheet has a clean address
+}
+let tabShown = null;
+function showTab() {
+  const t = wantedTab();
+  if (t === tabShown) return;
+  tabShown = t;
+  TABS.forEach((k) => {
+    $("panel-" + k).hidden = k !== t;
+    $("tab-" + k).setAttribute("aria-selected", String(k === t));
+    $("tab-" + k).tabIndex = k === t ? 0 : -1;
+  });
+  document.body.dataset.tab = t;  // the business tab covers all mornings, so the day picker is hidden there (style.css)
+  if (t === "business") toggleCalendar(false);
+  if (t === "run" && routeState) routeState.refit();  // the map was sized while hidden
+}
 
 loadJSON("data/dashboard.json")
   .then((d) => {
     DASH = d;
     renderGlobal(d);
     initCalendar(d.calendar);
-    window.addEventListener("hashchange", showWanted);
+    initTabs();
+    window.addEventListener("hashchange", () => { showTab(); showWanted(); });
+    showTab();
     return showWanted();
   })
   .catch((e) => { $("day").textContent = "Could not load the run sheet"; $("decision").innerHTML = `<p>${esc(e)}. Ask for the workflow to be run again.</p>`; });
@@ -40,10 +67,20 @@ function showWanted() {
     .catch((e) => { $("decision").innerHTML = `<p>Could not load ${esc(dayName(iso))} (${esc(e.message)}).</p>`; });
 }
 function goToDay(iso) {
-  const next = DASH.calendar.next;
-  if (iso === next) history.pushState(null, "", location.pathname + location.search);  // the next run has a clean address
-  else location.hash = "day=" + iso;
+  setAddress(iso, wantedTab());
   showWanted();
+}
+function initTabs() {
+  TABS.forEach((k, i) => {
+    const b = $("tab-" + k);
+    b.addEventListener("click", () => { setAddress(shown, k); showTab(); });
+    b.addEventListener("keydown", (e) => {  // arrow keys move between tabs (WAI-ARIA tabs pattern)
+      const j = e.key === "ArrowRight" ? i + 1 : e.key === "ArrowLeft" ? i - 1 : null;
+      if (j == null) return;
+      const n = TABS[(j + TABS.length) % TABS.length];
+      setAddress(shown, n); showTab(); $("tab-" + n).focus();
+    });
+  });
 }
 
 // ---------- one morning: the decision, needs your eye, minute by minute, map, how it went ----------
@@ -94,10 +131,15 @@ function renderDay(v, d) {
   const c = rs.costs;
   $("money").innerHTML = `<table>
     <tr><td>Sales (after freshness discounts)</td><td class="n">${money(c.revenue)}</td></tr>
+    <tr><td>Ingredients (BLS prices, ${esc(rs.bls_months)})</td><td class="n">−${money(c.ingredients)}</td></tr>
     <tr><td>Van (${rs.van_rate_per_hour == null ? "hourly" : "$" + rs.van_rate_per_hour + "/hour"})</td><td class="n">−${money(c.van)}</td></tr>
     <tr><td>Oven rental</td><td class="n">−${money(c.oven)}</td></tr>
-    <tr><td>Ingredients (BLS prices, ${esc(rs.bls_months)})</td><td class="n">−${money(c.ingredients)}</td></tr>
-    <tr><th>Expected profit</th><th class="n">${money(rs.expected_profit)}</th></tr></table>`;
+    <tr><th>Expected profit</th><th class="n">${money(rs.expected_profit)}</th></tr></table>
+    ${c.revenue > c.ingredients && rs.pieces ? `<p class="hint margin-line">Profit margin <b>${pct(rs.expected_profit / c.revenue)}</b> (you keep ${cents(rs.expected_profit / c.revenue)} of every sales dollar) ·
+      <b>${dollars2(rs.expected_profit / rs.pieces)}</b> profit per kolache · the van and oven are paid for after about
+      <b>${Math.ceil((c.van + c.oven) / ((c.revenue - c.ingredients) / rs.pieces))}</b> of the ${rs.pieces} kolaches.</p>` : ""}`;
+
+  renderOldWay(v);
 
   // ---------- 4. how a morning went: this one if it is over, otherwise the last finished one ----------
   const lm = past ? out : d.last_morning;
@@ -125,6 +167,7 @@ function renderGlobal(d) {
   const series2 = [{ key: "planner", label: "With the planner", color: "var(--series-1)" }, { key: "old", label: "Your old way", color: "var(--series-2)" }];
   lineChart($("chart-profit"), w.map((r) => ({ x: r.week, n: r.mornings, planner: r.planner_profit, old: r.old_rule_profit })), series2, money, true);
   lineChart($("chart-fresh"), w.map((r) => ({ x: r.week, n: r.mornings, planner: r.planner_fresh, old: r.old_rule_fresh })), series2, pct, false, [0, 1]);
+  lineChart($("chart-margin"), w.map((r) => ({ x: r.week, n: r.mornings, planner: r.planner_margin, old: r.old_rule_margin })), series2, pct, true);
   lineChart($("chart-gap"), w.map((r) => ({ x: r.week, n: r.mornings, gap: r.worst_gap })), [{ key: "gap", label: "Minutes off at the worst stop", color: "var(--series-1)" }], (v) => (Number.isInteger(v) ? v : v.toFixed(1)) + " min", false);
   if (w.length) {
     const lw = w[w.length - 1];
@@ -153,6 +196,7 @@ function renderGlobal(d) {
       ...(m.planning_time && m.planning_time.counted ? [tile(m.planning_time.slowest_min.toFixed(1) + " min", "longest night from order sheet to your OK", passFail(m.targets.planning_under_5min, `goal: under ${m.planning_time.target_min} min · by hand about ${m.planning_time.by_hand_estimate_min} (our guess) · ${m.planning_time.counted} nights timed`))] : []),
     ].join("");
   } else { $("goals-card").hidden = true; }
+  renderBusiness(m);
 
   // ---------- footer: freshness of the data and its limits ----------
   const meta = d.meta;
@@ -165,6 +209,95 @@ function renderGlobal(d) {
     <p>${esc(meta.disclaimer)}</p>
     <p>Road network © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> (ODbL).
       Ingredient prices: U.S. Bureau of Labor Statistics, Average Price Data (flour, eggs, butter), months ${esc(meta.bls_months)}.</p>`;
+}
+
+const cents = (r) => Math.round(r * 100) + "¢";
+const dollars2 = (v) => (v < 0 ? "−$" : "$") + Math.abs(v).toFixed(2);
+
+// ---------- the business tab: an average morning as a profit-and-loss statement, both ways (decisions F1-F3) ----------
+const PNL_ROWS = [
+  ["list_sales", "Sales at full contract price", "", false],
+  ["markdowns", "Freshness and lateness discounts", "−", false],
+  ["spoilage", "Refused kolaches (to the food pantry)", "−", false],
+  ["net_sales", "What the cafés paid (net sales)", "", true],
+  ["cogs", "Ingredients (cost of goods)", "−", false],
+  ["gross_profit", "Gross profit", "", true],
+  ["run_cost", "Van and oven, by the hour", "−", false],
+  ["contribution", "Profit (contribution)", "", true],
+];
+function pnlTable(a, b, headA, headB) {
+  const cell = (p, k, sign) => `<td class="n">${sign && Math.round(p[k]) ? sign : ""}${money(p[k])}</td>`;
+  const pctRow = (label, k) => `<tr class="ratio"><td>${label}</td><td class="n">${a[k] == null ? "–" : pct(a[k])}</td><td class="n">${b[k] == null ? "–" : pct(b[k])}</td></tr>`;
+  return `<tr><th></th><th class="n">${headA}</th><th class="n">${headB}</th></tr>` +
+    PNL_ROWS.map(([k, label, sign, bold]) => `<tr${bold ? ' class="sub"' : ""}><td>${label}</td>${cell(a, k, sign)}${cell(b, k, sign)}</tr>`).join("") +
+    pctRow("Gross margin (gross profit ÷ net sales)", "gross_margin") +
+    pctRow("Profit margin (profit ÷ net sales)", "contribution_margin") +
+    pctRow("Share of full price collected", "price_realisation") +
+    pctRow("Kolaches refused", "spoilage_rate");
+}
+
+function renderBusiness(m) {
+  const b = m && m.business;
+  ["biz-card", "year-card"].forEach((id) => { $(id).hidden = !b; });
+  if (!b) return;
+  const P = b.planner, O = b.old_rule, y = b.per_year;
+  $("biz-hint").textContent = `${m.mornings} mornings the van drove, ${shortDay(m.first_day)} to ${shortDay(m.last_day)}. Everything on this tab is over those mornings, compared with your old way on the same mornings.`;
+  $("biz-tiles").innerHTML = [
+    tile(pct(P.ratios.contribution_margin), "profit margin with the planner", `old way ${pct(O.ratios.contribution_margin)}: of each sales dollar you keep ${cents(P.ratios.contribution_margin)}, not ${cents(O.ratios.contribution_margin)}`),
+    tile(dollars2(P.ratios.contribution_per_kolache), "profit per kolache", `old way ${dollars2(O.ratios.contribution_per_kolache)} · sells for ${dollars2(P.ratios.sales_per_kolache)}, costs ${dollars2(P.ratios.cost_per_kolache)}`),
+    tile(Math.ceil(P.ratios.break_even_kolaches) + " kolaches", "pay for the van and oven (break-even)", `of ${Math.round(P.per_morning.pieces)} a morning · the old way needs ${Math.ceil(O.ratios.break_even_kolaches)} of ${Math.round(O.per_morning.pieces)}`),
+    tile(`${O.losing_mornings} of ${m.mornings}`, "mornings the old way lost money", `with the planner: ${P.losing_mornings} · its worst morning still made ${money(P.worst_morning)}`),
+  ].join("");
+  const pm = (x) => ({ ...x.per_morning, ...x.ratios });
+  $("biz-pnl").innerHTML = pnlTable(pm(P), pm(O), "With the planner", "Your old way");
+  $("biz-terms").innerHTML = [
+    ["Net sales", "what the cafés actually paid, after the freshness contract's discounts and refused trays."],
+    ["Cost of goods", "the ingredients in the kolaches you delivered (flour, eggs and butter at BLS prices, plus $0.35 for filling, sugar, yeast and paper)."],
+    ["Gross margin", "the share of net sales left after ingredients. It falls when trays are discounted or refused, because the ingredients were paid for anyway."],
+    ["Profit (contribution)", "net sales minus ingredients, van and oven. Kitchen rent, insurance and your own pay are not in this model, so this is what is left to cover them, not the bakery's bottom line."],
+    ["Profit margin", "profit as a share of net sales: the cents you keep from each dollar the cafés pay."],
+    ["Break-even", "how many kolaches it takes to pay for the van and oven hours, at the average a kolache earns after its ingredients."],
+    ["Discounts and refused kolaches", "the money lost between full price and what was paid. This is where the old way loses most."],
+  ].map(([t, d]) => `<dt>${t}</dt><dd>${d}</dd>`).join("");
+  $("year-hint").textContent = `A projection, not a measurement: the average morning above × ${y.mornings} mornings a year (Monday to Friday, 50 weeks). The mornings are simulated, so read it as the size of the prize, not a promise.`;
+  $("year-tiles").innerHTML = [
+    tile("+" + money(y.gain), "more profit a year than your old way", `${money(y.planner_contribution)} vs ${money(y.old_rule_contribution)}`),
+    tile(money(y.leakage_saved), "less lost to discounts and refused trays", "most of the gain"),
+    tile("+" + money(y.net_sales_gain), "more net sales", "about the same number of kolaches, sold fresher"),
+  ].join("");
+}
+
+// ---------- the old way tab: the shown morning, planned with Rosa's rule of thumb (decisions B1, B2) ----------
+function renderOldWay(v) {
+  const ow = v.old_way, rs = v.run_sheet, past = rs.status === "done";
+  const b = DASH.measures && DASH.measures.business, O = b ? b.old_rule : null;
+  $("ow-why").innerHTML = [
+    `<b>Trays sit too long.</b> Half the trays go in before you leave, so the later stops in that half get kolaches 20 to 40 minutes out of the oven, and those get discounted or refused.${O ? ` Over all mornings the old way's cafés refused ${pct(O.ratios.spoilage_rate)} of its kolaches and it collected only ${pct(O.ratios.price_realisation)} of full price.` : ""}`,
+    `<b>Wanted-by order zig-zags.</b> Driving earliest-first criss-crosses Dallas east to west, so the van is out longer (more van and oven hours) and late to the last stops.`,
+    `<b>First come is not most profitable.</b> A far café that ordered early gets a yes; a close one that ordered later gets a no.`,
+    `<b>Same oven every day.</b> On a light morning the medium oven costs $15 an hour more than the small one.${b ? ` The planner picked the small oven on ${b.planner.oven_mix.small} of ${DASH.measures.mornings} mornings.` : ""}`,
+  ].map((t) => `<li>${t}</li>`).join("");
+  $("ow-day-card").hidden = !ow;
+  if (!ow) return;
+  const verb = past ? "would have made" : "would make";
+  $("ow-day-title").textContent = `${dayName(rs.delivery_date)}, the old way`;
+  $("ow-day-hint").textContent = past
+    ? "Same orders, driven through the same morning's traffic as the real van: what the old way would have got."
+    : "Your old rule on tomorrow's orders. Expected figures: the morning hasn't happened yet.";
+  const planP = past && v.outcome ? v.outcome.actual_profit : rs.expected_profit;
+  const diff = planP - ow.profit;
+  $("ow-day-tiles").innerHTML = [
+    tile(money(ow.profit), `profit the old way ${verb}`, `planner: ${money(planP)}, ${money(Math.abs(diff))} ${diff >= 0 ? "more" : "less"}`),
+    tile(pct(ow.fresh), "delivered fresh", `planner: ${pct(past && v.outcome ? v.outcome.actual_fresh : rs.expected_fresh)}`),
+    tile(`${ow.preloaded} of ${ow.loads}`, "trays in before leaving", `medium oven, leave ${ow.leave}, back ${ow.back}`),
+  ].join("");
+  $("ow-day-table").innerHTML = `<tr><th>Stop (wanted-by order)</th><th class="n">Wanted by</th><th class="n">${past ? "Got there" : "Gets there"}</th><th class="n">Oldest tray</th><th class="n">Paid</th></tr>` +
+    ow.stops.map((s) => `<tr><td>${s.seq}. ${esc(s.customer)}<br><small class="muted">${s.pieces} kolaches${s.refused ? ` · <span style="color:var(--critical-text)">${s.refused} refused</span>` : s.fresh === s.pieces ? " · all fresh" : ` · ${s.fresh} fresh`}${s.late ? " · late" : ""}</small></td>
+      <td class="n">${s.wanted_by}</td><td class="n">${s.arrive || "–"}</td><td class="n">${s.oldest_tray_min} min</td><td class="n">${s.revenue == null ? "–" : money(s.revenue)}</td></tr>`).join("");
+  $("ow-day-down").textContent = ow.turned_down.length
+    ? `The old way ${past ? "said" : "says"} no to: ${ow.turned_down.join(", ")} (not in the first 8 orders in).`
+    : `The old way ${past ? "took" : "takes"} every order this morning.`;
+  $("ow-day-pnl").innerHTML = rs.pnl ? pnlTable(rs.pnl, ow.pnl, "With the planner", "Your old way") : "";
 }
 
 function tile(v, l, s) { return `<div class="tile"><div class="v">${v}</div><div class="l">${l}</div><div class="s">${s}</div></div>`; }
@@ -553,6 +686,7 @@ function setupRoute(depot) {
   $("golive").addEventListener("click", goLive);
 
   return {
+    refit() { if (map && state.r) { map.invalidateSize(); draw(); setTime(state.t); } },
     load(R, isNext) {
       stopLive(); pause();
       state.isNext = isNext; state.r = R.morning;

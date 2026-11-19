@@ -39,6 +39,52 @@ def block_measures():
 {planning_row(m)}"""
 
 
+def block_business():
+    """An average morning as a profit-and-loss statement, both ways (decisions F1-F3)."""
+    from checks.measures import compute
+    m = compute()
+    b = m["business"]
+    P, O, y = b["planner"], b["old_rule"], b["per_year"]
+    pm, om = P["per_morning"], O["per_morning"]
+    d = lambda v: ("−$" if v < 0 else "$") + f"{abs(v):,.0f}"  # noqa: E731
+    pc = lambda v: f"{v:.0%}"  # noqa: E731
+    rows = [
+        ("Sales at full contract price (list-price sales)", "list_sales", ""),
+        ("− Freshness and lateness markdowns (M4, M5)", "markdowns", "−"),
+        ("− Spoilage: refused kolaches given to the pantry", "spoilage", "−"),
+        ("**= Net sales** (what the cafés paid)", "net_sales", ""),
+        ("− Cost of goods sold (ingredients, M8)", "cogs", "−"),
+        ("**= Gross profit**", "gross_profit", ""),
+        ("− Run cost (van $38/h + oven rental, M1, M2)", "run_cost", "−"),
+        ("**= Contribution** (the project's \"profit\")", "contribution", ""),
+    ]
+    out = [f"_From `checks/measures.py` via `bakery/finance.py`: average of {m['mornings']} completed mornings, same orders and traffic for both. Refreshed {dt.date.today()}._",
+           "", "| Average morning | Planner | Rosa's old rule | Planner − old rule |", "|---|---|---|---|"]
+    for label, k, sign in rows:
+        diff = pm[k] - om[k]
+        out.append(f"| {label} | {sign}{d(pm[k])} | {sign}{d(om[k])} | {'+' if diff > 0 else ''}{d(diff)} |")
+    R, Q = P["ratios"], O["ratios"]
+    ratio_rows = [
+        ("Gross margin (gross profit ÷ net sales)", pc(R["gross_margin"]), pc(Q["gross_margin"])),
+        ("Contribution (profit) margin (contribution ÷ net sales)", pc(R["contribution_margin"]), pc(Q["contribution_margin"])),
+        ("Price realisation (net sales ÷ list-price sales)", pc(R["price_realisation"]), pc(Q["price_realisation"])),
+        ("Spoilage rate (kolaches refused)", pc(R["spoilage_rate"]), pc(Q["spoilage_rate"])),
+        ("Net sales per kolache", f"${R['sales_per_kolache']:.2f}", f"${Q['sales_per_kolache']:.2f}"),
+        ("Full cost per kolache (ingredients + run cost)", f"${R['cost_per_kolache']:.2f}", f"${Q['cost_per_kolache']:.2f}"),
+        ("Contribution per kolache", f"${R['contribution_per_kolache']:.2f}", f"${Q['contribution_per_kolache']:.2f}"),
+        ("Break-even volume (kolaches to cover the run cost)", f"{R['break_even_kolaches']:.0f} of {pm['pieces']:.0f}", f"{Q['break_even_kolaches']:.0f} of {om['pieces']:.0f}"),
+        ("Mornings with a loss", f"{P['losing_mornings']} of {m['mornings']}", f"{O['losing_mornings']} of {m['mornings']}"),
+        ("Worst / best morning", f"{d(P['worst_morning'])} / {d(P['best_morning'])}", f"{d(O['worst_morning'])} / {d(O['best_morning'])}"),
+        ("Oven mix (small / medium / large)", "/".join(str(P["oven_mix"][o]) for o in ("small", "medium", "large")),
+         "/".join(str(O["oven_mix"][o]) for o in ("small", "medium", "large"))),
+    ]
+    out += ["", "| Ratio | Planner | Rosa's old rule |", "|---|---|---|"] + [f"| {a} | {b_} | {c} |" for a, b_, c in ratio_rows]
+    out += ["", f"**Yearly projection** (decisions F3: average morning × {y['mornings']} mornings, Mon–Fri × 50 weeks; simulated data, so a size-of-the-prize estimate, not a forecast): "
+            f"contribution {d(y['planner_contribution'])} with the planner vs {d(y['old_rule_contribution'])} the old way, "
+            f"**+{d(y['gain'])} a year**; {d(y['leakage_saved'])} of that is markdowns and spoilage no longer lost, and net sales rise {d(y['net_sales_gain'])} on about the same volume."]
+    return "\n".join(out)
+
+
 def planning_row(m):
     p = m["planning_time"]
     if not p["counted"]:
@@ -98,7 +144,7 @@ def block_file(rel):
 
 
 BLOCKS = {
-    "measures": block_measures, "runs": block_runs, "errors": block_errors, "eval": block_eval,
+    "measures": block_measures, "business": block_business, "runs": block_runs, "errors": block_errors, "eval": block_eval,
     "hook": block_hook, "commits": block_commits,
     "context-log": lambda: block_file("work/context-log.md"),
     "prompt-versions": lambda: block_file("work/prompt-versions.md"),

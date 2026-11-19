@@ -12,6 +12,9 @@
    /plan-run mornings only (target: under 5 min; "about 45 by hand" is our proposal estimate, not measured).
    Runs before G4 have no timestamps: they are reconstructed from the trace's "plan written" time to the
    "Run sheet <date>" commit, and labelled so. Nov 9 is left out: it was re-planned after a fix (errors #8).
+4. Business view (decisions F1-F3, 2026-11-19): a per-morning profit-and-loss statement for both ways
+   (list-price sales, freshness markdowns, spoilage, cost of goods, gross margin, run cost, contribution
+   margin, per-kolache figures, break-even) and a yearly projection at config.MORNINGS_PER_YEAR.
 """
 import json
 import re
@@ -25,7 +28,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 from sqlalchemy import select  # noqa: E402
 
-from bakery import db  # noqa: E402
+from bakery import config, db, finance  # noqa: E402
 
 
 PLANNING_TARGET_MIN = 5          # proposal section 6, measure 3
@@ -74,6 +77,8 @@ def compute():
         all_runs = [dict(r) for r in c.execute(select(db.runs)).mappings()]
         runs = [r for r in all_runs if r["status"] == "done"]
         gaps = [dict(r) for r in c.execute(select(db.arrival_gaps)).mappings()]
+        all_stops = [dict(r) for r in c.execute(select(db.stops)).mappings()]
+        price = {r["customer_id"]: r["contract_price"] for r in c.execute(select(db.customers)).mappings()}
     plan = {r["delivery_date"]: r for r in runs if r["planner"] == "planner"}
     old = {r["delivery_date"]: r for r in runs if r["planner"] == "old_rule"}
     days = sorted(set(plan) & set(old))
@@ -114,6 +119,7 @@ def compute():
         "refused_pieces_after": sum(plan[d]["refused_pieces"] for d in days[-20:]),
         "profit_gain_per_morning": round(st.mean(p_profit) - st.mean(o_profit), 2),
     }
+    m["business"] = business(plan, old, days, all_stops, price)
     pt = planning_times(all_runs)
     mins = [r["minutes"] for r in pt if r["minutes"] is not None]
     m["planning_time"] = {
@@ -128,6 +134,35 @@ def compute():
         "planning_under_5min": bool(mins) and max(mins) < PLANNING_TARGET_MIN,  # every counted run, not the median
     }
     return m
+
+
+def business(plan, old, days, all_stops, price):
+    """Per-morning P&L for both ways over the same mornings, plus margins and a yearly projection (F1-F3)."""
+    by_run = {}
+    for s in all_stops:
+        by_run.setdefault(s["run_id"], []).append(s)
+    out = {}
+    for key, runs in (("planner", plan), ("old_rule", old)):
+        pnls = [finance.run_pnl(runs[d], by_run.get(runs[d]["id"], []), price) for d in days]
+        avg = finance.per_morning(pnls)
+        r = finance.ratios(finance.add(pnls))
+        r["break_even_kolaches"] = finance.ratios(avg)["break_even_kolaches"]
+        out[key] = {"per_morning": {k: round(v, 2) for k, v in avg.items()},
+                    "ratios": {k: None if v is None else round(v, 4) for k, v in r.items()},
+                    "losing_mornings": sum(1 for p in pnls if p["contribution"] < 0),
+                    "worst_morning": round(min(p["contribution"] for p in pnls), 2),
+                    "best_morning": round(max(p["contribution"] for p in pnls), 2),
+                    "oven_mix": {o: sum(1 for d in days if runs[d]["oven"] == o) for o in config.OVENS}}
+    gain = out["planner"]["per_morning"]["contribution"] - out["old_rule"]["per_morning"]["contribution"]
+    n = config.MORNINGS_PER_YEAR
+    out["per_year"] = {"mornings": n,
+                       "planner_contribution": round(out["planner"]["per_morning"]["contribution"] * n),
+                       "old_rule_contribution": round(out["old_rule"]["per_morning"]["contribution"] * n),
+                       "gain": round(gain * n),
+                       "net_sales_gain": round((out["planner"]["per_morning"]["net_sales"] - out["old_rule"]["per_morning"]["net_sales"]) * n),
+                       "leakage_saved": round(((out["old_rule"]["per_morning"]["markdowns"] + out["old_rule"]["per_morning"]["spoilage"])
+                                               - (out["planner"]["per_morning"]["markdowns"] + out["planner"]["per_morning"]["spoilage"])) * n)}
+    return out
 
 
 def main():

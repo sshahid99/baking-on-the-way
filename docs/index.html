@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Nunito:wght@400;600;700;800&display=swap">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 <main class="viz-root" id="app">
@@ -17,9 +17,16 @@
     <div>
       <p class="eyebrow" id="eyebrow">Baking on the way · run sheet</p>
       <h1 id="day"><button type="button" class="day-btn" id="cal-open" aria-expanded="false" aria-controls="cal"><span id="day-label">Loading…</span><svg class="chev" viewBox="0 0 12 8" width="12" height="8" aria-hidden="true"><path d="M1 1.5 6 6.5l5-5" fill="none" stroke="currentColor" stroke-width="2"/></svg></button></h1>
+      <h1 class="biz-title">All mornings so far</h1>
     </div>
     <span class="status" id="status"></span>
   </header>
+
+  <nav class="tabs" role="tablist" aria-label="Pages">
+    <button type="button" role="tab" id="tab-run" data-tab="run" aria-controls="panel-run">Run sheet</button>
+    <button type="button" role="tab" id="tab-business" data-tab="business" aria-controls="panel-business">The business</button>
+    <button type="button" role="tab" id="tab-oldway" data-tab="oldway" aria-controls="panel-oldway">The old way</button>
+  </nav>
 
   <nav class="daynav" aria-label="Choose a morning">
     <button type="button" id="prev-day">&#8249; Earlier</button>
@@ -41,6 +48,7 @@
     <div class="cal-legend" id="cal-legend" aria-label="What the shades mean"></div>
   </section>
 
+  <div class="panel" id="panel-run" role="tabpanel" aria-labelledby="tab-run">
   <section class="card decision" id="decision" aria-live="polite"></section>
 
   <section class="card" id="attention-card">
@@ -70,19 +78,40 @@
     <p class="hint" id="map-note"></p>
   </section>
 
-  <h2 class="section-break">How it's going</h2>
-
-  <section class="card" id="goals-card">
-    <h2>Is it working?</h2>
-    <div class="tiles" id="goals"></div>
-  </section>
-
   <section class="card" id="last-card">
     <h2 id="last-title">Last morning</h2>
     <div class="tiles" id="last-tiles"></div>
     <details><summary>Stop by stop: planned vs actual arrival</summary>
       <div class="table-wrap"><table id="last-table"></table></div></details>
     <p><a class="open-day" id="last-open" href="#"></a></p>
+  </section>
+
+  </div>
+
+  <div class="panel" id="panel-business" role="tabpanel" aria-labelledby="tab-business" hidden>
+  <section class="card intro">
+    <h2>The business, all mornings so far</h2>
+    <p class="hint" id="biz-hint"></p>
+  </section>
+
+  <section class="card" id="goals-card">
+    <h2>Is it working?</h2>
+    <div class="tiles" id="goals"></div>
+  </section>
+
+  <section class="card" id="biz-card">
+    <h2>Where each dollar goes</h2>
+    <p class="hint">An average morning, as a profit-and-loss statement. Both columns are the same mornings, the same orders and the same traffic; only the planning differs.</p>
+    <div class="tiles" id="biz-tiles"></div>
+    <div class="table-wrap"><table class="pnl" id="biz-pnl"></table></div>
+    <details class="source"><summary>What these words mean</summary>
+      <dl class="terms" id="biz-terms"></dl></details>
+  </section>
+
+  <section class="card" id="year-card">
+    <h2>Over a year</h2>
+    <p class="hint" id="year-hint"></p>
+    <div class="tiles" id="year-tiles"></div>
   </section>
 
   <section class="card">
@@ -109,6 +138,10 @@
       <div class="chart" id="chart-fresh"></div>
     </figure>
     <figure>
+      <figcaption>Profit margin: share of each sales dollar left after ingredients, van and oven</figcaption>
+      <div class="chart" id="chart-margin"></div>
+    </figure>
+    <figure>
       <figcaption>Learning Dallas traffic: how far off the plan's arrival time was at the worst stop</figcaption>
       <div class="chart" id="chart-gap"></div>
     </figure>
@@ -124,11 +157,55 @@
       <div class="table-wrap"><table id="customers-rest-table"></table></div></details>
   </section>
 
+  </div>
+
+  <div class="panel" id="panel-oldway" role="tabpanel" aria-labelledby="tab-oldway" hidden>
+  <section class="card intro">
+    <h2>How you planned before the planner</h2>
+    <p>Every night you planned the morning by hand from the order sheet, with a phone map app, in about 45 minutes (our estimate). Your rule of thumb:</p>
+    <ol class="steps">
+      <li><b>Always rent the medium oven.</b> 48 kolaches at once, $45 an hour, whatever the orders look like.</li>
+      <li><b>First come, first served, up to 8 stops.</b> Orders are taken in the order they arrived; the 9th order and later get a no, even if they are close by and pay well.</li>
+      <li><b>Drive in wanted-by order.</b> Earliest wanted-by time first, wherever the café is, using the map app's drive times (traffic included).</li>
+      <li><b>Trays in before you leave, and again halfway.</b> The first half of the stops' trays go in 18 minutes before you leave; the rest go in at the halfway stop.</li>
+    </ol>
+    <p class="hint">This is the rule written down in decisions B1 and B2. We made it as fair as we could: it uses the same traffic-aware drive times as the planner, so the comparison shows only what is new.</p>
+  </section>
+
+  <section class="card">
+    <h2>Why it loses money</h2>
+    <ul class="why-list" id="ow-why"></ul>
+  </section>
+
+  <section class="card">
+    <h2>Old way and new way, side by side</h2>
+    <div class="table-wrap"><table class="compare">
+      <tr><th></th><th>Your old way</th><th>With the planner</th></tr>
+      <tr><td>Which oven</td><td>Medium, every morning</td><td>Works out the profit with all three sizes and picks the best</td></tr>
+      <tr><td>Which orders</td><td>The first 8 that came in</td><td>Says no to an order only when taking it would cost more than it pays (and tells you why)</td></tr>
+      <tr><td>Stop order</td><td>Earliest wanted-by first, wherever it is</td><td>The order that makes the most money: on time, fresh, and short drives</td></tr>
+      <tr><td>When trays go in</td><td>Half before leaving, half at the halfway stop</td><td>Each tray at its own minute, so it comes out just before its stop</td></tr>
+      <tr><td>Drive times</td><td>Phone map app</td><td>Learns real Dallas drive times from the van's log every morning</td></tr>
+      <tr><td>Time to plan</td><td>About 45 minutes by hand (our estimate)</td><td>Under 5 minutes, then you read it and approve</td></tr>
+      <tr><td>Checked by</td><td>Nobody</td><td>A separate reviewer re-checks every rule and the profit before you see it</td></tr>
+    </table></div>
+  </section>
+
+  <section class="card" id="ow-day-card">
+    <h2 id="ow-day-title">This morning, the old way</h2>
+    <p class="hint" id="ow-day-hint"></p>
+    <div class="tiles" id="ow-day-tiles"></div>
+    <div class="table-wrap"><table id="ow-day-table"></table></div>
+    <p class="hint" id="ow-day-down"></p>
+    <details class="money"><summary>This morning's money, both ways</summary><div class="table-wrap"><table class="pnl" id="ow-day-pnl"></table></div></details>
+  </section>
+  </div>
+
   <footer class="foot" id="foot"></footer>
 </main>
 <div class="tooltip" id="tooltip" role="status" hidden></div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="app.js?v=5"></script>
+<script src="app.js?v=6"></script>
 </body>
 </html>

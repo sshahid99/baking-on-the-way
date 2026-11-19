@@ -14,49 +14,109 @@ HOW TO KEEP THIS REPORT UP TO DATE
 
 ## 2a. Synthesis page
 
-> ✍ **Your own words, 400–500 words.** Every claim must point to your evidence (e.g. "Context log #4").
-> Answer the four questions. Evidence you can point to:
->
-> 1. **What value, for whom, how do you know?** Rosa, the owner. See the measures table in 2b (from `checks/measures.py`), the 3 live run traces in `work/runs/`, and what your outside tester said (2c).
-> 2. **Which decision about context, prompts or workflow mattered most?** Candidates: rules moved from chat into `decisions.md`/`AGENTS.md` (context log #1–2), so a second session ran `/plan-run` from files alone (#7); the reviewer as a separate subagent (#4, #9: about 46k tokens kept out of the main context); reviewer prompt v2 (`work/prompt-versions.md`).
-> 3. **Where did the agents fail or overclaim, and how did you catch it?** `work/errors-caught.md`, especially #1 (US dates, caught by the evaluation), #4 (measures that could not fail), #6 (reviewer passed a misleading "say no"), #8 (two sessions erased a morning's results), #9 (the reviewer flagged an unverified baseline figure).
-> 4. **What would you change before a real business relied on it?** Ideas: real GPS logs instead of simulated ones; a shared database once more than one person writes (decisions S1b); verify the old-rule figure independently (errors #9); real demand data instead of generated patterns.
+> ✍ **DRAFT, to rewrite in your own words (course rule), 400–500 words.** Written by Claude from the evidence files; every claim cites one. Change the wording, keep the citations, delete this line.
+
+**What value, for whom, and how we know.** The user is Rosa, the owner of a one-van bakery that bakes kolaches in a rented oven while the van drives. Every night she has to make five linked decisions: which oven to rent, which orders to accept, the stop order, when to leave, and the minute each tray goes in. Her rule of thumb (decisions B1–B2) earns a **contribution margin of about 7%**: of each dollar the cafés pay, 7 cents is left after ingredients, van and oven. On the same 59 simulated mornings, with the same orders and traffic, the planner keeps **45 cents per dollar** (+$230 a morning) and did better on every morning (measures table, 2b). The old way lost money on 28 of the 59 mornings; the planner lost money on none. The gain comes from two places: **revenue leakage** (freshness markdowns plus refused kolaches) falls from $239 to $44 a morning, and run cost falls by $31 a morning (shorter routes, and the small oven when it pays). We know this because both plans are driven through the same simulated morning and scored from the van's log, not from the plan's own promise (decisions D6). The plan's over-promise fell from $52 to $14 a morning as the planner learned drive times from the logs (2b).
+
+**The decision that mattered most.** We moved every rule out of the chat and into files: `decisions.md` (each rule dated, with who decided), `AGENTS.md` and the `/plan-run` command (context log #1–3). The proof is that a second Claude session with no chat history ran a whole night from the files alone and passed review (context log #7, #10). The second most important choice was making the reviewer a separate subagent. It sees only files, never the planner's reasoning, and its ~46k tokens of verification output stayed out of the main session (context log #4, #9).
+
+**Where the agents failed or overclaimed, and how we caught it.** Our pre-written evaluation caught the cleaner silently declining every order with a US-format timestamp (errors #1). Comparing the first 10 mornings with the last 20 showed that our first success measures could not fail, so we changed the KPI and made the baseline fairer (errors #4, decisions G3, B2). The reviewer passed a "say no" message that was misleading even though every number in it was right, and the main session caught it (errors #6). Two sessions sharing one database erased a morning's results (errors #8). The reviewer itself flagged that the old-way figure Rosa compares against had never been checked independently (errors #9).
+
+**What we would change before a real business relied on it.** Real GPS logs and real demand history instead of generated data (decisions D6). Fixed costs (kitchen rent, insurance, Rosa's own pay) added to the model, so contribution becomes true operating profit (decisions F1). An independent check of the old-way figure (errors #9). A shared cloud database once more than one person writes to it (decisions S1b).
 
 ## 2b. The business case
 
-> ✍ **Your own words, about 2 pages:** the problem and the user, what exists today and what is new, the value (measured), adoption (cost, risks, who maintains it). Facts you can use:
+> ✍ **DRAFT, to rewrite in your own words, about 2 pages.** Facts and numbers come from the auto-filled tables, which refresh themselves; the prose around them is Claude's draft.
 
-**The user and the decision.** Rosa owns a one-van wholesale bakery that bakes kolaches in a rented oven *inside the van while it drives*. Every night by 9 PM cafés, coworking spaces and offices send tomorrow's orders. At 4:30 AM she must decide which oven to rent (small 24 / medium 48 / large 96 pieces at once), when to leave, which orders to turn down, the stop order, and the minute to load each 12-piece tray so it comes out just before its stop. The freshness contract (full price under 15 minutes from the oven, 20% off to 30, 40% off to 45, refused after) makes timing worth money (decisions M1–M7).
+### The problem and the user
 
-**Today and what exists.** Rosa's rule of thumb (decisions B1–B2): medium oven, first come first served up to 8 stops, wanted-by order, preload the first half of the trays, reload at the halfway stop. Route planners such as Routific and OptimoRoute minimise miles or minutes and assume goods are ready at departure; none schedules baking during the drive or weighs declining an order or a smaller oven against freshness (proposal §3).
+Rosa runs a wholesale bakery with one van and a rented oven inside it. Cafés, coworking spaces and offices order by 9 PM for the next morning. Her product is perishable by the minute: the freshness contract pays full price only if a kolache is handed over less than 15 minutes after it leaves the oven, 20% off up to 30 minutes, 40% off up to 45, and the café can refuse it after that. Those refused kolaches go to a food pantry: the ingredients are paid for, but nothing comes back (decisions M4). Arriving more than 15 minutes late is also refused (M5). Her costs are mostly **variable by the hour**: the van at $38/h and the oven at $30, $45 or $70/h depending on size (M1, M2). Ingredients come to about $0.52 a kolache at BLS prices (M8) against a contract price of about $2.75. So her **gross margin** is high, but the **contribution margin** depends almost entirely on two things: how much of the list price she actually collects, and how many hours the van and oven run.
 
-**Measured value.** Simulated on the same mornings, orders and traffic for both:
+That makes the nightly plan a pricing and cost decision, not only a routing one. Every order she accepts adds revenue but also adds drive time, oven occupancy and the risk of stale trays at other stops. Taking an order has an **opportunity cost**.
+
+### What exists today and what is new
+
+*The old way* (decisions B1–B2, shown on the dashboard's "The old way" tab): always rent the medium oven, accept the first 8 orders that arrive, drive in wanted-by order using a map app's traffic-aware times, and load half the trays before leaving and the rest at the halfway stop. Planning by hand takes about 45 minutes (our estimate, never measured; G4). Commercial route planners such as Routific and OptimoRoute minimise miles or minutes and assume the goods are ready when the van leaves. None of them schedules baking during the drive, or weighs declining an order or renting a smaller oven against freshness (proposal §3).
+
+*What is new:* one nightly workflow chooses the oven, which orders to accept, the stop order, the departure time and every tray's load minute together, to maximise **contribution**, not distance. Each morning it learns real drive times from the van's log. An independent reviewer re-checks the plan before Rosa sees it, and nothing is published until she approves.
+
+### The value, measured
+
+Simulated on the same mornings, orders and traffic for both:
 
 <!-- auto:measures -->
-_From `checks/measures.py`, 58 completed mornings (2026-08-21 to 2026-11-11), refreshed 2026-11-19._
+_From `checks/measures.py`, 59 completed mornings (2026-08-21 to 2026-11-12), refreshed 2026-11-19._
 
 | Measure (proposal §6) | Target | Planner | Rosa's old rule | Result |
 |---|---|---|---|---|
-| Profit per morning | +15% | $256 | $25 | +$231/morning (+910%); planner better on 58/58: met |
+| Profit per morning | +15% | $256 | $25 | +$230/morning (+907%); planner better on 59/59: met |
 | Kolaches delivered < 15 min from the oven | ≥ 85% | 94% | 32% | met |
 | Worst-stop arrival error, last 20 mornings | ≤ 5 min | 2.0 min (first 10: 2.0) | – | met |
 | Median stop arrival error (proposal's original measure) | ≤ 5 min | 1.0 min (first 10: 1.0) | – | met, but it was met before any learning (decisions G3) |
 | Plan's profit over-promise per morning | (learning effect) | $14 last 20 (first 10: $52) | – | – |
 | Pieces refused (pantry), planner | (learning effect) | 66 in last 20 mornings (first 10: 150) | – | – |
-| Planning time, order sheet to Rosa's approval (live `/plan-run`s) | < 5 min | median 1.7 min, slowest 4.1 min over 3 runs (0 measured, 3 reconstructed from git, see decisions G4) | ~45 min by hand (our estimate, not measured) | met on every run |
+| Planning time, order sheet to Rosa's approval (live `/plan-run`s) | < 5 min | median 2.0 min, slowest 4.1 min over 4 runs (1 measured, 3 reconstructed from git, see decisions G4) | ~45 min by hand (our estimate, not measured) | met on every run |
 <!-- /auto:measures -->
 
-Notes for the argument: the margin is thin (van + oven about $83/hour), so the percentage looks very large; lead with dollars (decisions B3). The patterns are generated, so these numbers show the system works, not facts about Dallas cafés (decisions D6).
+**Unit economics and margins.** The same mornings as a profit-and-loss statement (decisions F1). In the right-hand column, a negative number on a cost or loss line means the planner loses or spends less:
 
-**Adoption (facts to use).** Runs on a laptop in about 2 seconds per night (`python -m bakery plan`); no paid services; data stays in a local SQLite file (decisions S1b). Risks: generated demand and simulated traffic; no real GPS feed yet; one person can approve.
+<!-- auto:business -->
+_From `checks/measures.py` via `bakery/finance.py`: average of 59 completed mornings, same orders and traffic for both. Refreshed 2026-11-19._
+
+| Average morning | Planner | Rosa's old rule | Planner − old rule |
+|---|---|---|---|
+| Sales at full contract price (list-price sales) | $616 | $611 | +$6 |
+| − Freshness and lateness markdowns (M4, M5) | −$27 | −$98 | −$71 |
+| − Spoilage: refused kolaches given to the pantry | −$18 | −$141 | −$123 |
+| **= Net sales** (what the cafés paid) | $572 | $372 | +$200 |
+| − Cost of goods sold (ingredients, M8) | −$114 | −$113 | +$1 |
+| **= Gross profit** | $458 | $258 | +$199 |
+| − Run cost (van $38/h + oven rental, M1, M2) | −$202 | −$233 | −$31 |
+| **= Contribution** (the project's "profit") | $256 | $25 | +$230 |
+
+| Ratio | Planner | Rosa's old rule |
+|---|---|---|
+| Gross margin (gross profit ÷ net sales) | 80% | 70% |
+| Contribution (profit) margin (contribution ÷ net sales) | 45% | 7% |
+| Price realisation (net sales ÷ list-price sales) | 93% | 61% |
+| Spoilage rate (kolaches refused) | 3% | 23% |
+| Net sales per kolache | $2.61 | $1.71 |
+| Full cost per kolache (ingredients + run cost) | $1.44 | $1.59 |
+| Contribution per kolache | $1.17 | $0.12 |
+| Break-even volume (kolaches to cover the run cost) | 97 of 219 | 196 of 218 |
+| Mornings with a loss | 0 of 59 | 28 of 59 |
+| Worst / best morning | $69 / $464 | −$195 / $421 |
+| Oven mix (small / medium / large) | 10/49/0 | 0/59/0 |
+
+**Yearly projection** (decisions F3: average morning × 250 mornings, Mon–Fri × 50 weeks; simulated data, so a size-of-the-prize estimate, not a forecast): contribution $63,895 with the planner vs $6,348 the old way, **+$57,548 a year**; $48,652 of that is markdowns and spoilage no longer lost, and net sales rise $50,038 on about the same volume.
+<!-- /auto:business -->
+
+**Reading the numbers.** Both ways sell almost the same volume (about 219 kolaches) at almost the same list price ($616 vs $611 a morning), so **the gain is not more demand: it is price realisation and cost control.** The old way collects only 61% of list price, because 23% of its kolaches are refused and many more are marked down. The planner collects 93%. That is $200 more net sales a morning on the same kolaches, with the same cost of goods. Run cost also falls by $31 a morning, from shorter routes and, on 10 of 59 mornings, the cheaper small oven. Per kolache, the old way earns $0.12 and the planner $1.17. The old way's **break-even volume** is 196 of its 218 kolaches, so it has almost no **margin of safety**, which is why it lost money on 28 of 59 mornings. The planner breaks even after about 97 and had no losing morning.
+
+**Why we lead with dollars, not percent.** Because the old way's margin is so thin ($25 a morning), any gain looks enormous in percent (about +900%). We report +$230 a morning and the margin in points (7% → 45%) instead (decisions B3).
+
+**What "profit" means here.** Contribution covers ingredients, van and oven only. Kitchen rent, insurance, packaging overhead and Rosa's own pay are not modelled (decisions F1). So the $256 a morning is what is left to pay those fixed costs, not net income. The comparison is still fair, because those fixed costs are the same under both ways.
+
+### Adoption: cost, risks, who maintains it
+
+- **Cost.** No paid services: it runs on a laptop in about 2 seconds a night (`python -m bakery plan`). It uses free open data (OpenStreetMap roads, the BLS price API) and free GitHub Pages hosting. The real cost is maintenance time, plus Rosa's nightly read and approval. The whole run, order sheet to approval, has taken under 5 minutes every timed night (G4).
+- **Return.** The projection above, about +$57,500 a year in contribution, is against almost zero cash cost. On these numbers the **payback period** is the first week. That depends on real cafés behaving like our generated ones, which we cannot claim (D6).
+- **Risks.** The demand and traffic are generated. The model assumes Rosa loads trays at exactly the planned minute (M7). It does not know about road closures or a café changing its order in the morning. Gas is not modelled (M1). Only one person approves, and the old-way figure is not independently verified (errors #9).
+- **Who maintains it.** The nightly `/plan-run` is run by Rosa or a helper. The business numbers live in `bakery/config.py`, `decisions.md` and `checks/verify_plan.py`, and are changed together (AGENTS.md). Tests run on every push and in a pre-push hook.
 
 ## 2c. User experience
 
-> ✍ **Your own words:** screenshots, what Rosa sees first and why, what your outside tester struggled with and what you changed. Put screenshots in `output/img/` and link them like `![first screen](img/first-screen.png)`.
+> ✍ **DRAFT, to rewrite in your own words.** Add screenshots to `output/img/` (for example `![run sheet](img/run-sheet.png)`) and fill in the outside-tester row. Claude cannot invent that row.
 
-What Rosa sees first, and why (decisions S3): one sentence with the decision ("Rent the medium oven, leave at 5:45, say no to 2 orders"), the expected profit as a large number next to "your old way", then **Needs your eye** (declined orders with reasons in her words, cleaning flags, notes that tried to instruct the software), then one **minute-by-minute** list that mixes "Load 2 trays for…" and "Stop 3: …" lines with freshness chips. Trends, customers to renegotiate and "Is it working?" are further down. The footer says how fresh the data is, what the system cannot know, and that the data is generated.
+The dashboard is one phone-first page with **three tabs** (decisions S11). The tab is kept in the address, so a link opens the same view.
 
-**Outside tester.** ✍ Who, date, the tasks you gave them (e.g. "When do you put the first tray in?", "Which cafés are you saying no to, and why?"), where they got stuck, what you changed, before/after screenshots.
+1. **Run sheet** is what Rosa reads at 4:30 AM, in her words (decisions S3). It opens with one sentence of decision ("Rent the medium oven, leave at 5:40, say no to 5 orders"), then the expected profit as a big number next to what her old way would make. Next comes **Needs your eye**: declined orders with reasons and a ready message for the café, cleaning flags, and any notes that tried to instruct the software. Then a single **minute-by-minute** list that mixes "Load 2 trays for…" and "Stop 3: …" lines, with freshness chips, and the route map. Its "Where the money goes" box now also gives the morning's **profit margin**, **profit per kolache** and **break-even** point. A calendar opens any past morning, which then shows what the van's log recorded.
+2. **The business** covers all mornings: whether each goal is met, an average morning as a **profit-and-loss statement** both ways (net sales, cost of goods, gross margin, run cost, contribution margin, spoilage), the yearly projection, weekly trends (profit, freshness, **profit margin**, arrival accuracy), and which customers to renegotiate with.
+3. **The old way** explains how Rosa planned before (her four rules in plain words), why that loses money, and a side-by-side table of old vs new. It then shows the chosen morning planned the old way: stops in wanted-by order, how old each stop's oldest tray was, which kolaches were refused, and that morning's money both ways.
+
+We split it into tabs because the run sheet must stay short for a 4:30 AM phone read. The business view and the history are for planning the week, not the morning.
+
+**Outside tester.** ✍ Who, date, the tasks you gave them (e.g. "When does the first tray go in?", "Which cafés are you saying no to, and why?", "On the old-way tab, why did Nov 12 lose money?"), where they got stuck, what you changed, before/after screenshots.
 
 | Tester | Date | Where they got stuck | What we changed | Before / after |
 |---|---|---|---|---|
@@ -84,7 +144,7 @@ What Rosa sees first, and why (decisions S3): one sentence with the decision ("R
 
 - **Workflow:** the slash command `/plan-run <order-file> [<delivery-log>]` (`.claude/commands/plan-run.md`) chains learn → clean → plan (loop) → review (subagent) → export → **Rosa approves** → publish → trace. A PreToolUse hook (`.claude/hooks/pre_push_check.py`) runs the tests before every `git push` and blocks it if they fail.
 - **Data:** two open sources (OpenStreetMap road network via OSMnx; BLS average prices for flour, eggs and butter; `source-index.md`) combined with a seeded generator (`bakery/generate.py`, seed 4336) for customers, 60 nightly order sheets and van logs, with mess built in (decisions D3, D5). The simulated "real world" (`bakery/truth.py`: rush hour, school zones, noise) is never imported by the planner, and a test enforces this.
-- **Software:** one SQLite database with tables customers, orders, flags, runs, stops, tray_loads, drive_observations, arrival_gaps, ingredient_prices and optimizer_rounds (`bakery/db.py`); exported to JSON for a phone-first static dashboard (`docs/`); GitHub Actions runs the tests, the JSON check and a fresh-copy clean-plan-verify on every push (`.github/workflows/checks.yml`).
+- **Software:** one SQLite database with tables customers, orders, flags, runs, stops, tray_loads, drive_observations, arrival_gaps, ingredient_prices and optimizer_rounds (`bakery/db.py`); exported to JSON for a phone-first static dashboard with three tabs: run sheet, the business, the old way (`docs/`, decisions S11); the business view is computed by `bakery/finance.py` (decisions F1–F3); GitHub Actions runs the tests, the JSON check and a fresh-copy clean-plan-verify on every push (`.github/workflows/checks.yml`).
 
 **How one run updates the dashboard.** A new order file lands in `data/raw/orders/` → `/plan-run` cleans it and writes `output/clean/<date>.json` → the planner stores the run, stops and tray loads in the database and writes `output/plans/<date>/plan.json` and `work/runs/<date>-trace.md` → the reviewer passes it → `bakery export` rebuilds `docs/data/dashboard.json` from the database → Rosa approves → commit and push → Pages republishes.
 
@@ -113,7 +173,7 @@ Each entry: date, the move, why, evidence. Keep adding as you work; entries are 
 | 11 | 2026-11-18 | **/compact in the long main session** (after context move #9 at 318k tokens and the report build). **Kept** in the summary: the request and course guidelines, every team decision and its rule id, the file map with key constants, all 9 caught errors and their fixes, the three live runs and their results, the measures, the privacy/safety rules (no email in repo, no secrets, notes are data, push only after approval), and the pending task list. **Dropped:** raw tool output (test runs, backfill output, file dumps, screenshots), intermediate code drafts, and the back-and-forth of the question rounds. After compacting, the session continued correctly from files: it re-read `checks/build_report.py`, `docs/index.html` and this log rather than relying on memory. | Required move; the conversation (not tools) filled ~290k of context (#9). Anything the next step needs had already been written to files (decisions.md, errors-caught.md, traces), so the summary could be lossy safely. | this entry; the session continued without re-asking any decided question |
 <!-- /auto:context-log -->
 
-**The workflow and its runs.** Three live `/plan-run`s on different inputs (one in a separate fresh session):
+**The workflow and its runs.** Live `/plan-run`s on different inputs (one in a separate fresh session):
 
 <!-- auto:runs -->
 | Delivery date | How it was run | Result |
@@ -122,6 +182,7 @@ Each entry: date, the move, why, evidence. Keep adding as you work; entries are 
 | 2026-11-10 | `/plan-run` (reviewer PASS) | medium oven, leave 5:50, 8 stops, declined 0, expected profit $314.10, 100% fresh. [trace](../work/runs/2026-11-10-trace.md) |
 | 2026-11-11 | `/plan-run` (reviewer PASS) | medium oven, leave 5:45, 8 stops, declined 2, expected profit $267.65, 100% fresh. [trace](../work/runs/2026-11-11-trace.md) |
 | 2026-11-12 | `/plan-run` (reviewer PASS) | medium oven, leave 5:53, 7 stops, declined 1, expected profit $201.44, 100% fresh. [trace](../work/runs/2026-11-12-trace.md) |
+| 2026-11-13 | `/plan-run` (reviewer PASS) | medium oven, leave 5:40, 8 stops, declined 2, expected profit $391.04, 96% fresh. [trace](../work/runs/2026-11-13-trace.md) |
 <!-- /auto:runs -->
 
 **Trace of one full run (Nov 9).** See `work/runs/2026-11-09-trace.md`: step 1 learned 9 legs; step 2 cleaned 12 rows into 8 orders; step 3 ran the loop once per oven size (each stopped at "gain < $1" after 2 rounds); step 4 the **plan-reviewer subagent** returned PASS (recomputed $168.04 = claimed); step 4b the main session found a misleading "say no" and fixed it; Rosa approved; pushed.
@@ -138,7 +199,7 @@ Each entry: date, the move, why, evidence. Keep adding as you work; entries are 
 | Outside connection | BLS API, OpenStreetMap, GitHub via `gh` | permissions in decisions O1–O3 |
 
 <!-- auto:hook -->
-The pre-push hook has fired 16 times: 15 passed, 1 blocked.
+The pre-push hook has fired 20 times: 19 passed, 1 blocked.
 
 - 2026-11-18T18:16:17 pre-push hook on `git push origin main`: BLOCKED - -m pytest -q tests, checks/validate_site.py
 <!-- /auto:hook -->
@@ -171,9 +232,10 @@ _Criteria written before the first run: `work/eval-criteria.md`._
 | 8 | 2026-11-18 | **Re-planning erased what actually happened.** A second Claude session drove the Nov 9 morning (18:05) while the first session re-ran `plan` for Nov 9 (18:06) after a wording fix; `plan` replaces the stored run, so Nov 9's actual profit was wiped and `approve` then marked it "approved" instead of "done". The dashboard's "last morning" silently stayed on Nov 6. | Main session, auditing the database after run 2 (runs table: Nov 9 planner `approved`, actual_profit NULL, while `log_2026-11-09.csv` existed) | Guards: `plan` refuses a morning already driven; `drive` needs an approved plan and runs once; `approve` never downgrades "done"; `backfill` skips done mornings. Re-drove Nov 9 (seeded, log byte-identical per `git diff`) to restore $168 actual. |
 | 9 | 2026-11-18 | **Verification gap: the "old way" figure Rosa compares against was never independently checked.** Only the planner's plan goes through `verify_plan.py`. | **plan-reviewer subagent**, run 3 (Nov 11), sanity check: old rule -$199.90 vs plan $267.65 flagged "suspicious" | Main session recomputed and explained it (108 pieces refused); still a gap: next step is to run `verify_plan.py` on `old_rule_plan` too. |
 | 10 | 2026-11-19 | **The pre-push hook broke whenever the terminal was not in the project root.** `.claude/settings.json` called `python .claude/hooks/pre_push_check.py` by a relative path, so from `docs/` Python could not find the script. Python exits 2 for a missing file, which is also the hook's block signal, so every Bash command (not just pushes) was blocked there. | **Main session**, while screenshotting the dashboard from `docs/` (2026-11-18): "can't open file ...docs\.claude\hooks\pre_push_check.py" | Command now uses `$CLAUDE_PROJECT_DIR` (set by Claude Code for hooks). Re-tested from `docs/`: no hook error, script exits 0; a real push from `docs/` logged in `work/hook-log.md`. Approved by Sana. |
+| 11 | 2026-11-19 | **A replaced order read as "say no to a café that is on the route".** Rule C5c (say the other order stands) covered C6 resubmissions on paper, but the C6 branch in `bakery/clean.py` never stored the customer, so the sentence was never added. On Nov 13 Ellum Grind and Harwood Clinic were both stops *and* "Replaced by a later submission". | **plan-reviewer subagent**, run for Nov 13, check 4 (Rosa's words): FAIL | C6 declines now carry the customer, so C5c adds "Only this order is declined: their order … is still on the route." New test on the real Nov 13 sheet. Re-cleaned, re-planned, re-reviewed before publishing. |
 <!-- /auto:errors -->
 
-**What the system cannot do.** ✍ In your words. Facts: demand and traffic are generated, so results show the system works, not that Dallas cafés behave this way; it plans one van and one oven size per morning; it assumes Rosa follows the load times exactly (M7); it knows nothing about road closures or a café changing its order in the morning; gas is not modelled (M1); the old-rule figure is not independently verified (errors #9).
+**What the system cannot do.** ✍ DRAFT, in your words. Facts: demand and traffic are generated, so results show the system works, not that Dallas cafés behave this way; it plans one van and one oven size per morning; it assumes Rosa follows the load times exactly (M7); it knows nothing about road closures or a café changing its order in the morning; gas is not modelled (M1); the old-rule figure is not independently verified (errors #9); "profit" is contribution before fixed costs (kitchen rent, insurance, Rosa's pay are not modelled, decisions F1), and the yearly figure is a projection on simulated mornings (F3).
 
 ## 2g. Contribution statement
 
@@ -192,7 +254,7 @@ Claude Code (Claude Opus 5.5) in VS Code built most of the code, data generator 
 
 ### Project history
 <!-- auto:commits -->
-23 commits on 2 day(s) (2026-11-18 to 2026-11-19).
+31 commits on 2 day(s) (2026-11-18 to 2026-11-19).
 <!-- /auto:commits -->
 
 ### Full context log
