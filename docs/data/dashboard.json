@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated_at": "2026-11-18T23:36:54+00:00",
+  "generated_at": "2026-11-19T00:07:14+00:00",
   "database": "SQLite",
   "orders_through": "2026-11-09",
   "mornings_completed": 55,
@@ -10,7 +10,7 @@
  },
  "run_sheet": {
   "delivery_date": "2026-11-09",
-  "status": "planned",
+  "status": "approved",
   "oven": "small",
   "oven_pieces": 24,
   "leave": "5:35",
@@ -230,7 +230,7 @@
   "declined": [
    {
     "customer": "Uptown Commons Cowork",
-    "why": "[C5] Submitted at 9:07 PM, after the 9 PM cutoff.",
+    "why": "[C5] Order O1109-09 (18 ham-cheese klobasnek) was submitted at 9:07 PM, after the 9 PM cutoff. Only this order is declined: their order O1109-02 (12 pcs) is still on the route.",
     "by": "order check"
    }
   ],
