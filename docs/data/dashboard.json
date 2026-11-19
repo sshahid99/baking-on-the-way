@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated_at": "2026-11-19T20:34:12+00:00",
+  "generated_at": "2026-11-19T20:37:41+00:00",
   "database": "SQLite",
   "orders_through": "2026-11-13",
   "mornings_completed": 59,
@@ -317,7 +317,28 @@
   ],
   "optimizer_rounds": 26,
   "bls_months": "2026-09",
-  "van_rate_per_hour": 38.0
+  "van_rate_per_hour": 38.0,
+  "pnl": {
+   "basis": "expected",
+   "pieces": 276,
+   "refused_pieces": 0,
+   "list_sales": 779.7,
+   "markdowns": 44.64,
+   "spoilage": 0.0,
+   "net_sales": 735.06,
+   "cogs": 143.63,
+   "gross_profit": 591.43,
+   "run_cost": 200.39,
+   "contribution": 391.04,
+   "gross_margin": 0.8046,
+   "contribution_margin": 0.532,
+   "price_realisation": 0.9427,
+   "spoilage_rate": 0.0,
+   "sales_per_kolache": 2.6633,
+   "cost_per_kolache": 1.2465,
+   "contribution_per_kolache": 1.4168,
+   "break_even_kolaches": 93.5153
+  }
  },
  "route": {
   "depot": {
@@ -628,7 +649,9 @@
    "planner_fresh": 0.808,
    "old_rule_fresh": 0.37,
    "worst_gap": 12.0,
-   "overpromise": 151.79
+   "overpromise": 151.79,
+   "planner_margin": 0.462,
+   "old_rule_margin": 0.166
   },
   {
    "week": "2026-08-24",
@@ -638,7 +661,9 @@
    "planner_fresh": 0.949,
    "old_rule_fresh": 0.38,
    "worst_gap": 2.0,
-   "overpromise": 38.59
+   "overpromise": 38.59,
+   "planner_margin": 0.454,
+   "old_rule_margin": 0.13
   },
   {
    "week": "2026-08-31",
@@ -648,7 +673,9 @@
    "planner_fresh": 0.922,
    "old_rule_fresh": 0.254,
    "worst_gap": 2.0,
-   "overpromise": 39.4
+   "overpromise": 39.4,
+   "planner_margin": 0.435,
+   "old_rule_margin": -0.019
   },
   {
    "week": "2026-09-07",
@@ -658,7 +685,9 @@
    "planner_fresh": 0.953,
    "old_rule_fresh": 0.324,
    "worst_gap": 1.5,
-   "overpromise": 20.15
+   "overpromise": 20.15,
+   "planner_margin": 0.444,
+   "old_rule_margin": -0.327
   },
   {
    "week": "2026-09-14",
@@ -668,7 +697,9 @@
    "planner_fresh": 0.944,
    "old_rule_fresh": 0.255,
    "worst_gap": 3.0,
-   "overpromise": 18.06
+   "overpromise": 18.06,
+   "planner_margin": 0.448,
+   "old_rule_margin": 0.017
   },
   {
    "week": "2026-09-21",
@@ -678,7 +709,9 @@
    "planner_fresh": 0.946,
    "old_rule_fresh": 0.316,
    "worst_gap": 3.0,
-   "overpromise": 25.87
+   "overpromise": 25.87,
+   "planner_margin": 0.418,
+   "old_rule_margin": -0.044
   },
   {
    "week": "2026-09-28",
@@ -688,7 +721,9 @@
    "planner_fresh": 0.907,
    "old_rule_fresh": 0.495,
    "worst_gap": 2.0,
-   "overpromise": 34.19
+   "overpromise": 34.19,
+   "planner_margin": 0.445,
+   "old_rule_margin": 0.317
   },
   {
    "week": "2026-10-05",
@@ -698,7 +733,9 @@
    "planner_fresh": 0.965,
    "old_rule_fresh": 0.38,
    "worst_gap": 2.0,
-   "overpromise": 21.09
+   "overpromise": 21.09,
+   "planner_margin": 0.466,
+   "old_rule_margin": 0.183
   },
   {
    "week": "2026-10-12",
@@ -708,7 +745,9 @@
    "planner_fresh": 0.975,
    "old_rule_fresh": 0.22,
    "worst_gap": 1.0,
-   "overpromise": 5.25
+   "overpromise": 5.25,
+   "planner_margin": 0.45,
+   "old_rule_margin": -0.314
   },
   {
    "week": "2026-10-19",
@@ -718,7 +757,9 @@
    "planner_fresh": 0.925,
    "old_rule_fresh": 0.302,
    "worst_gap": 1.0,
-   "overpromise": 8.25
+   "overpromise": 8.25,
+   "planner_margin": 0.438,
+   "old_rule_margin": 0.137
   },
   {
    "week": "2026-10-26",
@@ -728,7 +769,9 @@
    "planner_fresh": 0.995,
    "old_rule_fresh": 0.279,
    "worst_gap": 2.0,
-   "overpromise": 10.71
+   "overpromise": 10.71,
+   "planner_margin": 0.485,
+   "old_rule_margin": 0.172
   },
   {
    "week": "2026-11-02",
@@ -738,7 +781,9 @@
    "planner_fresh": 0.942,
    "old_rule_fresh": 0.396,
    "worst_gap": 1.0,
-   "overpromise": 19.29
+   "overpromise": 19.29,
+   "planner_margin": 0.445,
+   "old_rule_margin": 0.121
   },
   {
    "week": "2026-11-09",
@@ -748,7 +793,9 @@
    "planner_fresh": 0.955,
    "old_rule_fresh": 0.241,
    "worst_gap": 2.0,
-   "overpromise": 19.87
+   "overpromise": 19.87,
+   "planner_margin": 0.414,
+   "old_rule_margin": -0.021
   }
  ],
  "customers": [
@@ -923,6 +970,80 @@
   "refused_pieces_before": 150,
   "refused_pieces_after": 66,
   "profit_gain_per_morning": 230.18,
+  "business": {
+   "planner": {
+    "per_morning": {
+     "pieces": 219.36,
+     "refused_pieces": 6.31,
+     "list_sales": 616.25,
+     "markdowns": 26.55,
+     "spoilage": 17.85,
+     "net_sales": 571.85,
+     "cogs": 114.2,
+     "gross_profit": 457.65,
+     "run_cost": 202.07,
+     "contribution": 255.58
+    },
+    "ratios": {
+     "gross_margin": 0.8003,
+     "contribution_margin": 0.4469,
+     "price_realisation": 0.928,
+     "spoilage_rate": 0.0287,
+     "sales_per_kolache": 2.607,
+     "cost_per_kolache": 1.4418,
+     "contribution_per_kolache": 1.1651,
+     "break_even_kolaches": 96.8547
+    },
+    "losing_mornings": 0,
+    "worst_morning": 68.92,
+    "best_morning": 464.2,
+    "oven_mix": {
+     "small": 10,
+     "medium": 49,
+     "large": 0
+    }
+   },
+   "old_rule": {
+    "per_morning": {
+     "pieces": 217.73,
+     "refused_pieces": 50.03,
+     "list_sales": 610.7,
+     "markdowns": 97.91,
+     "spoilage": 141.1,
+     "net_sales": 371.7,
+     "cogs": 113.36,
+     "gross_profit": 258.34,
+     "run_cost": 232.95,
+     "contribution": 25.39
+    },
+    "ratios": {
+     "gross_margin": 0.695,
+     "contribution_margin": 0.0683,
+     "price_realisation": 0.6086,
+     "spoilage_rate": 0.2298,
+     "sales_per_kolache": 1.7072,
+     "cost_per_kolache": 1.5905,
+     "contribution_per_kolache": 0.1166,
+     "break_even_kolaches": 196.3285
+    },
+    "losing_mornings": 28,
+    "worst_morning": -194.68,
+    "best_morning": 420.85,
+    "oven_mix": {
+     "small": 0,
+     "medium": 59,
+     "large": 0
+    }
+   },
+   "per_year": {
+    "mornings": 250,
+    "planner_contribution": 63895,
+    "old_rule_contribution": 6348,
+    "gain": 57548,
+    "net_sales_gain": 50038,
+    "leakage_saved": 48652
+   }
+  },
   "planning_time": {
    "runs": [
     {

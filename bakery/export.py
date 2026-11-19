@@ -11,7 +11,7 @@ from collections import defaultdict
 
 from sqlalchemy import select
 
-from . import config, db
+from . import config, db, finance
 from .geo import DEPOT
 
 
@@ -44,6 +44,8 @@ def build():
             sys.exit("STOPPED: nothing in the database to export. Run the workflow first.")
         day_stops = {d: _rows(c, db.stops, db.stops.c.run_id == r["id"]) for d, r in planner_runs.items()}
         day_trays = {d: _rows(c, db.tray_loads, db.tray_loads.c.run_id == r["id"]) for d, r in planner_runs.items()}
+        old_stops = {d: _rows(c, db.stops, db.stops.c.run_id == r["id"]) for d, r in old_runs.items()}
+        old_trays = {d: _rows(c, db.tray_loads, db.tray_loads.c.run_id == r["id"]) for d, r in old_runs.items()}
     next_day = max(planner_runs)
     done = sorted(d for d, r in planner_runs.items() if r["status"] == "done")
     last = done[-1] if done else None
@@ -51,6 +53,50 @@ def build():
     name = lambda cid: customers.get(cid, {}).get("name", cid)  # noqa: E731
     hh = config.hhmm
     r1 = lambda v: None if v is None else round(v, 1)  # noqa: E731
+    unit_price = {cid: c["contract_price"] for cid, c in customers.items()}
+
+    def pnl_out(run, stops):
+        """The morning as a small profit-and-loss statement (decisions F1)."""
+        p = finance.run_pnl(run, stops, unit_price)
+        r = finance.ratios(p)
+        return {**{k: (round(v, 2) if isinstance(v, float) else v) for k, v in p.items()},
+                **{k: None if v is None else round(v, 4) for k, v in r.items()}}
+
+    # ---- the same morning planned Rosa's old way (decisions B1, B2): for "The old way" tab ----
+    def old_way_for(day):
+        o = old_runs.get(day)
+        if not o:
+            return None
+        stops = sorted(old_stops.get(day, []), key=lambda s: s["seq"])
+        is_done = o["status"] == "done" and o["actual_profit"] is not None
+        taken = {s["customer_id"] for s in stops}
+        day_orders = [x for x in orders if x["delivery_date"] == day and x["status"] != "declined_cleaning"]
+        loads = sorted(t["load_min"] for t in old_trays.get(day, []))
+        out_stops = []
+        for s in stops:
+            ages = json.loads(s["ages_json"] or "[]")
+            row = {"seq": s["seq"], "customer": name(s["customer_id"]), "pieces": s["pieces"],
+                   "wanted_by": hh(s["wanted_by"]), "arrive": hh(s["planned_deliver"]),
+                   "oldest_tray_min": round(max(a["age"] for a in ages)) if ages else 0,
+                   "fresh": s["expected_fresh"], "refused": sum(a["pieces"] for a in ages if a["share"] == 0),
+                   "revenue": round(s["expected_revenue"], 2),
+                   "late": s["planned_deliver"] > s["wanted_by"] + 0.5}
+            if is_done:
+                row.update(arrive=hh(s["actual_deliver"]), fresh=s["actual_fresh"], refused=s["refused"] or 0,
+                           revenue=None if s["actual_revenue"] is None else round(s["actual_revenue"], 2),
+                           late=s["actual_deliver"] is not None and s["actual_deliver"] > s["wanted_by"] + 0.5)
+            out_stops.append(row)
+        return {
+            "basis": "actual" if is_done else "expected", "oven": o["oven"], "oven_pieces": config.OVENS[o["oven"]][0],
+            "leave": hh(o["leave_min"]), "first_load": hh(o["shift_start"]),
+            "back": hh(o["actual_back_at"] if is_done and o["actual_back_at"] else o["back_at"]),
+            "loads": len(loads), "preloaded": sum(1 for m in loads if m < o["leave_min"]),
+            "profit": round(o["actual_profit"] if is_done else o["expected_profit"], 2),
+            "fresh": round(o["actual_fresh"] if is_done else o["expected_fresh"], 3),
+            "stops": out_stops,
+            "turned_down": [x["customer"] for x in day_orders if x["customer_id"] not in taken],
+            "pnl": pnl_out(o, stops),
+        }
 
     # ---- one morning's run sheet (a finished morning also carries what the log says happened) ----
     def run_sheet_for(day):
@@ -107,6 +153,7 @@ def build():
             "flags": day_flags,
             "optimizer_rounds": len([r for r in rounds if r["delivery_date"] == day and r["round"] > 0]),
             "bls_months": planner_runs[next_day]["bls_months"], "van_rate_per_hour": config.VAN_RATE_PER_HOUR,
+            "pnl": pnl_out(nr, stops),
         }
 
     # ---- route map: where the van is at each minute ----
@@ -155,7 +202,8 @@ def build():
         }
 
     days = {d: {"delivery_date": d, "is_next": d == next_day, "run_sheet": run_sheet_for(d),
-                "route": {"depot": depot, "morning": morning_route(d)}, "outcome": outcome_for(d)}
+                "route": {"depot": depot, "morning": morning_route(d)}, "outcome": outcome_for(d),
+                "old_way": old_way_for(d)}
             for d in sorted(planner_runs)}
 
     run_sheet = days[next_day]["run_sheet"]
@@ -182,6 +230,10 @@ def build():
     for d in done:
         if d in old_runs and old_runs[d]["actual_profit"] is not None:
             weeks[week_of(d)].append(d)
+    def margin(runs_by_day, stops_by_day, ds):
+        pn = finance.add([finance.run_pnl(runs_by_day[d], stops_by_day.get(d, []), unit_price) for d in ds])
+        return None if not pn["net_sales"] else round(pn["contribution"] / pn["net_sales"], 3)
+
     weekly = []
     for w in sorted(weeks):
         ds = weeks[w]
@@ -195,6 +247,9 @@ def build():
             "old_rule_fresh": round(sum(old_runs[d]["actual_fresh"] * old_runs[d]["pieces"] for d in ds) / op, 3),
             "worst_gap": round(st.median(max(gap_by_day[d]) for d in ds if gap_by_day[d]), 1) if any(gap_by_day[d] for d in ds) else None,
             "overpromise": round(st.mean(planner_runs[d]["expected_profit"] - planner_runs[d]["actual_profit"] for d in ds), 2),
+            # contribution margin = profit / what the cafés paid (decisions F1)
+            "planner_margin": margin(planner_runs, day_stops, ds),
+            "old_rule_margin": margin(old_runs, old_stops, ds),
         })
 
     # ---- customers to talk to ----

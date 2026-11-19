@@ -30,7 +30,8 @@ STOP_MIN = 8           # minutes spent at each stop
 UNLOAD_BUFFER_MIN = 1  # tray comes out of the oven at least 1 minute before arrival
 EARLIEST_START = 4 * 60 + 45  # Rosa approves at 4:30; first tray no earlier than 4:45
 BASE_PRICE = 2.75
-OLD_RULE_MAX_STOPS = 8  # Rosa's rule today: first come, first served, up to 8 stops
+OLD_RULE_MAX_STOPS = 8
+MORNINGS_PER_YEAR = 250  # yearly projection only (decisions F3): Mon-Fri, 50 weeks; never used by the planner  # Rosa's rule today: first come, first served, up to 8 stops
 
 # --- Freshness contract: minutes since the tray left the oven -> share of price paid ---
 FRESHNESS_TIERS = [(15, 1.0), (30, 0.8), (45, 0.6)]  # < 15 min full, < 30 -> 20% off, < 45 -> 40% off

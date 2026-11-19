@@ -251,3 +251,34 @@ figcaption { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
 .timeline .happened { display: block; margin-top: 2px; color: var(--text-primary); }
 .open-day { font-weight: 700; color: var(--text-primary); }
 .todo-link[hidden], .open-day[hidden] { display: none; }
+
+/* ---------- tabs (decision S11): run sheet · the business · the old way ---------- */
+.tabs { display: flex; gap: 6px; margin: 14px 0 10px; border-bottom: 2px solid var(--rule); overflow-x: auto; }
+.tabs button { flex: 1 0 auto; border: 0; background: none; color: var(--text-secondary); font-weight: 800; padding: 10px 12px 8px;
+  border-bottom: 3px solid transparent; margin-bottom: -2px; cursor: pointer; white-space: nowrap; min-height: 44px; }
+.tabs button[aria-selected="true"] { color: var(--text-primary); border-bottom-color: var(--apricot); }
+.tabs button:focus-visible { outline: 2px solid var(--series-1); outline-offset: -2px; border-radius: 6px; }
+.panel[hidden] { display: none; }
+.biz-title { display: none; }
+body[data-tab="business"] .daynav, body[data-tab="business"] #day, body[data-tab="business"] .status { display: none; }
+body[data-tab="business"] .biz-title { display: block; }
+body[data-tab="business"] #eyebrow { visibility: hidden; }
+
+/* profit-and-loss tables */
+table.pnl td, table.pnl th { padding: 5px 6px; }
+table.pnl tr.sub td { font-weight: 800; border-top: 1px solid var(--rule); }
+table.pnl tr.ratio td { color: var(--text-secondary); font-size: 14px; }
+table.pnl tr.ratio:first-of-type td, table.pnl tr.sub + tr.ratio td { border-top: 2px solid var(--rule); }
+.margin-line { margin: 8px 0 0; }
+.terms { margin: 6px 0 0; }
+.terms dt { font-weight: 800; margin-top: 6px; }
+.terms dd { margin: 0 0 0 0; color: var(--text-secondary); font-size: 14px; }
+
+/* the old way */
+.steps { margin: 6px 0 10px; padding-left: 22px; }
+.steps li, .why-list li { margin: 0 0 8px; }
+.why-list { margin: 0; padding-left: 20px; }
+table.compare td:first-child { font-weight: 800; white-space: nowrap; }
+table.compare td, table.compare th { vertical-align: top; padding: 6px; text-align: left; }
+table.compare th:nth-child(2), table.compare td:nth-child(2) { color: var(--text-secondary); }
+.tiles + .table-wrap, .tiles + .hint { margin-top: 10px; }
