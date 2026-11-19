@@ -38,12 +38,44 @@ def validate(d):
         problems.append("run_sheet.events are not in time order")
     if not any(e.get("kind") == "stop" for e in rs.get("events", [])):
         problems.append("run_sheet has no stops")
+    route = d.get("route")
+    if route is not None:
+        problems += validate_route(route)
     for w in d.get("weekly", []):
         for k in ("planner_fresh", "old_rule_fresh"):
             if not 0 <= w.get(k, -1) <= 1:
                 problems.append(f"weekly {w.get('week')} {k} out of 0..1")
     if SECRET.search(json.dumps(d)):
         problems.append("something that looks like a secret or connection string is in the JSON")
+    return problems
+
+
+def validate_route(route):
+    """The map animates the van through these times, so they must exist and never run backwards."""
+    problems = []
+    num = lambda v: isinstance(v, (int, float))  # noqa: E731
+    dep = route.get("depot") or {}
+    if not (num(dep.get("lat")) and num(dep.get("lon"))):
+        problems.append("route.depot has no coordinates")
+    for key in ("next", "last"):
+        r = route.get(key)
+        if r is None:
+            if key == "next":
+                problems.append("route.next missing")
+            continue
+        if not r.get("stops"):
+            problems.append(f"route.{key} has no stops")
+        times = [r.get("leave_min")]
+        for s in r.get("stops", []):
+            if not (num(s.get("lat")) and num(s.get("lon"))):
+                problems.append(f"route.{key} stop {s.get('seq')} has no coordinates")
+            if key == "next" and not all(num(s.get(k)) for k in ("arrive_min", "handoff_min", "depart_min")):
+                problems.append(f"route.next stop {s.get('seq')} is missing a time")
+            times += [s.get("arrive_min"), s.get("handoff_min"), s.get("depart_min")]
+        times.append(r.get("back_min"))
+        known = [t for t in times if num(t)]
+        if any(b < a - 0.01 for a, b in zip(known, known[1:])):
+            problems.append(f"route.{key} times run backwards")
     return problems
 
 

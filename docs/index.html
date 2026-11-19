@@ -4,7 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Baking on the way · Morning run sheet</title>
-<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Nunito:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
 <main class="viz-root" id="app">
@@ -17,6 +22,24 @@
   </header>
 
   <section class="card decision" id="decision" aria-live="polite"></section>
+
+  <section class="card" id="route-card">
+    <h2>The route</h2>
+    <div class="tabs" role="group" aria-label="Which morning to show">
+      <button type="button" data-mode="next" class="on" id="tab-next">Next run</button>
+      <button type="button" data-mode="last" id="tab-last">Last morning</button>
+    </div>
+    <p class="now-line" id="now-line" aria-live="polite"></p>
+    <div class="map" id="map"></div>
+    <div class="player">
+      <button type="button" id="play" aria-label="Play">▶</button>
+      <input type="range" id="scrub" aria-label="Time of morning">
+      <span class="clock" id="clock"></span>
+      <button type="button" id="golive" class="golive" hidden>● Back to live</button>
+    </div>
+    <p class="hint" id="map-note"></p>
+    <ol class="stoplist" id="stoplist"></ol>
+  </section>
 
   <section class="card" id="attention-card">
     <h2>Needs your eye</h2>
@@ -70,6 +93,8 @@
   <footer class="foot" id="foot"></footer>
 </main>
 <div class="tooltip" id="tooltip" role="status" hidden></div>
-<script src="app.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="app.js?v=2"></script>
 </body>
 </html>

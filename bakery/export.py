@@ -12,6 +12,7 @@ from collections import defaultdict
 from sqlalchemy import select
 
 from . import config, db
+from .geo import DEPOT
 
 
 def _rows(conn, table, *where):
@@ -96,8 +97,38 @@ def build():
                   "ingredients": round(nr["ingredient_cost"], 2), "revenue": round(nr["expected_revenue"], 2)},
         "per_oven": per_oven, "events": events, "declined": declined, "flags": day_flags,
         "optimizer_rounds": len([r for r in day_rounds if r["round"] > 0]),
-        "bls_months": nr["bls_months"],
+        "bls_months": nr["bls_months"], "van_rate_per_hour": config.VAN_RATE_PER_HOUR,
     }
+
+    # ---- route map: where the van is at each minute ----
+    # Times are minutes after midnight. The van drives to the curb (arrive), may wait for the café to
+    # open or a tray to finish (handoff), then spends STOP_MIN there (depart). Same rule as model.py.
+    def route_stops(rows, curb_key, deliver_key):
+        out = []
+        for s in sorted(rows, key=lambda s: s["seq"]):
+            c = customers.get(s["customer_id"], {})
+            curb, deliver = s[curb_key], s[deliver_key]
+            depart = None if deliver is None else deliver + config.STOP_MIN
+            r1 = lambda v: None if v is None else round(v, 1)  # noqa: E731
+            out.append({"seq": s["seq"], "customer": name(s["customer_id"]),
+                        "lat": c.get("lat"), "lon": c.get("lon"), "pieces": s["pieces"],
+                        "arrive_min": r1(curb), "handoff_min": r1(deliver), "depart_min": r1(depart),
+                        "arrive": hh(curb), "handoff": hh(deliver), "depart": hh(depart),
+                        "planned_arrive": hh(s["planned_curb"])})
+        return out
+
+    route = {
+        "depot": {"name": DEPOT["name"], "lat": DEPOT["lat"], "lon": DEPOT["lon"]},
+        "next": {"delivery_date": next_day, "kind": "planned",
+                 "leave_min": nr["leave_min"], "back_min": nr["back_at"],
+                 "stops": route_stops(stops, "planned_curb", "planned_deliver")},
+        "last": None,
+    }
+    if last:
+        lr = planner_runs[last]
+        route["last"] = {"delivery_date": last, "kind": "actual",
+                         "leave_min": lr["leave_min"], "back_min": lr["actual_back_at"] or lr["back_at"],
+                         "stops": route_stops(last_stops, "actual_curb", "actual_deliver")}
 
     # ---- last completed morning ----
     last_morning = None
@@ -179,7 +210,7 @@ def build():
                            "patterns are ones we built in. Road times come from OpenStreetMap and ingredient prices "
                            "from the U.S. Bureau of Labor Statistics. 'Old rule' results are simulated on the same mornings."),
         },
-        "run_sheet": run_sheet, "last_morning": last_morning, "weekly": weekly,
+        "run_sheet": run_sheet, "route": route, "last_morning": last_morning, "weekly": weekly,
         "customers": customers_out, "measures": measures,
     }
 

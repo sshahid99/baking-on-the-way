@@ -1,5 +1,11 @@
 // Reads data/dashboard.json (exported from the database by `python -m bakery export`) and draws the page.
 "use strict";
+window.MAP_VERSION = 2;  // bump together with ?v= in index.html so phones fetch the new script
+// Any script error shows on the page instead of failing silently.
+window.addEventListener("error", (e) => {
+  const box = document.getElementById("map");
+  if (box && !box.querySelector(".leaflet-pane")) box.innerHTML = `<p class="fallback">Something went wrong drawing the map: ${String(e.message).replace(/</g, "&lt;")}</p>`;
+});
 const $ = (id) => document.getElementById(id);
 const money = (v) => (v < 0 ? "−$" : "$") + Math.abs(Math.round(v)).toLocaleString("en-US");
 const pct = (v) => Math.round(v * 100) + "%";
@@ -36,6 +42,9 @@ function render(d) {
     </div>
     <p class="why">Why this oven? Expected profit with each size: ${ovenWhy}. The ${ovenWord[rs.oven]} oven holds ${rs.oven_pieces} kolaches at once.</p>`;
 
+  // ---------- 1b. the route map ----------
+  try { initRoute(d.route); } catch (e) { $("map").innerHTML = `<p class="fallback">The map could not be drawn (${esc(e.message)}). The stop list below still works.</p>`; }
+
   // ---------- 2. needs your eye ----------
   const items = [];
   rs.declined.forEach((x) => items.push(`<li><span class="icon no" aria-label="declined">✕</span><div><b>Say no: ${esc(x.customer)}</b><small>${esc(x.why.replace(/^\[C\d+\] /, ""))}</small></div></li>`));
@@ -58,7 +67,7 @@ function render(d) {
   const c = rs.costs;
   $("money").innerHTML = `<table>
     <tr><td>Sales (after freshness discounts)</td><td class="n">${money(c.revenue)}</td></tr>
-    <tr><td>Van (${"$38"}/hour)</td><td class="n">−${money(c.van)}</td></tr>
+    <tr><td>Van (${rs.van_rate_per_hour == null ? "hourly" : "$" + rs.van_rate_per_hour + "/hour"})</td><td class="n">−${money(c.van)}</td></tr>
     <tr><td>Oven rental</td><td class="n">−${money(c.oven)}</td></tr>
     <tr><td>Ingredients (BLS prices, ${esc(rs.bls_months)})</td><td class="n">−${money(c.ingredients)}</td></tr>
     <tr><th>Expected profit</th><th class="n">${money(rs.expected_profit)}</th></tr></table>`;
@@ -172,4 +181,185 @@ function lineChart(el, rows, series, fmt, zeroLine, domain) {
   hit.addEventListener("pointermove", move);
   hit.addEventListener("pointerdown", move);
   hit.addEventListener("pointerleave", () => { tip.hidden = true; cross.setAttribute("x1", -10); cross.setAttribute("x2", -10); });
+}
+
+// ---------- route map: Leaflet + OpenStreetMap, the van moves by the clock or by replay ----------
+// "Live" is the PLANNED position at the phone's clock time: there is no GPS feed on this static page.
+// Demo: add ?now=6:10 to the address to pretend it is the next run's morning at 6:10 (the clock then ticks normally).
+const nowMin = () => { const t = new Date(); return t.getHours() * 60 + t.getMinutes() + t.getSeconds() / 60; };
+const localISO = () => { const t = new Date(); return new Date(t - t.getTimezoneOffset() * 60000).toISOString().slice(0, 10); };
+const hhmm = (m) => { const r = Math.round(m); return Math.floor(r / 60) + ":" + String(r % 60).padStart(2, "0"); };
+
+function routeSegments(r, depot) {
+  // Each piece of the morning: either parked somewhere (at) or driving (from -> to), between t0 and t1.
+  const segs = [], kitchen = { ...depot, label: "the kitchen" };
+  segs.push({ t0: -Infinity, t1: r.leave_min, at: kitchen, text: "Loading trays at the kitchen" });
+  let t = r.leave_min, prev = kitchen;
+  for (const s of r.stops) {
+    if (s.arrive_min == null) continue;  // no GPS for this stop: the van is drawn straight past it
+    const here = { ...s, label: `Stop ${s.seq}: ${s.customer}` };
+    segs.push({ t0: t, t1: s.arrive_min, from: prev, to: here, text: `Driving to ${here.label}`, stop: s.seq });
+    if (s.handoff_min > s.arrive_min + 0.5) segs.push({ t0: s.arrive_min, t1: s.handoff_min, at: here, text: `Parked at ${s.customer}, waiting to hand off`, stop: s.seq });
+    segs.push({ t0: s.handoff_min, t1: s.depart_min, at: here, text: `Handing over ${s.pieces} kolaches at ${s.customer}`, stop: s.seq });
+    t = s.depart_min; prev = here;
+  }
+  segs.push({ t0: t, t1: r.back_min, from: prev, to: kitchen, text: "Driving back to the kitchen" });
+  segs.push({ t0: r.back_min, t1: Infinity, at: kitchen, text: "Back at the kitchen. Morning done." });
+  return segs;
+}
+
+function vanAt(segs, m) {
+  const s = segs.find((g) => m >= g.t0 && m < g.t1) || segs[segs.length - 1];
+  if (s.at) return { lat: s.at.lat, lon: s.at.lon, text: s.text, stop: s.stop };
+  const f = Math.max(0, Math.min(1, (m - s.t0) / (s.t1 - s.t0 || 1)));
+  return { lat: s.from.lat + (s.to.lat - s.from.lat) * f, lon: s.from.lon + (s.to.lon - s.from.lon) * f, text: s.text, stop: s.stop };
+}
+
+function initRoute(R) {
+  if (!R || !R.next) { $("route-card").hidden = true; return; }
+  if (!window.L) $("map").innerHTML = `<p class="fallback">The street map needs an internet connection. The stop list below still has every time.</p>`;
+  const fake = /^(\d{1,2}):(\d{2})$/.exec(new URLSearchParams(location.search).get("now") || "");
+  const fakeOffset = fake ? (+fake[1] * 60 + +fake[2]) - nowMin() : 0;
+  const clockNow = () => nowMin() + fakeOffset;
+  const isRunDay = () => !!fake || localISO() === R.next.delivery_date;
+
+  $("tab-next").textContent = `Next run · ${shortDay(R.next.delivery_date)}`;
+  if (R.last) $("tab-last").textContent = `Last morning · ${shortDay(R.last.delivery_date)}`;
+  else $("tab-last").disabled = true;
+
+  const seriesColor = getComputedStyle($("app")).getPropertyValue("--series-1").trim();
+  let map = null, layer = null, van = null, pins = {}, trailLine = null;
+  if (window.L) {
+    map = L.map("map", { scrollWheelZoom: false });
+    // Standard OpenStreetMap tiles (free, attribution required; dark mode darkens them in CSS).
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
+  }
+
+  const state = { mode: "next", t: 0, playing: false, live: false, segs: [], r: null, raf: 0, last: 0 };
+  const scrub = $("scrub");
+
+  function draw(mode) {
+    state.mode = mode;
+    const r = state.r = R[mode];
+    state.segs = routeSegments(r, R.depot);
+    document.querySelectorAll(".tabs button").forEach((b) => b.classList.toggle("on", b.dataset.mode === mode));
+    scrub.min = Math.floor(r.leave_min - 10); scrub.max = Math.ceil(r.back_min + 5); scrub.step = 0.5;
+    $("map-note").textContent = mode === "next"
+      ? "Planned times. Lines join the stops in order; the van follows real roads between them."
+      : "Actual arrival times from the van's log, with the planned time beside each one.";
+
+    $("stoplist").innerHTML = r.stops.map((s) => {
+      let when;
+      if (mode === "next") {
+        when = `arrive ${s.arrive}${s.handoff !== s.arrive ? ` · hand off ${s.handoff}` : ""} · leave ${s.depart}`;
+      } else if (s.arrive_min == null) {
+        when = `no GPS · planned ${s.planned_arrive}`;
+      } else {
+        const [ph, pm] = s.planned_arrive.split(":").map(Number), diff = Math.round(s.arrive_min - (ph * 60 + pm));
+        const tag = diff === 0 ? "on time" : diff < 0 ? `<span class="early">${-diff} min early</span>` : `<span class="behind">${diff} min late</span>`;
+        when = `arrived ${s.arrive} · planned ${s.planned_arrive} · ${tag}`;
+      }
+      return `<li data-seq="${s.seq}"><span class="n">${s.seq}</span><span class="what"><b>${esc(s.customer)}</b><small>${when} · ${s.pieces} kolaches</small></span></li>`;
+    }).join("");
+    $("stoplist").querySelectorAll("li").forEach((li) => li.addEventListener("click", () => {
+      const s = r.stops.find((x) => x.seq === +li.dataset.seq);
+      if (s.arrive_min == null) return;
+      stopLive(); pause(); setTime(s.arrive_min);
+      if (map) map.panTo([s.lat, s.lon]);
+    }));
+
+    if (map) {
+      if (layer) layer.remove();
+      layer = L.layerGroup().addTo(map);
+      const path = [[R.depot.lat, R.depot.lon], ...r.stops.filter((s) => s.arrive_min != null).map((s) => [s.lat, s.lon]), [R.depot.lat, R.depot.lon]];
+      L.polyline(path, { color: seriesColor, weight: 3, opacity: 0.55, dashArray: "6 7" }).addTo(layer);
+      trailLine = L.polyline([], { color: seriesColor, weight: 4, opacity: 0.95 }).addTo(layer);
+      L.marker([R.depot.lat, R.depot.lon], { icon: L.divIcon({ className: "", html: '<div class="kitchen" aria-label="kitchen">🥐</div>', iconSize: [34, 34], iconAnchor: [17, 17] }) })
+        .bindTooltip(esc(R.depot.name)).addTo(layer);
+      pins = {};
+      r.stops.forEach((s) => {
+        const when = mode === "next" ? "arrive " + s.arrive : s.arrive_min == null ? "no GPS" : `arrived ${s.arrive} (planned ${s.planned_arrive})`;
+        pins[s.seq] = L.marker([s.lat, s.lon], { icon: L.divIcon({ className: "", html: `<div class="pin${s.arrive_min == null ? " nogps" : ""}">${s.seq}</div>`, iconSize: [28, 28], iconAnchor: [14, 14] }) })
+          .bindTooltip(`${s.seq}. ${esc(s.customer)}<br>${when}`).addTo(layer);
+      });
+      van = L.marker([R.depot.lat, R.depot.lon], { icon: L.divIcon({ className: "", html: '<div class="van" aria-label="van">🚐</div>', iconSize: [38, 38], iconAnchor: [19, 19] }), zIndexOffset: 1000 }).addTo(layer);
+      map.fitBounds(L.latLngBounds(path).pad(0.12));
+    }
+  }
+
+  function setTime(m) {
+    const r = state.r;
+    state.t = Math.max(+scrub.min, Math.min(+scrub.max, m));
+    scrub.value = state.t;
+    $("clock").textContent = hhmm(state.t);
+    const p = vanAt(state.segs, state.t);
+    const label = state.live ? `<span class="live">LIVE · PLANNED POSITION</span>` : `<span class="replay">${state.mode === "next" ? "PLAN" : "REPLAY"}</span>`;
+    $("now-line").innerHTML = `${label}${esc(p.text)}`;
+    // a stop is "done" once the van has left it, "now" while the van is there or driving to it
+    r.stops.forEach((s) => {
+      const st = s.depart_min != null && state.t >= s.depart_min ? "done" : p.stop === s.seq ? "now" : "";
+      const li = $("stoplist").querySelector(`li[data-seq="${s.seq}"]`);
+      if (li) li.className = st;
+      const el = pins[s.seq] && pins[s.seq].getElement() && pins[s.seq].getElement().querySelector(".pin");
+      if (el) el.className = "pin " + st + (s.arrive_min == null ? " nogps" : "");
+    });
+    if (van) {
+      van.setLatLng([p.lat, p.lon]);
+      const trail = [[R.depot.lat, R.depot.lon]];
+      if (state.t >= r.leave_min) {
+        r.stops.forEach((s) => { if (s.arrive_min != null && state.t >= s.arrive_min) trail.push([s.lat, s.lon]); });
+        trail.push([p.lat, p.lon]);
+      }
+      trailLine.setLatLngs(trail);
+    }
+  }
+
+  // replay: one minute of the morning every 120 ms (a 2-hour run takes about 15 seconds)
+  function frame(ts) {
+    if (!state.playing) return;
+    const dt = state.last ? ts - state.last : 0; state.last = ts;
+    setTime(state.t + dt / 120);
+    if (state.t >= +scrub.max) { pause(); return; }
+    state.raf = requestAnimationFrame(frame);
+  }
+  function play() {
+    stopLive();
+    if (state.t >= +scrub.max) setTime(+scrub.min);
+    state.playing = true; state.last = 0;
+    $("play").textContent = "❚❚"; $("play").setAttribute("aria-label", "Pause");
+    state.raf = requestAnimationFrame(frame);
+  }
+  function pause() { state.playing = false; cancelAnimationFrame(state.raf); $("play").textContent = "▶"; $("play").setAttribute("aria-label", "Play"); }
+
+  // live: follow the clock on the morning of the next run
+  let liveTimer = 0;
+  const canLive = () => state.mode === "next" && isRunDay() && clockNow() >= R.next.leave_min - 45 && clockNow() <= R.next.back_min + 30;
+  function goLive() {
+    if (!canLive()) return false;
+    pause(); state.live = true; $("golive").hidden = true;
+    setTime(clockNow());
+    clearInterval(liveTimer);
+    liveTimer = setInterval(() => { if (state.live) setTime(clockNow()); }, 5000);
+    return true;
+  }
+  function stopLive() { if (!state.live) return; state.live = false; clearInterval(liveTimer); $("golive").hidden = !canLive(); }
+
+  $("play").addEventListener("click", () => (state.playing ? pause() : play()));
+  scrub.addEventListener("input", () => { stopLive(); pause(); setTime(+scrub.value); });
+  $("golive").addEventListener("click", goLive);
+  document.querySelectorAll(".tabs button").forEach((b) => b.addEventListener("click", () => {
+    if (b.disabled || b.dataset.mode === state.mode) return;
+    stopLive(); pause(); draw(b.dataset.mode);
+    if (!(b.dataset.mode === "next" && goLive())) setTime(+scrub.min);
+    $("golive").hidden = state.live || !canLive();
+  }));
+
+  draw("next");
+  if (!goLive()) {
+    setTime(+scrub.min);
+    if (isRunDay() && clockNow() < R.next.leave_min - 45) $("now-line").innerHTML += ` <small>(goes live at ${hhmm(R.next.leave_min - 45)})</small>`;
+  }
 }
