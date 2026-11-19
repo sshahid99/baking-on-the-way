@@ -1,124 +1,96 @@
 {
  "meta": {
-  "generated_at": "2026-11-19T00:16:03+00:00",
+  "generated_at": "2026-11-19T00:22:23+00:00",
   "database": "SQLite",
-  "orders_through": "2026-11-10",
-  "mornings_completed": 56,
-  "drive_legs_learned": 417,
+  "orders_through": "2026-11-11",
+  "mornings_completed": 57,
+  "drive_legs_learned": 426,
   "bls_months": "2026-09",
   "disclaimer": "Demo data. The bakery, customers and orders are invented by a seeded script; the demand patterns are ones we built in. Road times come from OpenStreetMap and ingredient prices from the U.S. Bureau of Labor Statistics. 'Old rule' results are simulated on the same mornings."
  },
  "run_sheet": {
-  "delivery_date": "2026-11-10",
+  "delivery_date": "2026-11-11",
   "status": "approved",
   "oven": "medium",
   "oven_pieces": 48,
-  "leave": "5:50",
-  "first_load": "5:37",
-  "back": "8:22",
+  "leave": "5:45",
+  "first_load": "5:41",
+  "back": "7:57",
   "accepted": 8,
-  "declined_count": 1,
-  "pieces": 246,
-  "expected_profit": 314.1,
+  "declined_count": 2,
+  "pieces": 198,
+  "expected_profit": 267.65,
   "expected_fresh": 1.0,
-  "old_rule_profit": 109.93,
+  "old_rule_profit": -199.9,
   "costs": {
-   "van": 104.51,
-   "oven": 123.76,
-   "ingredients": 128.02,
-   "revenue": 670.38
+   "van": 86.17,
+   "oven": 102.04,
+   "ingredients": 103.04,
+   "revenue": 558.9
   },
   "per_oven": {
-   "small": 174.29,
-   "medium": 314.1,
-   "large": 254.34
+   "small": 241.1,
+   "medium": 267.65,
+   "large": 210.96
   },
   "events": [
    {
-    "min": 337.0,
-    "time": "5:37",
+    "min": 341.0,
+    "time": "5:41",
     "kind": "load",
-    "text": "Load 1 tray (12) for Lakewood Perk",
-    "out": "5:55"
+    "text": "Load 2 trays (24) for Lakewood Perk",
+    "out": "5:59"
    },
    {
-    "min": 342.0,
-    "time": "5:42",
-    "kind": "load",
-    "text": "Load 2 trays (18) for Lakewood Perk",
-    "out": "6:00"
-   },
-   {
-    "min": 350.0,
-    "time": "5:50",
+    "min": 345.0,
+    "time": "5:45",
     "kind": "leave",
     "text": "Leave the kitchen"
    },
    {
-    "min": 353.0,
-    "time": "5:53",
+    "min": 357.0,
+    "time": "5:57",
     "kind": "load",
-    "text": "Load 1 tray (12) for M Street Morning",
-    "out": "6:11"
+    "text": "Load 2 trays (24) for Cedar Springs Cafe",
+    "out": "6:15"
    },
    {
-    "min": 355.0,
-    "time": "5:55",
-    "kind": "load",
-    "text": "Load 2 trays (18) for M Street Morning",
-    "out": "6:13"
-   },
-   {
-    "min": 361.44444444444446,
-    "time": "6:01",
+    "min": 360.0,
+    "time": "6:00",
     "kind": "stop",
     "seq": 1,
     "text": "Stop 1: Lakewood Perk",
-    "detail": "30 kolaches \u00b7 wanted by 6:15",
+    "detail": "24 kolaches \u00b7 wanted by 6:15",
     "fresh": true,
-    "oldest_tray_min": 6,
+    "oldest_tray_min": 1,
     "late": false,
-    "revenue": 87.0
-   },
-   {
-    "min": 367.0,
-    "time": "6:07",
-    "kind": "load",
-    "text": "Load 1 tray (12) for Knox Kettle",
-    "out": "6:25"
+    "revenue": 69.6
    },
    {
     "min": 371.0,
     "time": "6:11",
     "kind": "load",
-    "text": "Load 2 trays (18) for Knox Kettle",
+    "text": "Load 2 trays (24) for Knox Kettle",
     "out": "6:29"
    },
    {
-    "min": 374.44444444444446,
-    "time": "6:14",
+    "min": 376.8041958041958,
+    "time": "6:17",
     "kind": "stop",
     "seq": 2,
-    "text": "Stop 2: M Street Morning",
-    "detail": "30 kolaches \u00b7 wanted by 6:15",
+    "text": "Stop 2: Cedar Springs Cafe",
+    "detail": "24 kolaches \u00b7 wanted by 6:30",
     "fresh": true,
-    "oldest_tray_min": 3,
+    "oldest_tray_min": 2,
     "late": false,
-    "revenue": 84.0
+    "revenue": 64.8
    },
    {
-    "min": 379.0,
-    "time": "6:19",
+    "min": 382.0,
+    "time": "6:22",
     "kind": "load",
-    "text": "Load 1 tray (12) for Cedars Roastery",
-    "out": "6:37"
-   },
-   {
-    "min": 385.0,
-    "time": "6:25",
-    "kind": "load",
-    "text": "Load 2 trays (18) for Cedars Roastery",
-    "out": "6:43"
+    "text": "Load 2 trays (18) for Greenville Grounds",
+    "out": "6:40"
    },
    {
     "min": 390.0,
@@ -126,219 +98,207 @@
     "kind": "stop",
     "seq": 3,
     "text": "Stop 3: Knox Kettle",
-    "detail": "30 kolaches \u00b7 wanted by 7:00",
+    "detail": "24 kolaches \u00b7 wanted by 6:30",
     "fresh": true,
-    "oldest_tray_min": 5,
+    "oldest_tray_min": 1,
     "late": false,
-    "revenue": 82.5
+    "revenue": 66.0
    },
    {
     "min": 396.0,
     "time": "6:36",
     "kind": "load",
-    "text": "Load 2 trays (18) for Ellum Grind",
+    "text": "Load 2 trays (24) for Ellum Grind",
     "out": "6:54"
    },
    {
-    "min": 397.0,
-    "time": "6:37",
-    "kind": "load",
-    "text": "Load 1 tray (12) for Ellum Grind",
-    "out": "6:55"
-   },
-   {
-    "min": 404.161323821564,
-    "time": "6:44",
+    "min": 401.47857142857146,
+    "time": "6:41",
     "kind": "stop",
     "seq": 4,
-    "text": "Stop 4: Cedars Roastery",
-    "detail": "30 kolaches \u00b7 wanted by 6:45",
+    "text": "Stop 4: Greenville Grounds",
+    "detail": "18 kolaches \u00b7 wanted by 6:45",
     "fresh": true,
-    "oldest_tray_min": 7,
+    "oldest_tray_min": 2,
     "late": false,
-    "revenue": 79.5
+    "revenue": 49.5
    },
    {
-    "min": 414.0,
-    "time": "6:54",
+    "min": 413.0,
+    "time": "6:53",
     "kind": "load",
-    "text": "Load 3 trays (36) for Bishop Bean",
-    "out": "7:12"
+    "text": "Load 2 trays (24) for Groves Coffee",
+    "out": "7:11"
    },
    {
-    "min": 416.12381855397024,
+    "min": 415.6214285714286,
     "time": "6:56",
     "kind": "stop",
     "seq": 5,
     "text": "Stop 5: Ellum Grind",
-    "detail": "30 kolaches \u00b7 wanted by 7:00",
+    "detail": "24 kolaches \u00b7 wanted by 7:00",
     "fresh": true,
     "oldest_tray_min": 2,
     "late": false,
-    "revenue": 82.5
+    "revenue": 66.0
    },
    {
-    "min": 433.9851222987691,
-    "time": "7:14",
+    "min": 427.0,
+    "time": "7:07",
+    "kind": "load",
+    "text": "Load 1 tray (12) for Uptown Commons Cowork",
+    "out": "7:25"
+   },
+   {
+    "min": 431.0,
+    "time": "7:11",
+    "kind": "load",
+    "text": "Load 1 tray (6) for Uptown Commons Cowork",
+    "out": "7:29"
+   },
+   {
+    "min": 432.1305194805195,
+    "time": "7:12",
     "kind": "stop",
     "seq": 6,
-    "text": "Stop 6: Bishop Bean",
-    "detail": "36 kolaches \u00b7 wanted by 7:00",
-    "fresh": true,
-    "oldest_tray_min": 2,
-    "late": true,
-    "revenue": 82.08
-   },
-   {
-    "min": 454.0,
-    "time": "7:34",
-    "kind": "load",
-    "text": "Load 1 tray (12) for Main Street Law Breakfast",
-    "out": "7:52"
-   },
-   {
-    "min": 461.0,
-    "time": "7:41",
-    "kind": "load",
-    "text": "Load 3 trays (30) for Main Street Law Breakfast",
-    "out": "7:59"
-   },
-   {
-    "min": 472.0,
-    "time": "7:52",
-    "kind": "load",
-    "text": "Load 2 trays (18) for Victory Desk Cowork",
-    "out": "8:10"
-   },
-   {
-    "min": 480.0,
-    "time": "8:00",
-    "kind": "stop",
-    "seq": 7,
-    "text": "Stop 7: Main Street Law Breakfast",
-    "detail": "42 kolaches \u00b7 wanted by 8:30",
-    "fresh": true,
-    "oldest_tray_min": 8,
-    "late": false,
-    "revenue": 126.0
-   },
-   {
-    "min": 491.0,
-    "time": "8:11",
-    "kind": "stop",
-    "seq": 8,
-    "text": "Stop 8: Victory Desk Cowork",
-    "detail": "18 kolaches \u00b7 wanted by 8:15",
+    "text": "Stop 6: Groves Coffee",
+    "detail": "24 kolaches \u00b7 wanted by 7:30",
     "fresh": true,
     "oldest_tray_min": 1,
+    "late": false,
+    "revenue": 66.0
+   },
+   {
+    "min": 445.0,
+    "time": "7:25",
+    "kind": "load",
+    "text": "Load 4 trays (42) for Harwood Clinic Staff Room",
+    "out": "7:43"
+   },
+   {
+    "min": 450.0,
+    "time": "7:30",
+    "kind": "stop",
+    "seq": 7,
+    "text": "Stop 7: Uptown Commons Cowork",
+    "detail": "18 kolaches \u00b7 wanted by 8:00",
+    "fresh": true,
+    "oldest_tray_min": 5,
     "late": false,
     "revenue": 46.8
    },
    {
-    "min": 502.0109756097561,
-    "time": "8:22",
+    "min": 464.5067155067155,
+    "time": "7:45",
+    "kind": "stop",
+    "seq": 8,
+    "text": "Stop 8: Harwood Clinic Staff Room",
+    "detail": "42 kolaches \u00b7 wanted by 8:00",
+    "fresh": true,
+    "oldest_tray_min": 2,
+    "late": false,
+    "revenue": 130.2
+   },
+   {
+    "min": 477.05799755799757,
+    "time": "7:57",
     "kind": "back",
     "text": "Back at the kitchen"
    }
   ],
   "declined": [
    {
-    "customer": "Legacy Plano Coffee",
-    "why": "[C4] Outside the service area (28 km from the kitchen; limit 12 km).",
-    "by": "order check"
+    "customer": "Cedars Roastery",
+    "why": "Taking it would lower profit by $25: can't reach it by 6:30 + 15 min without making other stops late (best case 7:08).",
+    "by": "planner"
+   },
+   {
+    "customer": "White Rock Brew",
+    "why": "Taking it would lower profit by $24: fitting it in makes other stops later or staler.",
+    "by": "planner"
    }
   ],
   "flags": [
    {
-    "customer": "Knox Kettle",
-    "text": "Price '0.00' replaced with contract price $2.75.",
-    "rule": "C9"
-   },
-   {
-    "customer": "Main Street Law Breakfast",
-    "text": "Quantity '2 dozen' read as 24.",
-    "rule": "C7"
-   },
-   {
-    "customer": "Ellum Grind",
-    "text": "Quantity '1.5 dozen' read as 18.",
-    "rule": "C7"
+    "customer": "Groves Coffee",
+    "text": "Note looks like instructions to the software. Ignored; only Rosa changes orders.",
+    "rule": "C10"
    }
   ],
-  "optimizer_rounds": 13,
+  "optimizer_rounds": 11,
   "bls_months": "2026-09"
  },
  "last_morning": {
-  "delivery_date": "2026-11-09",
-  "planned_profit": 168.04,
-  "actual_profit": 168.41,
-  "actual_fresh": 1.0,
-  "refused_pieces": 0,
-  "worst_gap_min": 1.6,
-  "old_rule_actual_profit": 30.27,
+  "delivery_date": "2026-11-10",
+  "planned_profit": 314.1,
+  "actual_profit": 232.18,
+  "actual_fresh": 0.854,
+  "refused_pieces": 36,
+  "worst_gap_min": 1.8,
+  "old_rule_actual_profit": 109.62,
   "stops": [
    {
-    "customer": "Cedar Springs Cafe",
-    "planned": "5:38",
-    "actual": "5:38",
-    "fresh": 24,
-    "pieces": 24,
-    "refused": 0
-   },
-   {
     "customer": "Lakewood Perk",
-    "planned": "6:18",
-    "actual": "6:17",
-    "fresh": 24,
-    "pieces": 24,
+    "planned": "6:01",
+    "actual": "6:02",
+    "fresh": 30,
+    "pieces": 30,
     "refused": 0
    },
    {
-    "customer": "Greenville Grounds",
-    "planned": "6:29",
-    "actual": "6:28",
-    "fresh": 24,
-    "pieces": 24,
+    "customer": "M Street Morning",
+    "planned": "6:14",
+    "actual": "6:15",
+    "fresh": 30,
+    "pieces": 30,
+    "refused": 0
+   },
+   {
+    "customer": "Knox Kettle",
+    "planned": "6:26",
+    "actual": "6:26",
+    "fresh": 30,
+    "pieces": 30,
     "refused": 0
    },
    {
     "customer": "Cedars Roastery",
-    "planned": "6:47",
-    "actual": "6:46",
-    "fresh": 18,
-    "pieces": 18,
+    "planned": "6:44",
+    "actual": "6:45",
+    "fresh": 30,
+    "pieces": 30,
     "refused": 0
    },
    {
     "customer": "Ellum Grind",
-    "planned": "6:59",
-    "actual": "6:59",
-    "fresh": 18,
-    "pieces": 18,
+    "planned": "6:56",
+    "actual": "6:57",
+    "fresh": 30,
+    "pieces": 30,
     "refused": 0
    },
    {
-    "customer": "White Rock Brew",
-    "planned": "7:20",
-    "actual": "7:20",
-    "fresh": 18,
-    "pieces": 18,
-    "refused": 0
-   },
-   {
-    "customer": "Uptown Commons Cowork",
-    "planned": "7:42",
-    "actual": "7:43",
-    "fresh": 12,
-    "pieces": 12,
-    "refused": 0
+    "customer": "Bishop Bean",
+    "planned": "7:14",
+    "actual": "7:15",
+    "fresh": 0,
+    "pieces": 36,
+    "refused": 36
    },
    {
     "customer": "Main Street Law Breakfast",
-    "planned": "7:54",
-    "actual": "7:55",
-    "fresh": 24,
-    "pieces": 24,
+    "planned": "7:30",
+    "actual": "7:32",
+    "fresh": 42,
+    "pieces": 42,
+    "refused": 0
+   },
+   {
+    "customer": "Victory Desk Cowork",
+    "planned": "8:11",
+    "actual": "8:11",
+    "fresh": 18,
+    "pieces": 18,
     "refused": 0
    }
   ]
@@ -466,13 +426,13 @@
   },
   {
    "week": "2026-11-09",
-   "mornings": 1,
-   "planner_profit": 168.41,
-   "old_rule_profit": 30.27,
-   "planner_fresh": 1.0,
-   "old_rule_fresh": 0.259,
-   "worst_gap": 1.0,
-   "overpromise": -0.37
+   "mornings": 2,
+   "planner_profit": 200.3,
+   "old_rule_profit": 69.95,
+   "planner_fresh": 0.912,
+   "old_rule_fresh": 0.294,
+   "worst_gap": 1.5,
+   "overpromise": 40.77
   }
  ],
  "customers": [
@@ -503,9 +463,9 @@
   {
    "customer": "Cedars Roastery",
    "type": "cafe",
-   "orders": 31,
+   "orders": 32,
    "declined": 5,
-   "avg_pieces": 27,
+   "avg_pieces": 28,
    "price": 2.65,
    "opens": "6:30",
    "advice": [
@@ -527,7 +487,7 @@
   {
    "customer": "Victory Desk Cowork",
    "type": "cowork",
-   "orders": 24,
+   "orders": 25,
    "declined": 0,
    "avg_pieces": 23,
    "price": 2.6,
@@ -549,7 +509,7 @@
   {
    "customer": "Ellum Grind",
    "type": "cafe",
-   "orders": 48,
+   "orders": 49,
    "declined": 3,
    "avg_pieces": 29,
    "price": 2.75,
@@ -559,7 +519,7 @@
   {
    "customer": "Bishop Bean",
    "type": "cafe",
-   "orders": 29,
+   "orders": 30,
    "declined": 2,
    "avg_pieces": 30,
    "price": 2.85,
@@ -579,7 +539,7 @@
   {
    "customer": "Knox Kettle",
    "type": "cafe",
-   "orders": 33,
+   "orders": 34,
    "declined": 1,
    "avg_pieces": 28,
    "price": 2.75,
@@ -589,7 +549,7 @@
   {
    "customer": "Lakewood Perk",
    "type": "cafe",
-   "orders": 46,
+   "orders": 47,
    "declined": 1,
    "avg_pieces": 28,
    "price": 2.9,
@@ -609,7 +569,7 @@
   {
    "customer": "M Street Morning",
    "type": "cafe",
-   "orders": 31,
+   "orders": 32,
    "declined": 0,
    "avg_pieces": 30,
    "price": 2.8,
@@ -619,7 +579,7 @@
   {
    "customer": "Main Street Law Breakfast",
    "type": "office",
-   "orders": 34,
+   "orders": 35,
    "declined": 0,
    "avg_pieces": 43,
    "price": 3.0,
@@ -628,25 +588,25 @@
   }
  ],
  "measures": {
-  "mornings": 56,
+  "mornings": 57,
   "first_day": "2026-08-21",
-  "last_day": "2026-11-09",
-  "profit_per_morning_planner": 256.71,
-  "profit_per_morning_old_rule": 27.81,
-  "profit_uplift": 8.2312,
-  "mornings_planner_won": 56,
-  "fresh_share_planner": 0.9449,
-  "fresh_share_old_rule": 0.3274,
+  "last_day": "2026-11-10",
+  "profit_per_morning_planner": 256.28,
+  "profit_per_morning_old_rule": 29.24,
+  "profit_uplift": 7.7634,
+  "mornings_planner_won": 57,
+  "fresh_share_planner": 0.9431,
+  "fresh_share_old_rule": 0.3272,
   "worst_gap_before": 2.0,
-  "worst_gap_after": 1.0,
+  "worst_gap_after": 1.5,
   "median_gap_before": 1.0,
   "median_gap_after": 1.0,
-  "planned_vs_actual_profit": 1335.63,
+  "planned_vs_actual_profit": 1417.54,
   "overpromise_per_morning_before": 52.08,
-  "overpromise_per_morning_after": 10.8,
+  "overpromise_per_morning_after": 14.88,
   "refused_pieces_before": 150,
-  "refused_pieces_after": 30,
-  "profit_gain_per_morning": 228.9,
+  "refused_pieces_after": 66,
+  "profit_gain_per_morning": 227.03,
   "targets": {
    "profit_uplift_at_least_15pct": true,
    "fresh_at_least_85pct": true,
