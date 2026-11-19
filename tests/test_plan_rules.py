@@ -157,3 +157,26 @@ def test_dashboard_json_shape_if_present():
         return
     from checks.validate_site import validate
     assert validate(json.loads(p.read_text(encoding="utf-8"))) == []
+
+
+def test_calendar_day_files_if_present():
+    """Every morning on the calendar has its own file, and each one passes the same checks (S10)."""
+    p = ROOT / "docs" / "data" / "dashboard.json"
+    if not p.exists():
+        return
+    from checks.validate_site import validate_calendar
+    d = json.loads(p.read_text(encoding="utf-8"))
+    assert validate_calendar(d["calendar"], p.parent / "days") == []
+
+
+def test_day_file_check_catches_a_finished_morning_without_actuals():
+    from checks.validate_site import validate_day
+    events = [{"min": 300, "kind": "leave"}, {"min": 330, "kind": "stop", "seq": 1}]
+    stop = {"seq": 1, "lat": 32.8, "lon": -96.8, "arrive_min": 320, "handoff_min": 330, "depart_min": 333}
+    day = {"delivery_date": "2026-10-05",
+           "run_sheet": {"oven": "medium", "expected_profit": 200.0, "status": "done", "events": events},
+           "route": {"morning": {"kind": "actual", "leave_min": 300, "back_min": 360, "stops": [stop]}},
+           "outcome": {"actual_profit": 180.0}}
+    assert any("no actual arrival" in x for x in validate_day("2026-10-05", day))
+    events[1]["actual"] = {"curb": "5:20"}
+    assert validate_day("2026-10-05", day) == []

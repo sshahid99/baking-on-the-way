@@ -85,10 +85,6 @@ h2 { margin: 0 0 8px; font-size: 20px; font-weight: 600; }
 .todo-link.all-done { border-left-color: var(--rule); color: var(--text-secondary); font-weight: 700; }
 
 /* ---------- route map ---------- */
-.tabs { display: inline-flex; background: var(--surface-2); border-radius: 8px; padding: 3px; margin: 0 0 8px; gap: 2px; }
-.tabs button { border: 0; background: transparent; color: var(--text-secondary); font-weight: 700; font-size: 14px; padding: 5px 12px; border-radius: 6px; cursor: pointer; }
-.tabs button.on { background: var(--sky); color: #3a2a1e; }
-.tabs button:disabled { opacity: .45; cursor: default; }
 .now-line { margin: 0 0 8px; font-size: 15px; font-weight: 700; min-height: 1.5em; }
 .now-line .live { display: inline-block; font-size: 12px; font-weight: 800; letter-spacing: .05em; color: var(--critical-text); margin-right: 6px; }
 .now-line .live::before { content: "●"; margin-right: 4px; animation: blink 1.6s infinite; }
@@ -206,3 +202,52 @@ figcaption { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
   .map { height: 400px; }
 }
 @media (prefers-reduced-motion: reduce) { .now-line .live::before, .timeline li.flash { animation: none; } }
+
+/* ---------- choosing a morning (decision S10) ---------- */
+.day-btn { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-align: left;
+  display: inline-flex; align-items: center; gap: 8px; border-bottom: 2px dashed currentColor; }
+.day-btn .chev { flex: 0 0 auto; }
+.day-btn[aria-expanded="true"] .chev { transform: rotate(180deg); }
+.daynav { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin: 0 0 12px; }
+.daynav button, .cal-head button { font: inherit; font-size: 14px; font-weight: 700; color: var(--text-primary); background: var(--surface-1);
+  border: 1px solid var(--rule); border-radius: 8px; padding: 6px 12px; cursor: pointer; min-height: 36px; }
+.daynav button:disabled, .cal-head button:disabled { opacity: .4; cursor: default; }
+#to-next { background: var(--sky); color: #3a2a1e; border-color: var(--sky); }
+
+/* sequential ramp, one hue (planner blue), light -> dark = less -> more profit; dark mode has its own steps.
+   Ink inside each step was checked: WCAG >= 4.9:1 in both modes. */
+.cal { --b1: #d6eefb; --b2: #a9d4f0; --b3: #6fb3e0; --b4: #2671a8; --b5: #17507d;
+  --i1: #4a3426; --i2: #4a3426; --i3: #4a3426; --i4: #fff; --i5: #fff; }
+@media (prefers-color-scheme: dark) {
+  .cal { --b1: #1d3a4d; --b2: #24597c; --b3: #2a6f9e; --b4: #5db7e8; --b5: #b3e0f8;
+    --i1: #f6ebd9; --i2: #f6ebd9; --i3: #f6ebd9; --i4: #1f1712; --i5: #1f1712; }
+}
+.cal-head { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; }
+.cal-head h2 { flex: 1 1 auto; margin: 0; text-align: center; }
+.cal-head .cal-close { margin-left: 4px; }
+.cal-dow, .cal-grid { display: grid; grid-template-columns: repeat(5, 1fr) repeat(2, .55fr); gap: 4px; }
+.cal-dow span { font-size: 12px; font-weight: 700; color: var(--text-muted); text-align: center; padding: 2px 0; }
+.cal-grid .cell { min-height: 52px; border-radius: 6px; font-size: 13px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.cal-grid .off { color: var(--text-muted); opacity: .6; }
+.cal-grid .blank { visibility: hidden; }
+.cal-grid button.cell { font: inherit; border: 1px solid var(--rule); cursor: pointer; padding: 2px; }
+.cal-grid .cell .dn { font-weight: 700; font-size: 13px; }
+.cal-grid .cell .pv { font-weight: 800; font-size: 12px; font-variant-numeric: tabular-nums; }
+.cal-grid .b1 { background: var(--b1); color: var(--i1); }
+.cal-grid .b2 { background: var(--b2); color: var(--i2); }
+.cal-grid .b3 { background: var(--b3); color: var(--i3); }
+.cal-grid .b4 { background: var(--b4); color: var(--i4); }
+.cal-grid .b5 { background: var(--b5); color: var(--i5); }
+.cal-grid .next { background: var(--surface-2); color: var(--text-primary); border: 2px dashed var(--text-secondary); }
+.cal-grid .sel { outline: 3px solid var(--text-primary); outline-offset: 2px; }
+.cal-grid button.cell:hover, .cal-grid button.cell:focus-visible { outline: 3px solid var(--apricot); outline-offset: 2px; }
+.cal-summary { margin: 10px 0 6px; font-size: 14px; color: var(--text-secondary); }
+.cal-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--text-secondary); }
+.cal-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.cal-legend i { width: 14px; height: 14px; border-radius: 3px; border: 1px solid var(--rule); display: inline-block; }
+.cal-legend .b1 { background: var(--b1); } .cal-legend .b2 { background: var(--b2); } .cal-legend .b3 { background: var(--b3); }
+.cal-legend .b4 { background: var(--b4); } .cal-legend .b5 { background: var(--b5); }
+.cal-legend .next { background: var(--surface-2); border: 2px dashed var(--text-secondary); }
+.timeline .happened { display: block; margin-top: 2px; color: var(--text-primary); }
+.open-day { font-weight: 700; color: var(--text-primary); }
+.todo-link[hidden], .open-day[hidden] { display: none; }

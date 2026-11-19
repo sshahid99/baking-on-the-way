@@ -39,7 +39,7 @@ Python: `.venv/Scripts/python` (Windows) or `.venv/bin/python`.
 | `tests/` | plan-rule tests (CI + hook); `tests/eval_cases/` = small evaluation inputs |
 | `data/raw/` | raw inputs: orders, logs, roads, prices, customers (never edited) |
 | `output/` | cleaned orders, plans, `bakery.db` (local SQLite), `measures.json` (mostly git-ignored) |
-| `docs/` | the dashboard (GitHub Pages): `index.html`, `app.js`, `style.css`, `data/dashboard.json` |
+| `docs/` | the dashboard (GitHub Pages): `index.html`, `app.js`, `style.css`, `data/dashboard.json` (overall + calendar), `data/days/<date>.json` (one morning each) |
 | `work/` | context log, prompt versions, eval criteria/results, run traces (`work/runs/`) |
 | `decisions.md` | every rule with its date and who decided; cite rule ids in code |
 | `source-index.md` | open data sources, dates, licences |

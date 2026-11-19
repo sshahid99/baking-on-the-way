@@ -1,6 +1,6 @@
-// Reads data/dashboard.json (exported from the database by `python -m bakery export`) and draws the page.
+// Reads data/dashboard.json and data/days/<date>.json (exported by `python -m bakery export`) and draws the page.
 "use strict";
-window.MAP_VERSION = 4;  // bump together with ?v= in index.html so phones fetch the new script
+window.MAP_VERSION = 5;  // bump together with ?v= in index.html so phones fetch the new script
 // Any script error shows on the page instead of failing silently.
 window.addEventListener("error", (e) => {
   const box = document.getElementById("map");
@@ -14,45 +14,83 @@ const dayName = (iso) => new Date(iso + "T12:00:00").toLocaleDateString("en-US",
 const shortDay = (iso) => new Date(iso + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" });
 const ovenWord = { small: "small", medium: "medium", large: "large" };
 
-fetch("data/dashboard.json", { cache: "no-store" })
-  .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
-  .then(render)
+// ---------- loading: dashboard.json once (overall sections + calendar), then one file per morning ----------
+// The morning shown is in the address (#day=2026-10-05) so the back button and shared links work (decision S10).
+let DASH = null;
+const dayCache = {};
+const loadJSON = (url) => fetch(url, { cache: "no-store" }).then((r) => { if (!r.ok) throw new Error(`${url}: ${r.status}`); return r.json(); });
+const loadDay = (iso) => dayCache[iso] || (dayCache[iso] = loadJSON(`data/days/${iso}.json`).catch((e) => { delete dayCache[iso]; throw e; }));
+const wantedDay = () => { const m = /day=(\d{4}-\d\d-\d\d)/.exec(location.hash); return m && DASH.calendar.days.some((x) => x.date === m[1]) ? m[1] : DASH.calendar.next; };
+
+loadJSON("data/dashboard.json")
+  .then((d) => {
+    DASH = d;
+    renderGlobal(d);
+    initCalendar(d.calendar);
+    window.addEventListener("hashchange", showWanted);
+    return showWanted();
+  })
   .catch((e) => { $("day").textContent = "Could not load the run sheet"; $("decision").innerHTML = `<p>${esc(e)}. Ask for the workflow to be run again.</p>`; });
 
-function render(d) {
-  const rs = d.run_sheet;
-  $("day").textContent = dayName(rs.delivery_date);
-  const approved = rs.status === "approved" || rs.status === "done";
-  $("status").textContent = approved ? "Approved" : "Waiting for your OK";
-  $("status").className = "status " + (approved ? "ok" : "wait");
+let shown = null;
+function showWanted() {
+  const iso = wantedDay();
+  if (iso === shown) return Promise.resolve();
+  return loadDay(iso).then((v) => { shown = iso; renderDay(v, DASH); })
+    .catch((e) => { $("decision").innerHTML = `<p>Could not load ${esc(dayName(iso))} (${esc(e.message)}).</p>`; });
+}
+function goToDay(iso) {
+  const next = DASH.calendar.next;
+  if (iso === next) history.pushState(null, "", location.pathname + location.search);  // the next run has a clean address
+  else location.hash = "day=" + iso;
+  showWanted();
+}
 
-  // ---------- 1. the decision ----------
+// ---------- one morning: the decision, needs your eye, minute by minute, map, how it went ----------
+function renderDay(v, d) {
+  const rs = v.run_sheet, past = rs.status === "done", out = v.outcome;
+  $("day-label").textContent = dayName(rs.delivery_date);
+  document.title = `Baking on the way · ${past ? "" : "run sheet "}${shortDay(rs.delivery_date)}`;
+  $("eyebrow").textContent = past ? "Baking on the way · a past morning" : "Baking on the way · run sheet";
+  const approved = rs.status === "approved" || past;
+  $("status").textContent = past ? "Done" : approved ? "Approved" : "Waiting for your OK";
+  $("status").className = "status " + (approved ? "ok" : "wait");
+  updateDayNav(rs.delivery_date);
+
+  // ---------- 1. the decision (a past morning: what was decided, then how it turned out) ----------
   const gain = rs.expected_profit - rs.old_rule_profit;
   const ovenWhy = Object.entries(rs.per_oven).map(([k, v]) => `${k} ${money(v)}`).join(" · ");
-  $("decision").innerHTML = `
-    <p class="headline">Rent the <u>${ovenWord[rs.oven]}</u> oven, leave at ${rs.leave},
-      ${rs.declined_count ? `say no to ${rs.declined_count} order${rs.declined_count > 1 ? "s" : ""}` : "take every order"}.</p>
-    <div class="hero"><span class="num">${money(rs.expected_profit)}</span>
+  const said = rs.declined_count ? `${past ? "said" : "say"} no to ${rs.declined_count} order${rs.declined_count > 1 ? "s" : ""}` : past ? "took every order" : "take every order";
+  const oldWay = (p) => p < 0 ? "lost " + money(-p) : "made " + money(p);
+  const hero = past
+    ? `<div class="hero"><span class="num">${money(out.actual_profit)}</span>
+      <span class="vs">actual profit · the plan said ${money(out.planned_profit)}<br>${out.old_rule_actual_profit == null ? ""
+        : `Your old way would have ${oldWay(out.old_rule_actual_profit)} on this morning (same orders, same traffic).`}</span></div>`
+    : `<div class="hero"><span class="num">${money(rs.expected_profit)}</span>
       <span class="vs">expected profit<br>${gain >= 0 ? money(gain) + " more than" : money(-gain) + " less than"} your old way,
-        which would have ${rs.old_rule_profit < 0 ? "lost " + money(-rs.old_rule_profit) : "made " + money(rs.old_rule_profit)}</span></div>
+        which would have ${oldWay(rs.old_rule_profit)}</span></div>`;
+  $("decision").innerHTML = `
+    <p class="headline">${past ? "Rented" : "Rent"} the <u>${ovenWord[rs.oven]}</u> oven, ${past ? "left" : "leave"} at ${rs.leave}, ${said}.</p>
+    ${hero}
     <div class="facts">
       <div class="fact"><b>${rs.first_load}</b><span>first tray in</span></div>
       <div class="fact"><b>${rs.accepted} stops</b><span>${rs.pieces} kolaches</span></div>
-      <div class="fact"><b>${pct(rs.expected_fresh)}</b><span>arrive fresh</span></div>
-      <div class="fact"><b>${rs.back}</b><span>back at the kitchen</span></div>
+      <div class="fact"><b>${pct(past ? out.actual_fresh : rs.expected_fresh)}</b><span>${past ? "arrived fresh" : "arrive fresh"}</span></div>
+      <div class="fact"><b>${past ? hhmm(v.route.morning.back_min) : rs.back}</b><span>back at the kitchen</span></div>
     </div>
     <p class="why">Why this oven? Expected profit with each size: ${ovenWhy}. The ${ovenWord[rs.oven]} oven holds ${rs.oven_pieces} kolaches at once.</p>
-    ${approved ? "" : `<p class="waiting">Not approved yet. Say "approve" to the planner when you've read this; nothing is sent until you do.</p>`}
+    ${past ? `<p class="why">This morning is over. Below is the plan as it was, with what the van's log recorded at each stop.</p>`
+      : approved ? "" : `<p class="waiting">Not approved yet. Say "approve" to the planner when you've read this; nothing is sent until you do.</p>`}
     <a class="todo-link" id="todo-link" href="#attention-card" hidden></a>`;
 
-  // ---------- 2. needs your eye: every decision and issue gets something Rosa can do about it ----------
-  renderAttention(rs);
+  // ---------- 2. needs your eye (a past morning: what came up, read-only) ----------
+  renderAttention(rs, past);
 
   // ---------- 3. minute by minute (stops here are also the route's stop list) ----------
-  renderTimeline(rs);
+  renderTimeline(rs, past);
 
   // ---------- 3b. the route map ----------
-  try { initRoute(d.route); } catch (e) { $("map").innerHTML = `<p class="fallback">The map could not be drawn (${esc(e.message)}). The minute-by-minute list above still has every time.</p>`; }
+  try { showRoute(v.route, v.is_next); } catch (e) { $("map").innerHTML = `<p class="fallback">The map could not be drawn (${esc(e.message)}). The minute-by-minute list above still has every time.</p>`; }
   const c = rs.costs;
   $("money").innerHTML = `<table>
     <tr><td>Sales (after freshness discounts)</td><td class="n">${money(c.revenue)}</td></tr>
@@ -61,10 +99,14 @@ function render(d) {
     <tr><td>Ingredients (BLS prices, ${esc(rs.bls_months)})</td><td class="n">−${money(c.ingredients)}</td></tr>
     <tr><th>Expected profit</th><th class="n">${money(rs.expected_profit)}</th></tr></table>`;
 
-  // ---------- 4. last morning ----------
-  const lm = d.last_morning;
+  // ---------- 4. how a morning went: this one if it is over, otherwise the last finished one ----------
+  const lm = past ? out : d.last_morning;
+  $("last-card").hidden = !lm;
   if (lm) {
-    $("last-title").textContent = `Last morning: ${dayName(lm.delivery_date)}`;
+    $("last-title").textContent = past ? `How it went: ${dayName(lm.delivery_date)}` : `Last morning: ${dayName(lm.delivery_date)}`;
+    $("last-open").hidden = past;
+    $("last-open").href = "#day=" + lm.delivery_date;
+    $("last-open").textContent = `Open all of ${shortDay(lm.delivery_date)} (map replay, minute by minute)`;
     $("last-tiles").innerHTML = [
       tile(money(lm.actual_profit), "actual profit", `planned ${money(lm.planned_profit)}`),
       tile(pct(lm.actual_fresh), "delivered fresh", lm.refused_pieces ? `${lm.refused_pieces} went to the pantry` : "none refused"),
@@ -73,8 +115,11 @@ function render(d) {
     $("last-table").innerHTML = `<tr><th>Stop</th><th class="n">Planned</th><th class="n">Actual</th><th class="n">Fresh</th></tr>` +
       lm.stops.map((s) => `<tr><td>${esc(s.customer)}</td><td class="n">${s.planned}</td><td class="n">${s.actual || "no GPS"}</td>
       <td class="n">${s.refused ? `<span style="color:var(--critical-text)">${s.refused} refused</span>` : `${s.fresh}/${s.pieces}`}</td></tr>`).join("");
-  } else { $("last-card").hidden = true; }
+  }
+}
 
+// ---------- the overall sections: the same whichever morning is shown ----------
+function renderGlobal(d) {
   // ---------- 5. trends ----------
   const w = d.weekly;
   const series2 = [{ key: "planner", label: "With the planner", color: "var(--series-1)" }, { key: "old", label: "Your old way", color: "var(--series-2)" }];
@@ -150,8 +195,18 @@ function sayNoMessage(x, day) {
   return `Hi ${x.customer}, this is Rosa from Baking on the Way. I'm sorry, I can't deliver your kolache order on ${weekday} morning: ${why}.${next}`;
 }
 
-function renderAttention(rs) {
+function renderAttention(rs, readOnly) {
   const day = rs.delivery_date, list = $("attention");
+  $("attention-title").textContent = readOnly ? "What came up that day" : "Needs your eye";
+  $("attention-hint").hidden = readOnly;
+  if (readOnly) {  // a past morning: nothing left to do, so no ticks and no messages to copy
+    const rows = [
+      ...rs.declined.map((x) => `<li><span class="icon no" aria-hidden="true">✕</span><div class="body"><b>Said no to ${esc(x.customer)}</b><small>${esc(rosaWords(x.why))}</small></div></li>`),
+      ...rs.flags.map((f) => `<li><span class="icon info" aria-hidden="true">!</span><div class="body"><b>${esc(f.customer || "Order sheet")}</b><small>${esc(f.text)}</small></div></li>`),
+    ];
+    list.innerHTML = rows.join("") || `<li><div>Nothing unusual in that night's orders.</div></li>`;
+    return;
+  }
   const items = [
     ...rs.declined.map((x) => ({ id: "no:" + x.customer, kind: "no", title: `Say no to ${x.customer}`,
       text: rosaWords(x.why), msg: sayNoMessage(x, day), tick: "Told them" })),
@@ -202,12 +257,29 @@ function renderAttention(rs) {
 
 // ---------- minute by minute ----------
 // Freshness is only called out where something is wrong (old tray or late); fresh stops just show the minutes.
-let routeApi = null;  // set by initRoute so a tap on a stop can move the map
-function renderTimeline(rs) {
+let routeApi = null;  // set by setupRoute so a tap on a stop can move the map
+// A past morning shows each stop as planned, then what the van's log recorded (decision S10).
+function whatHappened(a) {
+  const g = a.gap_min, when = a.curb == null ? "No GPS for this stop"
+    : `Van pulled up at ${a.curb}, ${g == null || Math.abs(g) < 1 ? "as planned" : `${Math.round(Math.abs(g))} min ${g > 0 ? "later" : "earlier"} than planned (${a.planned_curb})`}`;
+  const fresh = a.refused ? `<span class="warn">${a.refused} kolaches refused, went to the pantry</span>`
+    : a.fresh === a.pieces ? ` · all ${a.pieces} fresh` : `<span class="warn">${a.fresh} of ${a.pieces} fresh, the rest sold at a discount</span>`;
+  return `<span class="happened">${when}${fresh}${a.late ? `<span class="warn">Handed over after the time they asked for: 20% off</span>` : ""}</span>`;
+}
+const wentWell = (a) => !a.refused && a.fresh === a.pieces && !a.late;
+
+function renderTimeline(rs, past) {
   const stops = rs.events.filter((e) => e.kind === "stop");
-  const problems = stops.filter((e) => e.oldest_tray_min >= 15 || e.late);
+  const problems = past ? stops.filter((e) => !wentWell(e.actual)) : stops.filter((e) => e.oldest_tray_min >= 15 || e.late);
   const name = (e) => e.text.replace(/^Stop \d+: /, "");
-  $("fresh-summary").innerHTML = problems.length
+  $("timeline-hint").innerHTML = past
+    ? "Times on the left are the plan. Under each stop: what the van's log recorded. Tap a stop to see it on the map."
+    : "<b>Oven</b> lines: put trays into the van's oven. <b>Stop</b> lines: hand the kolaches over. Tap a stop to see it on the map.";
+  $("fresh-summary").innerHTML = past
+    ? (problems.length
+      ? `<b class="warn-text">${stops.length - problems.length} of ${stops.length} stops got every kolache fresh and on time.</b> Not at ${problems.map((e) => esc(name(e))).join(", ")}.`
+      : `<b>All ${stops.length} stops</b> got every kolache fresh and on time.`)
+    : problems.length
     ? `<b class="warn-text">${stops.length - problems.length} of ${stops.length} stops get their kolaches fresh and on time.</b> Check ${problems.map((e) => esc(name(e))).join(", ")} below.`
     : `<b>All ${stops.length} stops</b> get their kolaches less than 15 minutes out of the oven, on time.`;
   const row = (cls, time, kind, main, sub, extra = "") =>
@@ -220,12 +292,14 @@ function renderTimeline(rs) {
     }
     if (e.kind === "stop") {
       const m = /^(\d+) kolaches · wanted by (.+)$/.exec(e.detail);
-      const what = m ? `Hand over ${m[1]} kolaches · they want them by ${m[2]}` : esc(e.detail);
+      const what = !m ? esc(e.detail) : past ? `${m[1]} kolaches · they wanted them by ${m[2]}` : `Hand over ${m[1]} kolaches · they want them by ${m[2]}`;
       const warn = [];
-      if (e.oldest_tray_min >= 15) warn.push(`Oldest tray is ${e.oldest_tray_min} min out of the oven, so they pay ${e.oldest_tray_min < 30 ? "80%" : "60%"} of the price`);
-      if (e.late) warn.push("Arrives after the time they asked for: 20% off");
-      const sub = `${what}<br>out of the oven ${e.oldest_tray_min} min before` + warn.map((w) => `<span class="warn">${w}</span>`).join("");
-      return row(`stop${warn.length ? " problem" : ""}`, e.time, `Stop ${e.seq}`, `<b>${esc(name(e))}</b>`, sub,
+      if (!past && e.oldest_tray_min >= 15) warn.push(`Oldest tray is ${e.oldest_tray_min} min out of the oven, so they pay ${e.oldest_tray_min < 30 ? "80%" : "60%"} of the price`);
+      if (!past && e.late) warn.push("Arrives after the time they asked for: 20% off");
+      const sub = past ? `${what}<br>${whatHappened(e.actual)}`
+        : `${what}<br>out of the oven ${e.oldest_tray_min} min before` + warn.map((w) => `<span class="warn">${w}</span>`).join("");
+      const bad = past ? !wentWell(e.actual) : warn.length;
+      return row(`stop${bad ? " problem" : ""}`, e.time, `Stop ${e.seq}`, `<b>${esc(name(e))}</b>`, sub,
         `data-seq="${e.seq}" data-min="${e.min}" tabindex="0" role="button" aria-label="Show stop ${e.seq} on the map"`);
     }
     const word = e.kind === "leave" ? "Drive" : e.kind === "back" ? "Done" : "";
@@ -332,17 +406,21 @@ function vanAt(segs, m) {
   return { lat: s.from.lat + (s.to.lat - s.from.lat) * f, lon: s.from.lon + (s.to.lon - s.from.lon) * f, text: s.text, stop: s.stop };
 }
 
-function initRoute(R) {
-  if (!R || !R.next) { $("route-card").hidden = true; return; }
+// The map is built once; showRoute() redraws it for whichever morning is shown.
+// The next run shows the plan (and goes live on its morning); a past morning replays the van's log.
+let routeState = null;
+function showRoute(R, isNext) {
+  if (!R || !R.morning) { $("route-card").hidden = true; return; }
+  $("route-card").hidden = false;
+  if (!routeState) routeState = setupRoute(R.depot);
+  routeState.load(R, isNext);
+}
+
+function setupRoute(depot) {
   if (!window.L) $("map").innerHTML = `<p class="fallback">The street map needs an internet connection. The minute-by-minute list above still has every time.</p>`;
   const fake = /^(\d{1,2}):(\d{2})$/.exec(new URLSearchParams(location.search).get("now") || "");
   const fakeOffset = fake ? (+fake[1] * 60 + +fake[2]) - nowMin() : 0;
   const clockNow = () => nowMin() + fakeOffset;
-  const isRunDay = () => !!fake || localISO() === R.next.delivery_date;
-
-  $("tab-next").textContent = `Next run · ${shortDay(R.next.delivery_date)}`;
-  if (R.last) $("tab-last").textContent = `Last morning · ${shortDay(R.last.delivery_date)}`;
-  else $("tab-last").disabled = true;
 
   const seriesColor = getComputedStyle($("app")).getPropertyValue("--series-1").trim();
   let map = null, layer = null, van = null, pins = {}, trailLine = null;
@@ -355,35 +433,34 @@ function initRoute(R) {
     }).addTo(map);
   }
 
-  const state = { mode: "next", t: 0, playing: false, live: false, segs: [], r: null, raf: 0, last: 0 };
+  const state = { isNext: true, t: 0, playing: false, live: false, segs: [], r: null, raf: 0, last: 0 };
   const scrub = $("scrub");
+  const isRunDay = () => state.isNext && (!!fake || localISO() === state.r.delivery_date);
 
-  function draw(mode) {
-    state.mode = mode;
-    const r = state.r = R[mode];
-    state.segs = routeSegments(r, R.depot);
-    document.querySelectorAll(".tabs button").forEach((b) => b.classList.toggle("on", b.dataset.mode === mode));
+  function draw() {
+    const r = state.r;
+    state.segs = routeSegments(r, depot);
     scrub.min = Math.floor(r.leave_min - 10); scrub.max = Math.ceil(r.back_min + 5); scrub.step = 0.5;
-    $("map-note").textContent = mode === "next"
+    $("map-note").textContent = r.kind === "planned"
       ? "Planned times. Lines join the stops in order; the van follows real roads between them."
-      : "Actual arrival times from the van's log. Tap a pin for planned vs actual; the full table is under Last morning.";
+      : "Replay of the van's log: actual arrival times. Tap a pin for planned vs actual; the full table is under How it went.";
 
     if (map) {
       if (layer) layer.remove();
       layer = L.layerGroup().addTo(map);
-      const path = [[R.depot.lat, R.depot.lon], ...r.stops.filter((s) => s.arrive_min != null).map((s) => [s.lat, s.lon]), [R.depot.lat, R.depot.lon]];
+      const path = [[depot.lat, depot.lon], ...r.stops.filter((s) => s.arrive_min != null).map((s) => [s.lat, s.lon]), [depot.lat, depot.lon]];
       L.polyline(path, { color: seriesColor, weight: 3, opacity: 0.55, dashArray: "6 7" }).addTo(layer);
       trailLine = L.polyline([], { color: seriesColor, weight: 4, opacity: 0.95 }).addTo(layer);
-      L.marker([R.depot.lat, R.depot.lon], { icon: L.divIcon({ className: "", html: '<div class="kitchen" aria-label="kitchen"><svg viewBox="0 0 20 20" width="18" height="18"><path d="M2.5 10 10 3l7.5 7v7.5h-5v-5h-5v5h-5z" fill="#fffaf0"/></svg></div>', iconSize: [34, 34], iconAnchor: [17, 17] }) })
-        .bindTooltip(esc(R.depot.name)).addTo(layer);
+      L.marker([depot.lat, depot.lon], { icon: L.divIcon({ className: "", html: '<div class="kitchen" aria-label="kitchen"><svg viewBox="0 0 20 20" width="18" height="18"><path d="M2.5 10 10 3l7.5 7v7.5h-5v-5h-5v5h-5z" fill="#fffaf0"/></svg></div>', iconSize: [34, 34], iconAnchor: [17, 17] }) })
+        .bindTooltip(esc(depot.name)).addTo(layer);
       pins = {};
       r.stops.forEach((s) => {
-        const when = mode === "next" ? "arrive " + s.arrive : s.arrive_min == null ? "no GPS" : `arrived ${s.arrive} (planned ${s.planned_arrive})`;
+        const when = r.kind === "planned" ? "arrive " + s.arrive : s.arrive_min == null ? "no GPS" : `arrived ${s.arrive} (planned ${s.planned_arrive})`;
         pins[s.seq] = L.marker([s.lat, s.lon], { icon: L.divIcon({ className: "", html: `<div class="pin${s.arrive_min == null ? " nogps" : ""}">${s.seq}</div>`, iconSize: [28, 28], iconAnchor: [14, 14] }) })
           .bindTooltip(`${s.seq}. ${esc(s.customer)}<br>${when}`).addTo(layer)
-          .on("click", () => { if (state.mode === "next") jumpToRow(s.seq); });
+          .on("click", () => jumpToRow(s.seq));
       });
-      van = L.marker([R.depot.lat, R.depot.lon], { icon: L.divIcon({ className: "", html: '<div class="van" aria-label="van"><svg viewBox="0 0 26 17" width="22" height="15"><path d="M1 2h14v10H1zM16 5h5l4 4v3h-9z" fill="#fff"/><circle cx="6" cy="13" r="2.4" fill="#fff" stroke="#d2456c"/><circle cx="20" cy="13" r="2.4" fill="#fff" stroke="#d2456c"/></svg></div>', iconSize: [38, 38], iconAnchor: [19, 19] }), zIndexOffset: 1000 }).addTo(layer);
+      van = L.marker([depot.lat, depot.lon], { icon: L.divIcon({ className: "", html: '<div class="van" aria-label="van"><svg viewBox="0 0 26 17" width="22" height="15"><path d="M1 2h14v10H1zM16 5h5l4 4v3h-9z" fill="#fff"/><circle cx="6" cy="13" r="2.4" fill="#fff" stroke="#d2456c"/><circle cx="20" cy="13" r="2.4" fill="#fff" stroke="#d2456c"/></svg></div>', iconSize: [38, 38], iconAnchor: [19, 19] }), zIndexOffset: 1000 }).addTo(layer);
       map.fitBounds(L.latLngBounds(path).pad(0.12));
     }
   }
@@ -394,7 +471,7 @@ function initRoute(R) {
     scrub.value = state.t;
     $("clock").textContent = hhmm(state.t);
     const p = vanAt(state.segs, state.t);
-    const label = state.live ? `<span class="live">LIVE · PLANNED POSITION</span>` : `<span class="replay">${state.mode === "next" ? "PLAN" : "REPLAY"}</span>`;
+    const label = state.live ? `<span class="live">LIVE · PLANNED POSITION</span>` : `<span class="replay">${r.kind === "planned" ? "PLAN" : "REPLAY"}</span>`;
     $("now-line").innerHTML = `${label}${esc(p.text)}`;
     // a stop is "done" once the van has left it, "now" while the van is there or driving to it
     r.stops.forEach((s) => {
@@ -405,7 +482,7 @@ function initRoute(R) {
     markTimeline(p);
     if (van) {
       van.setLatLng([p.lat, p.lon]);
-      const trail = [[R.depot.lat, R.depot.lon]];
+      const trail = [[depot.lat, depot.lon]];
       if (state.t >= r.leave_min) {
         r.stops.forEach((s) => { if (s.arrive_min != null && state.t >= s.arrive_min) trail.push([s.lat, s.lon]); });
         trail.push([p.lat, p.lon]);
@@ -414,14 +491,15 @@ function initRoute(R) {
     }
   }
 
-  // In "next run" mode the minute-by-minute list follows the van: past lines fade, the current stop is marked.
+  // The minute-by-minute list follows the van: past lines fade, the current stop is marked.
+  // On a past morning the list shows planned times, so only the current stop is marked (by stop number).
   function markTimeline(p) {
-    const next = state.mode === "next";
+    const planned = state.r.kind === "planned";
     document.querySelectorAll("#timeline li").forEach((li) => {
       const seq = +li.dataset.seq, s = seq ? state.r.stops.find((x) => x.seq === seq) : null;
       const end = s ? s.depart_min : +li.dataset.min;
-      li.classList.toggle("past", next && state.t >= end);
-      li.classList.toggle("now", next && !!seq && p.stop === seq && state.t < end);
+      li.classList.toggle("past", planned && state.t >= end);
+      li.classList.toggle("now", !!seq && p.stop === seq && (end == null || state.t < end));
     });
   }
   function jumpToRow(seq) {
@@ -432,7 +510,6 @@ function initRoute(R) {
   }
   routeApi = {
     showStop(seq) {
-      if (state.mode !== "next") { stopLive(); pause(); draw("next"); }
       const s = state.r.stops.find((x) => x.seq === seq);
       if (!s || s.arrive_min == null) return;
       stopLive(); pause(); setTime(s.arrive_min + 0.5);
@@ -455,11 +532,11 @@ function initRoute(R) {
     $("play").textContent = "❚❚"; $("play").setAttribute("aria-label", "Pause");
     state.raf = requestAnimationFrame(frame);
   }
-  function pause() { state.playing = false; cancelAnimationFrame(state.raf); $("play").textContent = "▶\uFE0E"; $("play").setAttribute("aria-label", "Play"); }
+  function pause() { state.playing = false; cancelAnimationFrame(state.raf); $("play").textContent = "▶︎"; $("play").setAttribute("aria-label", "Play"); }
 
   // live: follow the clock on the morning of the next run
   let liveTimer = 0;
-  const canLive = () => state.mode === "next" && isRunDay() && clockNow() >= R.next.leave_min - 45 && clockNow() <= R.next.back_min + 30;
+  const canLive = () => isRunDay() && clockNow() >= state.r.leave_min - 45 && clockNow() <= state.r.back_min + 30;
   function goLive() {
     if (!canLive()) return false;
     pause(); state.live = true; $("golive").hidden = true;
@@ -473,16 +550,126 @@ function initRoute(R) {
   $("play").addEventListener("click", () => (state.playing ? pause() : play()));
   scrub.addEventListener("input", () => { stopLive(); pause(); setTime(+scrub.value); });
   $("golive").addEventListener("click", goLive);
-  document.querySelectorAll(".tabs button").forEach((b) => b.addEventListener("click", () => {
-    if (b.disabled || b.dataset.mode === state.mode) return;
-    stopLive(); pause(); draw(b.dataset.mode);
-    if (!(b.dataset.mode === "next" && goLive())) setTime(+scrub.min);
-    $("golive").hidden = state.live || !canLive();
-  }));
 
-  draw("next");
-  if (!goLive()) {
-    setTime(+scrub.min);
-    if (isRunDay() && clockNow() < R.next.leave_min - 45) $("now-line").innerHTML += ` <small>(goes live at ${hhmm(R.next.leave_min - 45)})</small>`;
+  return {
+    load(R, isNext) {
+      stopLive(); pause();
+      state.isNext = isNext; state.r = R.morning;
+      draw();
+      if (!goLive()) {
+        setTime(+scrub.min);
+        if (isRunDay() && clockNow() < state.r.leave_min - 45) $("now-line").innerHTML += ` <small>(goes live at ${hhmm(state.r.leave_min - 45)})</small>`;
+      }
+      $("golive").hidden = state.live || !canLive();
+    },
+  };
+}
+
+// ---------- the calendar: every morning the van ran, shaded by what it actually made (decision S10) ----------
+// One hue, light to dark = less to more profit (sequential; dark mode uses its own steps, see style.css).
+// Every square also prints its dollar figure, so the shade is never the only way to read it.
+const PROFIT_BINS = [150, 225, 300, 375];
+const BIN_LABELS = ["under $150", "$150 to $225", "$225 to $300", "$300 to $375", "$375 or more"];
+const binOf = (p) => 1 + PROFIT_BINS.filter((b) => p >= b).length;
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const pad2 = (n) => String(n).padStart(2, "0");
+const CAL = { days: [], byDate: {}, month: null, min: null, max: null };
+
+function calText(x) {
+  if (x.status !== "done") return `${dayName(x.date)}: the next run. The plan expects ${money(x.planned_profit)}.`;
+  return `${dayName(x.date)}: made ${money(x.actual_profit)}, the plan said ${money(x.planned_profit)}` +
+    (x.old_rule_actual_profit == null ? "" : `, your old way would have ${x.old_rule_actual_profit < 0 ? "lost " + money(-x.old_rule_actual_profit) : "made " + money(x.old_rule_actual_profit)}`) +
+    `. ${pct(x.actual_fresh)} fresh${x.refused_pieces ? `, ${x.refused_pieces} refused` : ""}.`;
+}
+
+function initCalendar(cal) {
+  CAL.days = cal.days;
+  cal.days.forEach((x) => { CAL.byDate[x.date] = x; });
+  const ym = (iso) => [+iso.slice(0, 4), +iso.slice(5, 7) - 1];
+  CAL.min = ym(cal.days[0].date); CAL.max = ym(cal.days[cal.days.length - 1].date);
+  $("cal-legend").innerHTML = BIN_LABELS.map((l, i) => `<span><i class="b${i + 1}"></i>${l}</span>`).join("") +
+    `<span><i class="next"></i>next run</span>`;
+  $("cal-open").addEventListener("click", () => toggleCalendar());
+  $("cal-close").addEventListener("click", () => toggleCalendar(false));
+  $("cal-prev").addEventListener("click", () => stepMonth(-1));
+  $("cal-next").addEventListener("click", () => stepMonth(1));
+  $("prev-day").addEventListener("click", () => stepDay(-1));
+  $("next-day").addEventListener("click", () => stepDay(1));
+  $("to-next").addEventListener("click", () => goToDay(DASH.calendar.next));
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("cal").hidden) { toggleCalendar(false); $("cal-open").focus(); } });
+  const grid = $("cal-grid"), tip = $("tooltip");
+  grid.addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-date]");
+    if (!b) return;
+    tip.hidden = true;
+    toggleCalendar(false);
+    goToDay(b.dataset.date);
+  });
+  grid.addEventListener("pointerover", (e) => {
+    const b = e.target.closest("button[data-date]");
+    if (!b || e.pointerType === "touch") return;
+    tip.innerHTML = esc(calText(CAL.byDate[b.dataset.date]));
+    tip.hidden = false;
+    const r = b.getBoundingClientRect();
+    tip.style.left = Math.max(8, Math.min(r.left, window.innerWidth - tip.offsetWidth - 8)) + "px";
+    tip.style.top = r.top - tip.offsetHeight - 8 + "px";
+  });
+  grid.addEventListener("pointerleave", () => { tip.hidden = true; });
+}
+
+function toggleCalendar(open) {
+  const cal = $("cal"), show = open ?? cal.hidden;
+  cal.hidden = !show;
+  $("cal-open").setAttribute("aria-expanded", show);
+  if (show) {
+    CAL.month = [+shown.slice(0, 4), +shown.slice(5, 7) - 1];
+    drawMonth();
+    const sel = $("cal-grid").querySelector("[aria-current]");
+    if (sel) sel.focus();
+  } else { $("tooltip").hidden = true; }
+}
+
+function stepMonth(k) {
+  let [y, m] = CAL.month;
+  m += k; if (m < 0) { m = 11; y--; } if (m > 11) { m = 0; y++; }
+  CAL.month = [y, m];
+  drawMonth();
+}
+
+function stepDay(k) {
+  const i = CAL.days.findIndex((x) => x.date === shown), j = i + k;
+  if (j >= 0 && j < CAL.days.length) goToDay(CAL.days[j].date);
+}
+
+function updateDayNav(iso) {
+  const i = CAL.days.findIndex((x) => x.date === iso);
+  $("prev-day").disabled = i <= 0;
+  $("next-day").disabled = i < 0 || i >= CAL.days.length - 1;
+  const prev = CAL.days[i - 1], next = CAL.days[i + 1];
+  $("prev-day").setAttribute("aria-label", prev ? `Previous morning: ${dayName(prev.date)}` : "No earlier morning");
+  $("next-day").setAttribute("aria-label", next ? `Next morning: ${dayName(next.date)}` : "No later morning");
+  $("to-next").hidden = iso === DASH.calendar.next;
+  $("cal-open").setAttribute("aria-label", `${dayName(iso)}. Open the calendar to pick another morning`);
+  if (!$("cal").hidden) { CAL.month = [+iso.slice(0, 4), +iso.slice(5, 7) - 1]; drawMonth(); }
+}
+
+function drawMonth() {
+  const [y, m] = CAL.month, cmp = (a, b) => a[0] * 12 + a[1] - (b[0] * 12 + b[1]);
+  $("cal-title").textContent = `${MONTHS[m]} ${y}`;
+  $("cal-prev").disabled = cmp(CAL.month, CAL.min) <= 0;
+  $("cal-next").disabled = cmp(CAL.month, CAL.max) >= 0;
+  const lead = (new Date(y, m, 1).getDay() + 6) % 7, n = new Date(y, m + 1, 0).getDate();  // Monday first
+  const cells = [];
+  for (let i = 0; i < lead; i++) cells.push(`<span class="cell blank" aria-hidden="true"></span>`);
+  let ran = 0, total = 0;
+  for (let d = 1; d <= n; d++) {
+    const iso = `${y}-${pad2(m + 1)}-${pad2(d)}`, x = CAL.byDate[iso];
+    if (!x) { cells.push(`<span class="cell off" aria-hidden="true">${d}</span>`); continue; }
+    const done = x.status === "done", sel = iso === shown;
+    if (done) { ran++; total += x.actual_profit; }
+    cells.push(`<button type="button" class="cell run ${done ? "b" + binOf(x.actual_profit) : "next"}${sel ? " sel" : ""}" data-date="${iso}"
+      aria-label="${esc(calText(x))}"${sel ? ` aria-current="date"` : ""}><span class="dn">${d}</span><span class="pv">${done ? money(x.actual_profit) : "next"}</span></button>`);
   }
+  $("cal-grid").innerHTML = cells.join("");
+  $("cal-summary").textContent = ran ? `${ran} morning${ran === 1 ? "" : "s"} this month, ${money(total)} in all, ${money(total / ran)} a morning on average.` : "";
 }
