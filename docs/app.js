@@ -1,6 +1,6 @@
 // Reads data/dashboard.json (exported from the database by `python -m bakery export`) and draws the page.
 "use strict";
-window.MAP_VERSION = 3;  // bump together with ?v= in index.html so phones fetch the new script
+window.MAP_VERSION = 4;  // bump together with ?v= in index.html so phones fetch the new script
 // Any script error shows on the page instead of failing silently.
 window.addEventListener("error", (e) => {
   const box = document.getElementById("map");
@@ -23,8 +23,8 @@ function render(d) {
   const rs = d.run_sheet;
   $("day").textContent = dayName(rs.delivery_date);
   const approved = rs.status === "approved" || rs.status === "done";
-  $("status").textContent = approved ? "✓ Approved" : "Waiting for your OK";
-  $("status").className = "badge " + (approved ? "ok" : "wait");
+  $("status").textContent = approved ? "Approved" : "Waiting for your OK";
+  $("status").className = "status " + (approved ? "ok" : "wait");
 
   // ---------- 1. the decision ----------
   const gain = rs.expected_profit - rs.old_rule_profit;
@@ -33,11 +33,12 @@ function render(d) {
     <p class="headline">Rent the <u>${ovenWord[rs.oven]}</u> oven, leave at ${rs.leave},
       ${rs.declined_count ? `say no to ${rs.declined_count} order${rs.declined_count > 1 ? "s" : ""}` : "take every order"}.</p>
     <div class="hero"><span class="num">${money(rs.expected_profit)}</span>
-      <span class="vs">expected profit<br>${gain >= 0 ? money(gain) + " more than" : money(-gain) + " less than"} your old way (${money(rs.old_rule_profit)})</span></div>
+      <span class="vs">expected profit<br>${gain >= 0 ? money(gain) + " more than" : money(-gain) + " less than"} your old way,
+        which would have ${rs.old_rule_profit < 0 ? "lost " + money(-rs.old_rule_profit) : "made " + money(rs.old_rule_profit)}</span></div>
     <div class="facts">
       <div class="fact"><b>${rs.first_load}</b><span>first tray in</span></div>
       <div class="fact"><b>${rs.accepted} stops</b><span>${rs.pieces} kolaches</span></div>
-      <div class="fact"><b>${pct(rs.expected_fresh)}</b><span>arrive &lt; 15 min from oven</span></div>
+      <div class="fact"><b>${pct(rs.expected_fresh)}</b><span>arrive fresh</span></div>
       <div class="fact"><b>${rs.back}</b><span>back at the kitchen</span></div>
     </div>
     <p class="why">Why this oven? Expected profit with each size: ${ovenWhy}. The ${ovenWord[rs.oven]} oven holds ${rs.oven_pieces} kolaches at once.</p>
@@ -77,21 +78,31 @@ function render(d) {
   // ---------- 5. trends ----------
   const w = d.weekly;
   const series2 = [{ key: "planner", label: "With the planner", color: "var(--series-1)" }, { key: "old", label: "Your old way", color: "var(--series-2)" }];
-  lineChart($("chart-profit"), w.map((r) => ({ x: r.week, planner: r.planner_profit, old: r.old_rule_profit })), series2, money, true);
-  lineChart($("chart-fresh"), w.map((r) => ({ x: r.week, planner: r.planner_fresh, old: r.old_rule_fresh })), series2, pct, false, [0, 1]);
-  lineChart($("chart-gap"), w.map((r) => ({ x: r.week, gap: r.worst_gap })), [{ key: "gap", label: "Minutes off at the worst stop", color: "var(--series-1)" }], (v) => v.toFixed(1) + " min", true);
+  lineChart($("chart-profit"), w.map((r) => ({ x: r.week, n: r.mornings, planner: r.planner_profit, old: r.old_rule_profit })), series2, money, true);
+  lineChart($("chart-fresh"), w.map((r) => ({ x: r.week, n: r.mornings, planner: r.planner_fresh, old: r.old_rule_fresh })), series2, pct, false, [0, 1]);
+  lineChart($("chart-gap"), w.map((r) => ({ x: r.week, n: r.mornings, gap: r.worst_gap })), [{ key: "gap", label: "Minutes off at the worst stop", color: "var(--series-1)" }], (v) => (Number.isInteger(v) ? v : v.toFixed(1)) + " min", false);
+  if (w.length) {
+    const lw = w[w.length - 1];
+    $("weekly-note").textContent = `The numbers at the right end of each line are the latest week (week of ${shortDay(lw.week)}, ${lw.mornings} morning${lw.mornings === 1 ? "" : "s"} so far). The tiles under "Is it working?" average all ${d.measures ? d.measures.mornings + " " : ""}mornings, so they differ.`;
+  }
   $("weekly-table").innerHTML = `<tr><th>Week of</th><th class="n">Mornings</th><th class="n">Profit (planner)</th><th class="n">Profit (old way)</th><th class="n">Fresh (planner)</th><th class="n">Fresh (old)</th><th class="n">Worst gap</th></tr>` +
     w.map((r) => `<tr><td>${shortDay(r.week)}</td><td class="n">${r.mornings}</td><td class="n">${money(r.planner_profit)}</td><td class="n">${money(r.old_rule_profit)}</td><td class="n">${pct(r.planner_fresh)}</td><td class="n">${pct(r.old_rule_fresh)}</td><td class="n">${r.worst_gap ?? "–"}</td></tr>`).join("");
 
   // ---------- 6. customers ----------
-  $("customers").innerHTML = `<tr><th>Customer</th><th class="n">Orders</th><th class="n">Said no</th><th class="n">Price</th><th>Talk about</th></tr>` +
-    d.customers.map((r) => `<tr><td>${esc(r.customer)}<br><small style="color:var(--text-muted)">opens ${r.opens}</small></td><td class="n">${r.orders}</td><td class="n">${r.declined}</td><td class="n">$${r.price.toFixed(2)}</td><td>${r.advice.map(esc).join("<br>") || "<span style='color:var(--text-muted)'>–</span>"}</td></tr>`).join("");
+  const custHead = `<tr><th>Customer</th><th class="n">Orders</th><th class="n nowrap">Said no</th><th class="n">Price</th>`;
+  const custRow = (r, talk) => `<tr><td>${esc(r.customer)}<br><small class="muted">opens ${r.opens}</small></td><td class="n">${r.orders}</td><td class="n">${r.declined}</td><td class="n">$${r.price.toFixed(2)}</td>${talk ? `<td>${r.advice.map(esc).join("<br>")}</td>` : ""}</tr>`;
+  const talk = d.customers.filter((r) => r.advice.length), rest = d.customers.filter((r) => !r.advice.length);
+  $("customers").innerHTML = talk.length ? custHead + `<th>Talk about</th></tr>` + talk.map((r) => custRow(r, true)).join("")
+    : `<tr><td>Nobody to talk to right now.</td></tr>`;
+  $("customers-rest").hidden = !rest.length;
+  $("customers-rest-sum").textContent = `The other ${rest.length} customers: nothing to talk about`;
+  $("customers-rest-table").innerHTML = custHead + `</tr>` + rest.map((r) => custRow(r, false)).join("");
 
   // ---------- 7. goals ----------
   const m = d.measures;
   if (m) {
     $("goals").innerHTML = [
-      tile("+" + money(m.profit_gain_per_morning), "more profit per morning than your old way", passFail(m.targets.profit_uplift_at_least_15pct, `goal: +15% · got ${m.profit_uplift == null ? "n/a" : "+" + Math.round(m.profit_uplift * 100) + "%"}`)),
+      tile("+" + money(m.profit_gain_per_morning), "more profit per morning than your old way", passFail(m.targets.profit_uplift_at_least_15pct, `${money(m.profit_per_morning_planner)} vs ${money(m.profit_per_morning_old_rule)} a morning · goal: at least 15% more`)),
       tile(pct(m.fresh_share_planner), "delivered within 15 min of the oven", passFail(m.targets.fresh_at_least_85pct, `goal: 85% · old way ${pct(m.fresh_share_old_rule)}`)),
       tile(m.worst_gap_after.toFixed(1) + " min", "worst-stop arrival error, last 20 mornings", passFail(m.targets.worst_gap_after_at_most_5min, `goal: ≤ 5 min · was ${m.worst_gap_before.toFixed(1)} at the start`)),
     ].join("");
@@ -111,7 +122,7 @@ function render(d) {
 }
 
 function tile(v, l, s) { return `<div class="tile"><div class="v">${v}</div><div class="l">${l}</div><div class="s">${s}</div></div>`; }
-function passFail(ok, text) { return `<span class="s ${ok ? "pass" : "fail"}">${ok ? "✓ met" : "✕ not met"} · ${text}</span>`; }
+function passFail(ok, text) { return `<span class="s ${ok ? "pass" : "fail"}">${ok ? "Goal met" : "Goal not met"} · ${text}</span>`; }
 
 // ---------- needs your eye ----------
 // The page is static, so it cannot change the plan. What Rosa can do here: copy a ready message for a café
@@ -119,6 +130,13 @@ function passFail(ok, text) { return `<span class="s ${ok ? "pass" : "fail"}">${
 const tickKey = (day, id) => `bakery:${day}:${id}`;
 const getTick = (k) => { try { return localStorage.getItem(k) === "1"; } catch (e) { return false; } };
 const setTick = (k, on) => { try { on ? localStorage.setItem(k, "1") : localStorage.removeItem(k); } catch (e) { /* private mode: tick lasts until reload */ } };
+
+function rosaWords(why) {
+  return why.replace(/^\[C\d+\] /, "")
+    .replace(/can't reach it by (\d+:\d\d) \+ 15 min without making other stops late \(best case (\d+:\d\d)\)/,
+      "they want it by $1, and the earliest the van could get there without making other stops late is $2")
+    .replace("fitting it in makes other stops later or staler", "fitting it in would make other stops late or their kolaches less fresh");
+}
 
 function sayNoMessage(x, day) {
   const weekday = new Date(day + "T12:00:00").toLocaleDateString("en-US", { weekday: "long" });
@@ -136,12 +154,12 @@ function renderAttention(rs) {
   const day = rs.delivery_date, list = $("attention");
   const items = [
     ...rs.declined.map((x) => ({ id: "no:" + x.customer, kind: "no", title: `Say no to ${x.customer}`,
-      text: x.why.replace(/^\[C\d+\] /, ""), msg: sayNoMessage(x, day), tick: "Told them" })),
+      text: rosaWords(x.why), msg: sayNoMessage(x, day), tick: "Told them" })),
     ...rs.flags.map((f, i) => ({ id: `flag:${f.rule}:${f.customer || ""}:${i}`, kind: "info",
       title: f.customer || "Order sheet", text: f.text, tick: "Seen" })),
   ];
   if (!items.length) {
-    list.innerHTML = `<li><span class="icon ok">✓</span><div>Nothing unusual in tonight's orders.</div></li>`;
+    list.innerHTML = `<li><div>Nothing unusual in tonight's orders.</div></li>`;
     $("attention-hint").hidden = true;
     return;
   }
@@ -159,12 +177,12 @@ function renderAttention(rs) {
       const it = items[+li.dataset.i], on = getTick(tickKey(day, it.id));
       li.classList.toggle("done", on); done += on;
       const b = li.querySelector(".tick");
-      b.setAttribute("aria-pressed", on); b.textContent = on ? `✓ ${it.tick}` : it.tick;
+      b.setAttribute("aria-pressed", on); b.textContent = on ? `${it.tick} (tap to undo)` : it.tick;
     });
     const link = $("todo-link");
     if (link) {
       link.hidden = false;
-      link.textContent = done === items.length ? `✓ All ${items.length} things that needed your eye are handled`
+      link.textContent = done === items.length ? `All ${items.length} things that needed your eye are handled`
         : `${items.length - done} of ${items.length} things need your eye before you leave ↓`;
       link.classList.toggle("all-done", done === items.length);
     }
@@ -190,21 +208,28 @@ function renderTimeline(rs) {
   const problems = stops.filter((e) => e.oldest_tray_min >= 15 || e.late);
   const name = (e) => e.text.replace(/^Stop \d+: /, "");
   $("fresh-summary").innerHTML = problems.length
-    ? `<span class="warn-text">${stops.length - problems.length} of ${stops.length} stops get their kolaches fresh and on time.</span> Check ${problems.map((e) => esc(name(e))).join(", ")} below.`
-    : `<span class="ok-text">✓</span> All ${stops.length} stops get their kolaches less than 15 minutes out of the oven, on time.`;
+    ? `<b class="warn-text">${stops.length - problems.length} of ${stops.length} stops get their kolaches fresh and on time.</b> Check ${problems.map((e) => esc(name(e))).join(", ")} below.`
+    : `<b>All ${stops.length} stops</b> get their kolaches less than 15 minutes out of the oven, on time.`;
+  const row = (cls, time, kind, main, sub, extra = "") =>
+    `<li class="${cls}" ${extra}><span class="t">${time}</span><span class="k">${kind}</span><span class="what">${main}${sub ? `<span class="sub">${sub}</span>` : ""}</span></li>`;
   $("timeline").innerHTML = rs.events.map((e) => {
-    if (e.kind === "stop") {
-      const warn = [];
-      if (e.oldest_tray_min >= 15) warn.push(`⚠ Oldest tray is ${e.oldest_tray_min} min out of the oven, so they pay ${e.oldest_tray_min < 30 ? "80%" : "60%"} of the price`);
-      if (e.late) warn.push("⚠ Arrives after their wanted-by time: 20% off");
-      return `<li class="stop${warn.length ? " problem" : ""}" data-seq="${e.seq}" data-min="${e.min}" tabindex="0" role="button" aria-label="Show stop ${e.seq} on the map">
-        <span class="t">${e.time}</span>
-        <span class="what"><span class="sn">${e.seq}</span><b>${esc(name(e))}</b>
-          <span class="sub">${esc(e.detail)} · ${e.oldest_tray_min} min from the oven</span>
-          ${warn.map((w) => `<span class="warn">${w}</span>`).join("")}</span></li>`;
+    if (e.kind === "load") {
+      const m = /^Load (\d+) trays? \((\d+)\) for (.+)$/.exec(e.text);
+      return m ? row("load", e.time, "Oven", `Put ${m[1]} tray${m[1] === "1" ? "" : "s"} in for ${esc(m[3])}`, `${m[2]} kolaches · ready at ${e.out}`, `data-min="${e.min}"`)
+        : row("load", e.time, "Oven", esc(e.text), `ready at ${e.out}`, `data-min="${e.min}"`);
     }
-    const sub = e.kind === "load" ? `<span class="sub">out of the oven ${e.out}</span>` : "";
-    return `<li class="${e.kind}" data-min="${e.min}"><span class="t">${e.time}</span><span class="what">${esc(e.text)}${sub}</span></li>`;
+    if (e.kind === "stop") {
+      const m = /^(\d+) kolaches · wanted by (.+)$/.exec(e.detail);
+      const what = m ? `Hand over ${m[1]} kolaches · they want them by ${m[2]}` : esc(e.detail);
+      const warn = [];
+      if (e.oldest_tray_min >= 15) warn.push(`Oldest tray is ${e.oldest_tray_min} min out of the oven, so they pay ${e.oldest_tray_min < 30 ? "80%" : "60%"} of the price`);
+      if (e.late) warn.push("Arrives after the time they asked for: 20% off");
+      const sub = `${what}<br>out of the oven ${e.oldest_tray_min} min before` + warn.map((w) => `<span class="warn">${w}</span>`).join("");
+      return row(`stop${warn.length ? " problem" : ""}`, e.time, `Stop ${e.seq}`, `<b>${esc(name(e))}</b>`, sub,
+        `data-seq="${e.seq}" data-min="${e.min}" tabindex="0" role="button" aria-label="Show stop ${e.seq} on the map"`);
+    }
+    const word = e.kind === "leave" ? "Drive" : e.kind === "back" ? "Done" : "";
+    return row(e.kind, e.time, word, esc(e.text), "", `data-min="${e.min}"`);
   }).join("");
   $("timeline").querySelectorAll("li.stop").forEach((li) => {
     const go = () => { if (!routeApi) return; routeApi.showStop(+li.dataset.seq); $("route-card").scrollIntoView({ behavior: "smooth", block: "start" }); };
@@ -221,12 +246,16 @@ function lineChart(el, rows, series, fmt, zeroLine, domain) {
   const vals = rows.flatMap((r) => series.map((s) => r[s.key])).filter((v) => v != null);
   let [lo, hi] = domain || [Math.min(0, ...vals), Math.max(...vals)];
   if (hi === lo) hi = lo + 1;
-  const pad = (hi - lo) * 0.08; if (!domain) { hi += pad; if (lo < 0) lo -= pad; }
+  let tickStep = (hi - lo) / 4;
+  if (!domain) {  // round the axis to 1 / 2 / 2.5 / 5 x 10^k so labels read $100, $200 ... not $241
+    const raw = (hi - lo) / 4, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    tickStep = [1, 2, 2.5, 5, 10].map((k) => k * mag).find((s) => s >= raw);
+    lo = Math.floor(lo / tickStep) * tickStep; hi = Math.ceil(hi / tickStep) * tickStep;
+  }
   const x = (i) => m.l + (rows.length === 1 ? (W - m.l - m.r) / 2 : (i * (W - m.l - m.r)) / (rows.length - 1));
   const y = (v) => m.t + (1 - (v - lo) / (hi - lo)) * (H - m.t - m.b);
-  const ticks = 4, grid = [];
-  for (let k = 0; k <= ticks; k++) {
-    const v = lo + ((hi - lo) * k) / ticks;
+  const grid = [];
+  for (let v = lo; v <= hi + tickStep / 1000; v += tickStep) {
     grid.push(`<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}"/><text x="${m.l - 6}" y="${y(v) + 4}" text-anchor="end">${fmt(v)}</text>`);
   }
   const step = Math.ceil(rows.length / 6);
@@ -247,8 +276,8 @@ function lineChart(el, rows, series, fmt, zeroLine, domain) {
     <g class="axis">${xl}</g>
     ${paths.map((p) => `<path d="${p.d}" fill="none" stroke="${p.s.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`).join("")}
     ${paths.map((p) => `<circle cx="${p.lx}" cy="${p.ly}" r="4" fill="${p.s.color}" stroke="var(--surface-1)" stroke-width="2"/>`).join("")}
-    ${lbls.map((p) => `<text class="lbl" x="${p.lx + 8}" y="${p.ty + 4}">${esc(fmt(p.lv))}</text><text class="lbl" x="${p.lx + 8}" y="${p.ty + 17}" style="font-weight:400;font-size:11px">${esc(p.s.label.split(" ").slice(-2).join(" "))}</text>`).join("")}
-    <line class="cross" id="${el.id}-x" y1="${m.t}" y2="${H - m.b}" x1="-10" x2="-10"/>
+    ${lbls.map((p) => `<text class="lbl" x="${p.lx + 8}" y="${p.ty + 4}">${esc(fmt(p.lv))}</text><text class="lbl" x="${p.lx + 8}" y="${p.ty + 17}" style="font-weight:400;font-size:11px">${esc(p.s.key === "old" ? "old way" : p.s.key === "planner" ? "planner" : "worst stop")}</text>`).join("")}
+    <line class="cross" id="${el.id}-x" y1="${m.t}" y2="${H - m.b}" x1="0" x2="0" visibility="hidden"/>
     <rect x="${m.l}" y="0" width="${W - m.l - m.r}" height="${H}" fill="transparent" class="hit"/>
   </svg>`;
   const legend = series.length > 1 ? `<div class="legend">${series.map((s) => `<span><i style="background:${s.color}"></i>${esc(s.label)}</span>`).join("")}</div>` : "";
@@ -258,9 +287,9 @@ function lineChart(el, rows, series, fmt, zeroLine, domain) {
   const move = (ev) => {
     const pt = svgEl.getBoundingClientRect(), cx = ((ev.clientX - pt.left) / pt.width) * W;
     let best = 0; rows.forEach((r, i) => { if (Math.abs(x(i) - cx) < Math.abs(x(best) - cx)) best = i; });
-    cross.setAttribute("x1", x(best)); cross.setAttribute("x2", x(best));
+    cross.setAttribute("x1", x(best)); cross.setAttribute("x2", x(best)); cross.setAttribute("visibility", "visible");
     const r = rows[best];
-    tip.innerHTML = `<b>Week of ${shortDay(r.x)}</b><br>` + series.map((s) => `<span style="color:${s.color}">━</span> ${esc(s.label)}: <b>${r[s.key] == null ? "–" : esc(fmt(r[s.key]))}</b>`).join("<br>");
+    tip.innerHTML = `<b>Week of ${shortDay(r.x)}</b>${r.n ? ` · ${r.n} morning${r.n === 1 ? "" : "s"}` : ""}<br>` + series.map((s) => `<span style="color:${s.color}">━</span> ${esc(s.label)}: <b>${r[s.key] == null ? "–" : esc(fmt(r[s.key]))}</b>`).join("<br>");
     tip.hidden = false;
     tip.style.left = Math.min(ev.clientX + 12, window.innerWidth - tip.offsetWidth - 8) + "px";
     tip.style.top = ev.clientY - tip.offsetHeight - 12 + "px";
@@ -268,7 +297,7 @@ function lineChart(el, rows, series, fmt, zeroLine, domain) {
   const hit = el.querySelector(".hit");
   hit.addEventListener("pointermove", move);
   hit.addEventListener("pointerdown", move);
-  hit.addEventListener("pointerleave", () => { tip.hidden = true; cross.setAttribute("x1", -10); cross.setAttribute("x2", -10); });
+  hit.addEventListener("pointerleave", () => { tip.hidden = true; cross.setAttribute("visibility", "hidden"); });
 }
 
 // ---------- route map: Leaflet + OpenStreetMap, the van moves by the clock or by replay ----------
@@ -345,7 +374,7 @@ function initRoute(R) {
       const path = [[R.depot.lat, R.depot.lon], ...r.stops.filter((s) => s.arrive_min != null).map((s) => [s.lat, s.lon]), [R.depot.lat, R.depot.lon]];
       L.polyline(path, { color: seriesColor, weight: 3, opacity: 0.55, dashArray: "6 7" }).addTo(layer);
       trailLine = L.polyline([], { color: seriesColor, weight: 4, opacity: 0.95 }).addTo(layer);
-      L.marker([R.depot.lat, R.depot.lon], { icon: L.divIcon({ className: "", html: '<div class="kitchen" aria-label="kitchen">🥐</div>', iconSize: [34, 34], iconAnchor: [17, 17] }) })
+      L.marker([R.depot.lat, R.depot.lon], { icon: L.divIcon({ className: "", html: '<div class="kitchen" aria-label="kitchen"><svg viewBox="0 0 20 20" width="18" height="18"><path d="M2.5 10 10 3l7.5 7v7.5h-5v-5h-5v5h-5z" fill="#fffaf0"/></svg></div>', iconSize: [34, 34], iconAnchor: [17, 17] }) })
         .bindTooltip(esc(R.depot.name)).addTo(layer);
       pins = {};
       r.stops.forEach((s) => {
@@ -354,7 +383,7 @@ function initRoute(R) {
           .bindTooltip(`${s.seq}. ${esc(s.customer)}<br>${when}`).addTo(layer)
           .on("click", () => { if (state.mode === "next") jumpToRow(s.seq); });
       });
-      van = L.marker([R.depot.lat, R.depot.lon], { icon: L.divIcon({ className: "", html: '<div class="van" aria-label="van">🚐</div>', iconSize: [38, 38], iconAnchor: [19, 19] }), zIndexOffset: 1000 }).addTo(layer);
+      van = L.marker([R.depot.lat, R.depot.lon], { icon: L.divIcon({ className: "", html: '<div class="van" aria-label="van"><svg viewBox="0 0 26 17" width="22" height="15"><path d="M1 2h14v10H1zM16 5h5l4 4v3h-9z" fill="#fff"/><circle cx="6" cy="13" r="2.4" fill="#fff" stroke="#d2456c"/><circle cx="20" cy="13" r="2.4" fill="#fff" stroke="#d2456c"/></svg></div>', iconSize: [38, 38], iconAnchor: [19, 19] }), zIndexOffset: 1000 }).addTo(layer);
       map.fitBounds(L.latLngBounds(path).pad(0.12));
     }
   }
@@ -426,7 +455,7 @@ function initRoute(R) {
     $("play").textContent = "❚❚"; $("play").setAttribute("aria-label", "Pause");
     state.raf = requestAnimationFrame(frame);
   }
-  function pause() { state.playing = false; cancelAnimationFrame(state.raf); $("play").textContent = "▶"; $("play").setAttribute("aria-label", "Play"); }
+  function pause() { state.playing = false; cancelAnimationFrame(state.raf); $("play").textContent = "▶\uFE0E"; $("play").setAttribute("aria-label", "Play"); }
 
   // live: follow the clock on the morning of the next run
   let liveTimer = 0;

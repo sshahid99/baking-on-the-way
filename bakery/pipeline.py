@@ -37,10 +37,10 @@ def _why_declined(plan, res, cid, orders, drive, price):
     loss = res["profit"] - r["profit"]
     o = orders[cid]
     if stop["late_min"] > config.LATE_GRACE_MIN:
-        why = (f"can't reach it by {config.hhmm(o['wanted_by'])} + 15 min without making other stops late "
-               f"(best case {config.hhmm(stop['deliver'])})")
+        why = (f"they want it by {config.hhmm(o['wanted_by'])}, and the earliest the van could get there "
+               f"without making other stops late is {config.hhmm(stop['deliver'])}")
     else:
-        why = "fitting it in makes other stops later or staler"
+        why = "fitting it in would make other stops late or their kolaches less fresh"
     return f"Taking it would lower profit by ${loss:,.0f}: {why}."
 
 

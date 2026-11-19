@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Nunito:wght@400;600;700;800&display=swap">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
 <main class="viz-root" id="app">
@@ -18,7 +18,7 @@
       <p class="eyebrow">Baking on the way · run sheet</p>
       <h1 id="day">Loading…</h1>
     </div>
-    <span class="badge" id="status"></span>
+    <span class="status" id="status"></span>
   </header>
 
   <section class="card decision" id="decision" aria-live="polite"></section>
@@ -31,7 +31,7 @@
 
   <section class="card" id="timeline-card">
     <h2>Minute by minute</h2>
-    <p class="hint">Fire lines tell you when to put trays in. Tap a stop to see it on the map.</p>
+    <p class="hint"><b>Oven</b> lines: put trays into the van's oven. <b>Stop</b> lines: hand the kolaches over. Tap a stop to see it on the map.</p>
     <p class="fresh-summary" id="fresh-summary"></p>
     <ol class="timeline" id="timeline"></ol>
     <details class="money"><summary>Where the money goes</summary><div id="money"></div></details>
@@ -46,7 +46,7 @@
     <p class="now-line" id="now-line" aria-live="polite"></p>
     <div class="map" id="map"></div>
     <div class="player">
-      <button type="button" id="play" aria-label="Play">▶</button>
+      <button type="button" id="play" aria-label="Play">▶&#xFE0E;</button>
       <input type="range" id="scrub" aria-label="Time of morning">
       <span class="clock" id="clock"></span>
       <button type="button" id="golive" class="golive" hidden>● Back to live</button>
@@ -70,7 +70,19 @@
 
   <section class="card">
     <h2>Week by week</h2>
-    <p class="hint">Average per morning. "Your old way" is your current rule of thumb, replayed on the same orders and traffic.</p>
+    <p class="hint">Each point is one week (Monday to Friday): the average of the mornings the van drove that week.</p>
+    <details class="source"><summary>Where these numbers come from</summary>
+      <ul>
+        <li><b>With the planner:</b> after each morning, the van's delivery log records when it reached each stop and how old each tray was.
+          Profit is what the cafés paid for what was actually delivered (after freshness discounts and refused trays), minus the van, the oven and the ingredients.</li>
+        <li><b>Your old way:</b> your rule of thumb (medium oven, the first 8 orders in, stops in wanted-by order, trays in before you leave and again halfway),
+          planned on the same orders and driven through the same morning's traffic. The two lines differ only in how the morning was planned.</li>
+        <li><b>Freshness:</b> the share of kolaches handed over less than 15 minutes after their tray came out of the oven.</li>
+        <li><b>Worst stop:</b> each morning, how many minutes the plan's arrival time was off at the stop it got most wrong; each week shows the middle morning.
+          It drops as the planner learns real Dallas drive times from the logs.</li>
+        <li><b>Honest note:</b> these mornings are simulated. Orders and traffic come from a seeded generator, not real cafés (see the bottom of the page).</li>
+      </ul></details>
+    <p class="hint" id="weekly-note"></p>
     <figure>
       <figcaption>Profit per morning</figcaption>
       <div class="chart" id="chart-profit"></div>
@@ -91,6 +103,8 @@
     <h2>Customers to talk to</h2>
     <p class="hint">Who to renegotiate with: orders that often don't fit the route, or prices below base.</p>
     <div class="table-wrap"><table id="customers"></table></div>
+    <details id="customers-rest" hidden><summary id="customers-rest-sum"></summary>
+      <div class="table-wrap"><table id="customers-rest-table"></table></div></details>
   </section>
 
   <footer class="foot" id="foot"></footer>
@@ -98,6 +112,6 @@
 <div class="tooltip" id="tooltip" role="status" hidden></div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="app.js?v=3"></script>
+<script src="app.js?v=4"></script>
 </body>
 </html>
