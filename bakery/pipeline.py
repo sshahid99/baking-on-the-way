@@ -45,6 +45,11 @@ def _why_declined(plan, res, cid, orders, drive, price):
 
 
 def plan_day(day, verbose=True):
+    # Guard G-run1 (2026-11-18): re-planning replaces the stored run, so it would erase what
+    # actually happened that morning. Found when a second session drove Nov 9 mid-run.
+    if db.run_status(day) == "done":
+        sys.exit(f"STOPPED: the morning of {day} has already been driven; re-planning would erase "
+                 f"its actual results. Plan the next delivery date instead.")
     clean_result = _load_clean(day)
     orders = _orders_by_customer(clean_result)
     matrix, source = geo.load_matrix()
@@ -179,6 +184,10 @@ def ingest_log(path):
 
 def drive_morning(day):
     """Simulate the morning for the approved plan (and the old rule, for comparison) and write the van log."""
+    status = db.run_status(day)
+    if status != "approved":  # Guard G-run2: only a plan Rosa approved is driven, and only once
+        sys.exit(f"STOPPED: the plan for {day} is '{status or 'missing'}'. Only an approved plan can be driven"
+                 f"{' (it was already driven)' if status == 'done' else ''}.")
     plan_doc = json.loads((config.PLAN_DIR / day / "plan.json").read_text(encoding="utf-8"))
     orders = {o["customer_id"]: o for o in plan_doc["orders"]}
     matrix, _ = geo.load_matrix()
@@ -225,6 +234,8 @@ def backfill(until=None, quiet=True):
         day = f.stem.split("_")[1]
         if until and day > until:
             break
+        if db.run_status(day) == "done":  # already happened: keep its actual results
+            continue
         res = clean.clean_file(f)
         config.CLEAN_DIR.mkdir(parents=True, exist_ok=True)
         (config.CLEAN_DIR / f"{day}.json").write_text(json.dumps(res, indent=1), encoding="utf-8")

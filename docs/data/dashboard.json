@@ -1,9 +1,9 @@
 {
  "meta": {
-  "generated_at": "2026-11-19T00:13:20+00:00",
+  "generated_at": "2026-11-19T00:16:03+00:00",
   "database": "SQLite",
   "orders_through": "2026-11-10",
-  "mornings_completed": 55,
+  "mornings_completed": 56,
   "drive_legs_learned": 417,
   "bls_months": "2026-09",
   "disclaimer": "Demo data. The bakery, customers and orders are invented by a seeded script; the demand patterns are ones we built in. Road times come from OpenStreetMap and ingredient prices from the U.S. Bureau of Labor Statistics. 'Old rule' results are simulated on the same mornings."
@@ -269,76 +269,76 @@
   "bls_months": "2026-09"
  },
  "last_morning": {
-  "delivery_date": "2026-11-06",
-  "planned_profit": 354.39,
-  "actual_profit": 342.5,
-  "actual_fresh": 0.907,
+  "delivery_date": "2026-11-09",
+  "planned_profit": 168.04,
+  "actual_profit": 168.41,
+  "actual_fresh": 1.0,
   "refused_pieces": 0,
-  "worst_gap_min": 2.1,
-  "old_rule_actual_profit": 186.88,
+  "worst_gap_min": 1.6,
+  "old_rule_actual_profit": 30.27,
   "stops": [
    {
-    "customer": "Lakewood Perk",
-    "planned": "5:57",
-    "actual": "5:55",
-    "fresh": 18,
-    "pieces": 18,
-    "refused": 0
-   },
-   {
-    "customer": "M Street Morning",
-    "planned": "6:13",
-    "actual": "6:13",
-    "fresh": 18,
-    "pieces": 18,
-    "refused": 0
-   },
-   {
     "customer": "Cedar Springs Cafe",
-    "planned": "6:28",
-    "actual": "6:27",
+    "planned": "5:38",
+    "actual": "5:38",
     "fresh": 24,
     "pieces": 24,
     "refused": 0
    },
    {
-    "customer": "Ellum Grind",
-    "planned": "6:43",
-    "actual": "6:42",
-    "fresh": 30,
-    "pieces": 30,
+    "customer": "Lakewood Perk",
+    "planned": "6:18",
+    "actual": "6:17",
+    "fresh": 24,
+    "pieces": 24,
     "refused": 0
    },
    {
     "customer": "Greenville Grounds",
-    "planned": "6:58",
-    "actual": "6:58",
+    "planned": "6:29",
+    "actual": "6:28",
     "fresh": 24,
     "pieces": 24,
     "refused": 0
    },
    {
-    "customer": "Harwood Clinic Staff Room",
-    "planned": "7:19",
-    "actual": "7:17",
-    "fresh": 48,
-    "pieces": 60,
+    "customer": "Cedars Roastery",
+    "planned": "6:47",
+    "actual": "6:46",
+    "fresh": 18,
+    "pieces": 18,
+    "refused": 0
+   },
+   {
+    "customer": "Ellum Grind",
+    "planned": "6:59",
+    "actual": "6:59",
+    "fresh": 18,
+    "pieces": 18,
+    "refused": 0
+   },
+   {
+    "customer": "White Rock Brew",
+    "planned": "7:20",
+    "actual": "7:20",
+    "fresh": 18,
+    "pieces": 18,
     "refused": 0
    },
    {
     "customer": "Uptown Commons Cowork",
-    "planned": "7:45",
-    "actual": "7:45",
-    "fresh": 24,
-    "pieces": 24,
+    "planned": "7:42",
+    "actual": "7:43",
+    "fresh": 12,
+    "pieces": 12,
     "refused": 0
    },
    {
     "customer": "Main Street Law Breakfast",
-    "planned": "7:57",
-    "actual": "7:57",
-    "fresh": 48,
-    "pieces": 60,
+    "planned": "7:54",
+    "actual": "7:55",
+    "fresh": 24,
+    "pieces": 24,
     "refused": 0
    }
   ]
@@ -463,13 +463,23 @@
    "old_rule_fresh": 0.396,
    "worst_gap": 1.0,
    "overpromise": 19.29
+  },
+  {
+   "week": "2026-11-09",
+   "mornings": 1,
+   "planner_profit": 168.41,
+   "old_rule_profit": 30.27,
+   "planner_fresh": 1.0,
+   "old_rule_fresh": 0.259,
+   "worst_gap": 1.0,
+   "overpromise": -0.37
   }
  ],
  "customers": [
   {
    "customer": "White Rock Brew",
    "type": "cafe",
-   "orders": 44,
+   "orders": 45,
    "declined": 18,
    "avg_pieces": 26,
    "price": 2.75,
@@ -481,7 +491,7 @@
   {
    "customer": "Cedar Springs Cafe",
    "type": "cafe",
-   "orders": 31,
+   "orders": 32,
    "declined": 7,
    "avg_pieces": 27,
    "price": 2.7,
@@ -493,9 +503,9 @@
   {
    "customer": "Cedars Roastery",
    "type": "cafe",
-   "orders": 30,
+   "orders": 31,
    "declined": 5,
-   "avg_pieces": 28,
+   "avg_pieces": 27,
    "price": 2.65,
    "opens": "6:30",
    "advice": [
@@ -505,7 +515,7 @@
   {
    "customer": "Uptown Commons Cowork",
    "type": "cowork",
-   "orders": 30,
+   "orders": 31,
    "declined": 0,
    "avg_pieces": 23,
    "price": 2.6,
@@ -529,7 +539,7 @@
   {
    "customer": "Greenville Grounds",
    "type": "cafe",
-   "orders": 34,
+   "orders": 35,
    "declined": 5,
    "avg_pieces": 26,
    "price": 2.75,
@@ -539,7 +549,7 @@
   {
    "customer": "Ellum Grind",
    "type": "cafe",
-   "orders": 47,
+   "orders": 48,
    "declined": 3,
    "avg_pieces": 29,
    "price": 2.75,
@@ -579,7 +589,7 @@
   {
    "customer": "Lakewood Perk",
    "type": "cafe",
-   "orders": 45,
+   "orders": 46,
    "declined": 1,
    "avg_pieces": 28,
    "price": 2.9,
@@ -609,7 +619,7 @@
   {
    "customer": "Main Street Law Breakfast",
    "type": "office",
-   "orders": 33,
+   "orders": 34,
    "declined": 0,
    "avg_pieces": 43,
    "price": 3.0,
@@ -618,25 +628,25 @@
   }
  ],
  "measures": {
-  "mornings": 55,
+  "mornings": 56,
   "first_day": "2026-08-21",
-  "last_day": "2026-11-06",
-  "profit_per_morning_planner": 258.31,
-  "profit_per_morning_old_rule": 27.76,
-  "profit_uplift": 8.3039,
-  "mornings_planner_won": 55,
-  "fresh_share_planner": 0.9442,
-  "fresh_share_old_rule": 0.3283,
+  "last_day": "2026-11-09",
+  "profit_per_morning_planner": 256.71,
+  "profit_per_morning_old_rule": 27.81,
+  "profit_uplift": 8.2312,
+  "mornings_planner_won": 56,
+  "fresh_share_planner": 0.9449,
+  "fresh_share_old_rule": 0.3274,
   "worst_gap_before": 2.0,
-  "worst_gap_after": 1.5,
+  "worst_gap_after": 1.0,
   "median_gap_before": 1.0,
   "median_gap_after": 1.0,
-  "planned_vs_actual_profit": 1336.0,
+  "planned_vs_actual_profit": 1335.63,
   "overpromise_per_morning_before": 52.08,
-  "overpromise_per_morning_after": 10.88,
+  "overpromise_per_morning_after": 10.8,
   "refused_pieces_before": 150,
   "refused_pieces_after": 30,
-  "profit_gain_per_morning": 230.55,
+  "profit_gain_per_morning": 228.9,
   "targets": {
    "profit_uplift_at_least_15pct": true,
    "fresh_at_least_85pct": true,

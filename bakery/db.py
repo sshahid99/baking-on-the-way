@@ -226,6 +226,13 @@ def save_orders_and_flags(clean, plan_declined, rounds_log):
                 k: r[k] for k in ("oven", "round", "move", "gain", "profit")}) for r in rounds_log])
 
 
+def run_status(day, planner="planner"):
+    with engine().connect() as c:
+        return c.execute(select(runs.c.status).where((runs.c.delivery_date == day) & (runs.c.planner == planner))).scalar()
+
+
 def set_status(day, status):
+    """Never downgrades a morning that already happened ('done')."""
     with engine().begin() as c:
-        c.execute(runs.update().where((runs.c.delivery_date == day) & (runs.c.planner == "planner")).values(status=status))
+        c.execute(runs.update().where((runs.c.delivery_date == day) & (runs.c.planner == "planner")
+                                      & (runs.c.status != "done")).values(status=status))
